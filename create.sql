@@ -1,172 +1,108 @@
-CREATE TABLE airport(
-    airport_code varchar(3) primary key,
+CREATE TABLE Customer(
+    email varchar(50) primary key,
+    fname varchar(20) not null,
+    lname varchar(20) not null,
+    password varchar(20) not null,
+    bldg_num int not null,
+    street varchar(20) not null,
+    city varchar(20) not null,
+    state varchar(20) not null,
+    phone_num varchar(10) not null,
+    passport_num varchar(20) not null,
+    passport_exp date not null,
+    passport_country varchar(20) not null,
+    date_of_birth date not null
+);
+
+CREATE TABLE Airline(airline_name varchar(20) primary key);
+
+CREATE TABLE Airport(
+    airport_code int primary key,
     airport_name varchar(20) not null,
-    airport_city varchar(20) not null,
-    airport_country varchar(20) not null,
+    city varchar(20) not null,
+    country varchar(20) not null,
     airport_type varchar(20) not null,
 );
 
-CREATE TABLE airline(airline_name varchar(20) primary key);
-
-CREATE TABLE flight(
-    flight_num int,
-    departure_time time,
+CREATE TABLE Airplane(
+    airplane_id int,
     airline_name varchar(20),
-    arrival_time time not null,
-    base_price numeric(10, 2) not null,
-    status varchar(10),
-    primary key(flight_num, departure_time, airline_name),
-    foreign key(airline_name) references airline(airline_name)
-);
-
-CREATE TABLE arrives(
-    airport_code varchar(3),
-    flight_num int,
-    departure_time time,
-    airline_name varchar(20),
-    primary key (
-        airport_code,
-        flight_num,
-        departure_time,
-        airline_name
-    ),
-    foreign key (airport_code) references airport(airport_code),
-    foreign key (flight_num, departure_time, airline_name) references flight(flight_num, departure_time, airline_name)
-);
-
-CREATE TABLE departs(
-    airport_code varchar(3),
-    flight_num int,
-    departure_time time,
-    airline_name varchar(20),
-    primary key (
-        airport_code,
-        flight_num,
-        departure_time,
-        airline_name
-    ),
-    foreign key (airport_code) references airport(airport_code),
-    foreign key (flight_num, departure_time, airline_name) references flight(flight_num, departure_time, airline_name)
-);
-
-CREATE TABLE ticket(
-    ticket_id int primary key,
-    ticket_price numeric(10, 2) not null,
-    card_type varchar(10) not null,
-    card_name varchar(20) not null,
-    card_num int not null,
-    card_exp date not null,
-    purchase_datetime datetime not null
-);
-
-CREATE TABLE for_flight(
-    ticket_id int,
-    flight_num int,
-    departure_time time,
-    airline_name varchar(20),
-    primary key (
-        ticket_id,
-        flight_num,
-        departure_time,
-        airline_name
-    ),
-    foreign key (ticket_id) references ticket(ticket_id),
-    foreign key (flight_num, departure_time, airline_name) references flight(flight_num, departure_time, airline_name)
-);
-
-CREATE TABLE customer(
-    cust_email varchar(50) primary key,
-    cust_fname varchar(20) not null,
-    cust_lname varchar(20) not null,
-    cust_password varchar(20) not null,
-    bldg_num smallint not null,
-    cust_street varchar(20) not null,
-    cust_city varchar(20) not null,
-    cust_state varchar(20) not null,
-    cust_phone varchar(10) not null,
-    passport_num varchar(9) not null,
-    passport_exp_date date not null,
-    passport_country varchar(20) not null,
-    cust_DOB date not null
-);
-
-CREATE TABLE purchased_by(
-    ticket_id int,
-    cust_email varchar(50),
-    primary key (ticket_id, cust_email),
-    foreign key (ticket_id) references ticket(ticket_id),
-    foreign key (cust_email) references customer(cust_email)
-);
-
-CREATE TABLE flew_on(
-    cust_email varchar(50),
-    flight_num int,
-    departure_time time,
-    airline_name varchar(20),
-    rating smallint,
-    comment varchar(500),
-    primary key (cust_email, flight_num, departure_time, airline_name),
-    foreign key (cust_email) references customer(cust_email),
-    foreign key (flight_num, departure_time, airline_name) references flight(flight_num, departure_time, airline_name)
-);
-
-CREATE TABLE airplane(
-    airplane_id int primary key,
-    seat int not null,
+    seats int not null,
     manufacturing_date date not null,
     manufacturer varchar(20) not null,
-    age int not null
+    age int not null,
+    primary key (airplane_id, airline_name),
+    foreign key (airline_name) references Airline(airline_name)
 );
 
-CREATE TABLE is_on(
+CREATE TABLE Flight(
     flight_num int,
-    departure_time time,
+    departure_datetime datetime,
     airline_name varchar(20),
-    airplane_id int,
+    arrival_datetime datetime not null,
+    arrival_airport_code int not null,
+    departure_airport_code int not null,
+    airplane_id int not null,
+    base_price numeric(10, 2) not null,
+    status varchar(20) not null,
+    primary key (flight_num, departure_datetime, airline_name),
+    foreign key (airline_name) references Airline(airline_name),
+    foreign key (arrival_airport_code, departure_airport_code) references Airport(airport_code),
+    foreign key (airplane_id) references Airplane(airplane_id)
+);
+
+CREATE TABLE Ticket(
+    ticket_id int,
+    airline_name varchar(20),
+    flight_num int,
+    departure_datetime datetime,
+    sold_price numeric(10, 2),
+    card_type varchar(20),
+    card_name varchar(20),
+    card_num varchar(20),
+    card_exp date,
+    purchase_datetime datetime,
+    email varchar(50),
     primary key (
-        flight_num,
-        departure_time,
+        ticket_id,
         airline_name,
-        airplane_id
+        flight_num,
+        departure_datetime
     ),
-    foreign key (flight_num, departure_time, airline_name) references flight(flight_num, departure_time, airline_name),
-    foreign key (airplane_id) references airplane(airplane_id)
+    foreign key (airline_name, flight_num, departure_datetime) references Flight(airline_name, flight_num, departure_datetime),
+    foreign key (email) references Customer(email)
 );
 
-CREATE TABLE owns(
+CREATE TABLE Reviews(
+    email varchar(50),
+    ticket_id int,
+    rating int,
+    comment varchar(500),
+    primary key (email, ticket_id),
+    foreign key (email) references Customer(email),
+    foreign key (ticket_id) references Ticket(ticket_id)
+);
+
+CREATE TABLE Staff(
+    username varchar(20) primary key,
+    password varchar(20),
     airline_name varchar(20),
-    airplane_id int,
-    primary key (airline_name, airplane_id),
-    foreign key (airline_name) references airline(airline_name),
-    foreign key (airplane_id) references airplane(airplane_id)
+    fname varchar(20),
+    lname varchar(20),
+    date_of_birth date,
+    foreign key (airline_name) references Airline(airline_name)
 );
 
-CREATE TABLE staff(
-    user_name varchar(20) primary key,
-    staff_password varchar(20) not null,
-    staff_fname varchar(20) not null,
-    staff_lname varchar(20) not null,
-    staff_DOB date not null
+CREATE TABLE Staff_Email(
+    username varchar(20),
+    email varchar(50),
+    primary key (username, email),
+    foreign key (username) references Staff(username)
 );
 
-CREATE TABLE staff_email(
-    user_name varchar(20),
-    staff_email varchar(50),
-    primary key (user_name, staff_email),
-    foreign key (user_name) references staff(user_name)
-);
-
-CREATE TABLE staff_phonenum(
-    user_name varchar(20),
-    staff_phonenum varchar(10),
-    primary key (user_name, staff_phonenum),
-    foreign key (user_name) references staff(user_name)
-);
-
-CREATE TABLE works_for(
-    user_name varchar(20),
-    airline_name varchar(20),
-    primary key (user_name, airline_name),
-    foreign key (user_name) references staff(user_name),
-    foreign key (airline_name) references airline(airline_name)
+CREATE TABLE Staff_Phone(
+    username varchar(20),
+    phone_num varchar(10),
+    primary key (username, phone_num),
+    foreign key (username) references Staff(username)
 );

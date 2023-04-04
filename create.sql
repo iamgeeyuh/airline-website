@@ -94,7 +94,7 @@ CREATE TABLE Staff(
 );
 
 CREATE TABLE Staff_Email(
-    username varchar(20),
+    username varchar(20),git
     email varchar(50),
     primary key (username, email),
     foreign key (username) references Staff(username)

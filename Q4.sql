@@ -1,4 +1,4 @@
-Select * from Flight where current_datetime < departure_datetime;
+Select * from Flight where (SELECT NOW()) < departure_datetime;
 
 Select * from Flight where status = 'delayed';
 

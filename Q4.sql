@@ -1,4 +1,4 @@
-Select * from Flight where current_timestamp < dep_timestamp;
+Select * from Flight where current_timestamp < departure_datetime;
 
 Select * from Flight where status = 'delayed';
 

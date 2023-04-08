@@ -12,20 +12,20 @@ const Navbar = () => {
     setIsLoggedIn(ctx.isLoggedIn);
   }, [ctx.isLoggedIn]);
 
+  const loginHandler = () => {
+    ctx.modalHandler(true);
+  };
+
   return (
     <ul className={styles.nav}>
       <li>
         <NavLink to="/">Sky Quest L'avion</NavLink>
       </li>
-      {isLoggedIn ? (
-        <li>
-          <button>Log Out</button>
-        </li>
-      ) : (
-        <li>
-          <button>Log In</button>
-        </li>
-      )}
+      <li>
+        <button onClick={loginHandler}>
+          {isLoggedIn ? "Logout" : "Login"}
+        </button>
+      </li>
     </ul>
   );
 };

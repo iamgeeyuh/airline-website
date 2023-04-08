@@ -9,11 +9,19 @@ export const AuthContextProvider = (props) => {
     setIsLoggedIn(value);
   };
 
+  const [modal, setModal] = useState(false);
+
+  const modalHandler = (value) => {
+    setModal(value);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn: isLoggedIn,
         logInHandler: logInHandler,
+        modal: modal,
+        modalHandler: modalHandler,
       }}
     >
       {props.children}

@@ -24,4 +24,10 @@
   cursor: pointer;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   font-size: 18px;
+  transition: border-bottom 0.05s;
+  padding: 0;
+}
+
+.nav button:hover {
+  border-bottom: 2px solid black;
 }

@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import styles from "./Navbar.module.css";
 import AuthContext from "../../context/auth-context";
@@ -13,7 +14,9 @@ const Navbar = () => {
 
   return (
     <ul className={styles.nav}>
-      <li>Airline</li>
+      <li>
+        <NavLink to="/">Sky Quest L'avion</NavLink>
+      </li>
       {isLoggedIn ? (
         <li>
           <button>Log Out</button>

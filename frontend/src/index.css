@@ -17,6 +17,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --main-purple: #d1c1f2;
+  --hover-purple: #b9a5e2;
+  --font-purple: #9279ba;
 }
 
 body {

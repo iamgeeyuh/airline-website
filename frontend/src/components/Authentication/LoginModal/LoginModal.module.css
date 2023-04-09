@@ -1,11 +1,88 @@
 .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    background-color: white;
-    width: 50%;
-    padding: 1.5rem;
-  }
-  
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background-color: white;
+  width: 50%;
+}
+
+.type {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.type button {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  padding: 25px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 19px;
+}
+
+.selected {
+  background-color: white;
+}
+
+.notSelected {
+  background-color: rgb(224, 224, 224);
+  color: var(--font-purple);
+  transition: background-color 0.15s;
+}
+
+.notSelected:hover {
+  background-color: rgb(243, 243, 243);
+}
+
+.form {
+  padding-top: 40px;
+  text-align: center;
+}
+
+.form h2 {
+  margin-bottom: 30px;
+}
+
+.form input,
+button {
+  display: block;
+  margin: 0 auto;
+}
+
+.form input {
+  margin-bottom: 25px;
+  width: 80%;
+  height: 50px;
+  background-color: rgb(235, 235, 235);
+  border: solid;
+  border-width: 0.5px;
+  border-color: rgb(214, 214, 214);
+  padding-left: 10px;
+  transition: background-color 0.15s;
+}
+
+.form input:hover {
+  background-color: rgb(219, 219, 219);
+}
+
+.form button {
+  background-color: var(--main-purple);
+  cursor: pointer;
+  border: none;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.form button:hover {
+  background-color: var(--hover-purple);
+  color: white;
+}

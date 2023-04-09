@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import styles from "./Root.module.css";
-import LoginModal from "../../components/Authentication/LoginModal/LoginModal";
+import LoginModal from "../../components/LoginModal/LoginModal";
 import AuthContext from "../../context/auth-context";
 
 const Root = () => {

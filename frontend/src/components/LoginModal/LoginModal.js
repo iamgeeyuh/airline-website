@@ -1,11 +1,13 @@
 import { useEffect, useRef, useContext, useState } from "react";
-import AuthContext from "../../../context/auth-context";
+import AuthContext from "../../context/auth-context";
 import styles from "./LoginModal.module.css";
 
 const LoginModal = () => {
   const ctx = useContext(AuthContext);
   const modalRef = useRef(null);
   const [isCustomer, setIsCustomer] = useState(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const clickOutsideHandler = (event) => {
@@ -24,8 +26,18 @@ const LoginModal = () => {
     setIsCustomer(event.target.value === "customer");
   };
 
+  const userHandler = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const passHandler = (event) => {
+    setPassword(event.target.value);
+  };
+
   const submitHandler = (event) => {
     event.preventDefault();
+    setUsername("");
+    setPassword("");
   };
 
   return (
@@ -50,8 +62,17 @@ const LoginModal = () => {
       </div>
       <div className={styles.form}>
         <h2>Login</h2>
-        <input placeholder={isCustomer ? "E-Mail" : "Username"} />
-        <input placeholder="Password" />
+        <input
+          placeholder={isCustomer ? "E-Mail" : "Username"}
+          value={username}
+          onChange={userHandler}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={passHandler}
+        />
         <button type="submit">Sign In</button>
       </div>
     </form>

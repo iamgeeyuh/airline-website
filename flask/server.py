@@ -37,7 +37,7 @@ def login():
 #home page for testing
 @app.route("/home", methods=['GET', 'POST'])
 def home():
-  return {"members": ["Member1", "Member2", "Member3"]}
+  return {"members": ["success"]}
 
 if __name__== "__main__":
   app.run(debug = True)

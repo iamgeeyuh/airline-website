@@ -39,6 +39,7 @@ const LoginModal = () => {
     const formData = new URLSearchParams();
     formData.append("username", username);
     formData.append("password", password);
+    formData.append("isCustomer", isCustomer)
     fetch("http://localhost:5000/login", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -53,6 +54,7 @@ const LoginModal = () => {
       })
       .then((data) => {
         ctx.logInHandler(data.user)
+        console.log(data.user)
       })
       .catch((error) => {
         console.log(error);
@@ -67,7 +69,6 @@ const LoginModal = () => {
         <button
           className={isCustomer ? styles.selected : styles.notSelected}
           type="button"
-          value="customer"
           onClick={isCustomerHandler}
         >
           Customer
@@ -75,7 +76,6 @@ const LoginModal = () => {
         <button
           className={isCustomer ? styles.notSelected : styles.selected}
           type="button"
-          value="staff"
           onClick={isCustomerHandler}
         >
           Staff

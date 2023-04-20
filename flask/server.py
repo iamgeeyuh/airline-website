@@ -18,9 +18,14 @@ conn = pymysql.connect(host='localhost',
 def login():
   username = request.form['username'] #TODO: needs to be fetched in front end
   password = request.form['password'] #TODO:needs to be fetched in front end
+  isCustomer = request.form['isCustomer'] #TODO:needs to be fetched in front end
+
   cursor = conn.cursor()
 
-  query = 'SELECT * FROM staff WHERE username = %s and password = %s' #get the username and password
+  if (isCustomer):
+    query = 'SELECT * FROM Customer WHERE email = %s and password = %s' #get the username and password
+  else:
+    query = 'SELECT * FROM Staff WHERE username = %s and password = %s'
   cursor.execute(query, (username, password))
 
   data = cursor.fetchone()

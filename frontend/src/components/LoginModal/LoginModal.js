@@ -36,6 +36,27 @@ const LoginModal = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
+    const formData = new URLSearchParams();
+    formData.append("username", username);
+    formData.append("password", password);
+    fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error logging in");
+        }
+      })
+      .then((data) => {
+        ctx.logInHandler(data.user)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     setUsername("");
     setPassword("");
   };

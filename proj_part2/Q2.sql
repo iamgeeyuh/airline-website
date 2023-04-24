@@ -21,7 +21,7 @@ CREATE TABLE Airport(
     airport_name varchar(20) not null,
     city varchar(20) not null,
     country varchar(20) not null,
-    airport_type varchar(20) not null,
+    airport_type varchar(20) not null
 );
 
 CREATE TABLE Airplane(
@@ -47,7 +47,8 @@ CREATE TABLE Flight(
     status varchar(20) not null,
     primary key (flight_num, departure_datetime, airline_name),
     foreign key (airline_name) references Airline(airline_name),
-    foreign key (arrival_airport_code, departure_airport_code) references Airport(airport_code),
+    foreign key (arrival_airport_code) references Airport(airport_code),
+    foreign key (departure_airport_code) references Airport(airport_code),
     foreign key (airplane_id) references Airplane(airplane_id)
 );
 
@@ -94,7 +95,7 @@ CREATE TABLE Staff(
 );
 
 CREATE TABLE Staff_Email(
-    username varchar(20),git
+    username varchar(20),
     email varchar(50),
     primary key (username, email),
     foreign key (username) references Staff(username)

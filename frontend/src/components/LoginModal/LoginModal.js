@@ -8,11 +8,12 @@ const LoginModal = () => {
   const [isCustomer, setIsCustomer] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [valid, setValid] = useState(true);
 
   useEffect(() => {
     const clickOutsideHandler = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        ctx.modalHandler(false);
+        ctx.setModal(false);
       }
     };
     document.addEventListener("mousedown", clickOutsideHandler);
@@ -24,6 +25,7 @@ const LoginModal = () => {
   const isCustomerHandler = (event) => {
     event.stopPropagation();
     setIsCustomer(event.target.value === "customer");
+    setValid(true);
   };
 
   const userHandler = (event) => {
@@ -39,7 +41,7 @@ const LoginModal = () => {
     const formData = new URLSearchParams();
     formData.append("username", username);
     formData.append("password", password);
-    formData.append("isCustomer", isCustomer)
+    formData.append("isCustomer", isCustomer);
     fetch("http://localhost:5000/login", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -53,8 +55,12 @@ const LoginModal = () => {
         }
       })
       .then((data) => {
-        ctx.logInHandler(data.user)
-        console.log(data.user)
+        if (data.user) {
+          ctx.setIsLoggedIn(isCustomer ? "customer" : "staff");
+          ctx.setModal(false);
+        } else {
+          setValid(data.user);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -69,6 +75,7 @@ const LoginModal = () => {
         <button
           className={isCustomer ? styles.selected : styles.notSelected}
           type="button"
+          value="customer"
           onClick={isCustomerHandler}
         >
           Customer
@@ -76,13 +83,14 @@ const LoginModal = () => {
         <button
           className={isCustomer ? styles.notSelected : styles.selected}
           type="button"
+          value="staff"
           onClick={isCustomerHandler}
         >
           Staff
         </button>
       </div>
       <div className={styles.form}>
-        <h2>Login</h2>
+        <h2>{isCustomer ? "Customer" : "Staff"} Login</h2>
         <input
           placeholder={isCustomer ? "E-Mail" : "Username"}
           value={username}
@@ -94,6 +102,7 @@ const LoginModal = () => {
           value={password}
           onChange={passHandler}
         />
+        {!valid && <p>Incorrect login information.</p>}
         <button type="submit">Sign In</button>
       </div>
     </form>

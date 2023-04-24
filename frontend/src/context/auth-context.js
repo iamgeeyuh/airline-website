@@ -1,27 +1,35 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useReducer } from "react";
 
 const AuthContext = createContext();
 
-export const AuthContextProvider = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const loginReducer = (state, action) => {
+  switch (action) {
+    case "customer":
+      return { isCustomer: true, isLoggedIn: true };
+    case "staff":
+      return { isCustomer: false, isLoggedIn: true };
+    case "logout":
+      return { isCustomer: null, isLoggedIn: false };
+    default:
+      return state;
+  }
+};
 
-  const logInHandler = (value) => {
-    setIsLoggedIn(value);
-  };
+export const AuthContextProvider = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useReducer(loginReducer, {
+    isCustomer: null,
+    isLoggedIn: false,
+  });
 
   const [modal, setModal] = useState(false);
-
-  const modalHandler = (value) => {
-    setModal(value);
-  };
 
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn: isLoggedIn,
-        logInHandler: logInHandler,
+        setIsLoggedIn: setIsLoggedIn,
         modal: modal,
-        modalHandler: modalHandler,
+        setModal: setModal,
       }}
     >
       {props.children}

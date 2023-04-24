@@ -86,3 +86,7 @@ button {
   background-color: var(--hover-purple);
   color: white;
 }
+
+.form p {
+  color: rgb(211, 0, 0);
+}

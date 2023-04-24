@@ -7,6 +7,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+app.secret_key = 'secret_key'
+
 conn = pymysql.connect(host='localhost',
                        user='root',
                        password='',

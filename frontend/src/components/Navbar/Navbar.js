@@ -6,14 +6,18 @@ import AuthContext from "../../context/auth-context";
 const Navbar = () => {
   const ctx = useContext(AuthContext);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
+  const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn.isLoggedIn);
 
   useEffect(() => {
-    setIsLoggedIn(ctx.isLoggedIn);
+    setIsLoggedIn(ctx.isLoggedIn.isLoggedIn);
   }, [ctx.isLoggedIn]);
 
   const loginHandler = () => {
-    ctx.modalHandler(true);
+    if (!isLoggedIn) {
+      ctx.setModal(true);
+    } else {
+      ctx.setIsLoggedIn("logout");
+    }
   };
 
   return (

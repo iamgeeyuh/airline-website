@@ -23,29 +23,29 @@ const StaffRegistration = () => {
   return (
     <div className={styles.registrationContainer}>
       <form className={styles.registration}>
-        <h2>Staff Registration</h2>
+        <h2>Staff Application</h2>
         <div>
           <div>
-            <label>First Name:</label>
-            <input type="text" required placeholder="John" />
+            <label>First Name</label>
+            <input type="text" placeholder="John" />
           </div>
           <div>
-            <label>Last Name:</label>
-            <input type="text" requried placeholder="Doe" />
+            <label>Last Name</label>
+            <input type="text" placeholder="Doe" />
           </div>
           <div>
-            <label>Date of Birth:</label>
-            <input type="date" required />
+            <label>Date of Birth</label>
+            <input type="date" />
           </div>
         </div>
         <div>
           <div>
-            <label>Email:</label>
-            <input type="email" requried placeholder="john.doe@example.com" />
+            <label>Email</label>
+            <input type="email" placeholder="john.doe@example.com" />
           </div>
           <div>
-            <label>Password:</label>
-            <input type="password" requried />
+            <label>Password</label>
+            <input type="password" />
           </div>
         </div>
         <div>
@@ -55,7 +55,6 @@ const StaffRegistration = () => {
               type="tel"
               placeholder="(555) 555-5555"
               value={currentPhoneNumber}
-              requried
               onChange={handleCurrentPhoneNumberChange}
             />
             <div>

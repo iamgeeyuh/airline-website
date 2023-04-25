@@ -1,4 +1,5 @@
 import { useEffect, useRef, useContext, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/auth-context";
 import styles from "./LoginModal.module.css";
 
@@ -9,6 +10,13 @@ const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [valid, setValid] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (ctx.isLoggedIn.isLoggedIn) {
+      navigate("/");
+    }
+  }, [ctx.isLoggedIn]);
 
   useEffect(() => {
     const clickOutsideHandler = (event) => {
@@ -69,6 +77,11 @@ const LoginModal = () => {
     setPassword("");
   };
 
+  const navHandler = () => {
+    console.log("hi");
+    ctx.setModal(false);
+  };
+
   return (
     <form onSubmit={submitHandler} className={styles.modal} ref={modalRef}>
       <div className={styles.type}>
@@ -104,6 +117,17 @@ const LoginModal = () => {
         />
         {!valid && <p>Incorrect login information.</p>}
         <button type="submit">Sign In</button>
+        <div>
+          {isCustomer ? (
+            <NavLink to="/CustomerRegistration" onClick={navHandler}>
+              Create an account
+            </NavLink>
+          ) : (
+            <NavLink to="/StaffRegistration" onClick={navHandler}>
+              Join the team
+            </NavLink>
+          )}
+        </div>
       </div>
     </form>
   );

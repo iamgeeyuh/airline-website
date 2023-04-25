@@ -6,6 +6,7 @@
   z-index: 2;
   background-color: white;
   width: 50%;
+  padding-bottom: 20px;
 }
 
 .type {
@@ -89,4 +90,15 @@ button {
 
 .form p {
   color: rgb(211, 0, 0);
+}
+
+.form a {
+  text-decoration: none;
+  color: var(--font-purple);
+  font-size: 13px;
+  transition: text-decoration 0.15;
+}
+
+.form a:hover {
+  text-decoration: underline;
 }

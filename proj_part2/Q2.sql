@@ -5,6 +5,7 @@ CREATE TABLE Customer(
     password varchar(20) not null,
     bldg_num int not null,
     street varchar(20) not null,
+    apt varchar(20) not null,
     city varchar(20) not null,
     state varchar(20) not null,
     phone_num varchar(10) not null,

@@ -7,9 +7,9 @@ insert into Airport values(0, 'JFK', 'NYC', 'US', 'both');
 insert into Airport values(1, 'PVG', 'Shanghai', 'China', 'both');
 
 -- c. Insert at least three customers with appropriate names and other attributes. 
-insert into Customer values('sh6210@nyu.edu', 'Shenyi', 'Huang', '123456', '370', 'Jay Street', 'Brooklyn', 'NY', '0123456789', 'JE3333666', '2041-06-03', 'China', '2002-03-09');
-insert into Customer values('jzh9076@nyu.edu', 'Jia', 'Huang', '123456', '370', 'Jay Street', 'Brooklyn', 'NY', '1234567890', 'E90769076', '2042-05-03', 'US', '2001-04-09');
-insert into Customer values('imj2430@nyu.edu', 'Isha', 'Jagani', '123456', '370', 'Jay Street', 'Brooklyn', 'NY', '2345678901', 'E24302430', '2043-04-03', 'US', '2000-05-09');
+insert into Customer values('sh6210@nyu.edu', 'Shenyi', 'Huang', '123456', '370', 'Jay Street', '841', 'Brooklyn', 'NY', '0123456789', 'JE3333666', '2041-06-03', 'China', '2002-03-09');
+insert into Customer values('jzh9076@nyu.edu', 'Jia', 'Huang', '123456', '370', 'Jay Street', 'Brooklyn', '839', 'NY', '1234567890', 'E90769076', '2042-05-03', 'US', '2001-04-09');
+insert into Customer values('imj2430@nyu.edu', 'Isha', 'Jagani', '123456', '370', 'Jay Street', '549', 'Brooklyn', 'NY', '2345678901', 'E24302430', '2043-04-03', 'US', '2000-05-09');
 
 -- d. Insert at least three airplanes. 
 insert into Airplane values(1222, 'Jet Blue', 500, '2019-01-01', 'Airbus', 4);

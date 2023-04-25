@@ -13,7 +13,7 @@ const LoginModal = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (ctx.isLoggedIn.isLoggedIn) {
+    if (ctx.isLoggedIn.isLoggeD) {
       navigate("/");
     }
   }, [ctx.isLoggedIn]);

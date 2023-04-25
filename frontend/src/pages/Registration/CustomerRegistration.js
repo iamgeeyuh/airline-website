@@ -1,154 +1,135 @@
+import { useState } from "react";
+import styles from "./Registration.module.css";
+
 const CustomerRegistration = () => {
+  const [phoneNumbers, setPhoneNumbers] = useState([]);
+  const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
+
+  const handleCurrentPhoneNumberChange = (event) => {
+    setCurrentPhoneNumber(event.target.value);
+  };
+
+  const handleAddPhoneNumber = () => {
+    setPhoneNumbers([...phoneNumbers, currentPhoneNumber]);
+    setCurrentPhoneNumber("");
+  };
+
+  const handleRemovePhoneNumber = (index) => {
+    const newPhoneNumbers = [...phoneNumbers];
+    newPhoneNumbers.splice(index, 1);
+    setPhoneNumbers(newPhoneNumbers);
+  };
+
   return (
-    <form>
-      <fieldset>
-        <legend>Personal Information</legend>
+    <div className={styles.registrationContainer}>
+      <form className={styles.registration}>
+        <h2>Customer Registration</h2>
         <div>
-          <label htmlFor="first-name">First Name:</label>
-          <input
-            type="text"
-            id="first-name"
-            name="first-name"
-            required
-            placeholder="John"
-            autoComplete="given-name"
-          />
+          <div>
+            <label>First Name </label>
+            <input type="text" placeholder="John" />
+          </div>
+          <div>
+            <label>Last Name </label>
+            <input type="text" placeholder="Doe" />
+          </div>
+          <div>
+            <label>Date of Birth </label>
+            <input type="date" />
+          </div>
         </div>
         <div>
-          <label htmlFor="last-name">Last Name:</label>
-          <input
-            type="text"
-            id="last-name"
-            name="last-name"
-            required
-            placeholder="Doe"
-            autoComplete="family-name"
-          />
+          <div>
+            <label>Address </label>
+            <input type="text" placeholder="123 Main St" />
+          </div>
+          <div>
+            <label>Apartment</label>
+            <input type="text" placeholder="3A" />
+          </div>
         </div>
         <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            placeholder="john.doe@example.com"
-            autoComplete="email"
-          />
+          <div>
+            <label>City </label>
+            <input type="text" placeholder="Anytown" />
+          </div>
+          <div>
+            <label>State </label>
+            <input type="text" placeholder="CA" />
+          </div>
+          <div>
+            <label>Zip Code </label>
+            <input type="text" placeholder="12345" />
+          </div>
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            autoComplete="new-password"
-          />
+          <div>
+            <label>Email </label>
+            <input type="email" placeholder="john.doe@example.com" />
+          </div>
+          <div>
+            <label>Password </label>
+            <input type="password" />
+          </div>
         </div>
-      </fieldset>
+        <div>
+          <div>
+            <label>Primary Phone </label>
+            <input
+              type="tel"
+              placeholder="(555) 555-5555"
+              value={currentPhoneNumber}
+              onChange={handleCurrentPhoneNumberChange}
+            />
+            <div>
+              <button type="button" onClick={handleAddPhoneNumber}>
+                Add Phone Number
+              </button>
+            </div>
+          </div>
+        </div>
 
-      <fieldset>
-        <legend>Address Information</legend>
-        <div>
-          <label htmlFor="address">Address:</label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            required
-            placeholder="123 Main St"
-            autoComplete="street-address"
-          />
-        </div>
-        <div>
-          <label htmlFor="city">City:</label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            required
-            placeholder="Anytown"
-            autoComplete="address-level2"
-          />
-        </div>
-        <div>
-          <label htmlFor="state">State:</label>
-          <input
-            type="text"
-            id="state"
-            name="state"
-            required
-            placeholder="CA"
-            autoComplete="address-level1"
-          />
-        </div>
-        <div>
-          <label htmlFor="zip">Zip Code:</label>
-          <input
-            type="text"
-            id="zip"
-            name="zip"
-            required
-            placeholder="12345"
-            autoComplete="postal-code"
-          />
-        </div>
-      </fieldset>
+        {phoneNumbers.map((phoneNumber, index) => (
+          <div key={index}>
+            <label>Additional Phone </label>
+            <input
+              type="tel"
+              value={phoneNumber}
+              placeholder="(555) 555-5555"
+              onChange={(e) => {
+                const newPhoneNumbers = [...phoneNumbers];
+                newPhoneNumbers[index] = e.target.value;
+                setPhoneNumbers(newPhoneNumbers);
+              }}
+            />
+            <div>
+              <button
+                type="button"
+                onClick={() => handleRemovePhoneNumber(index)}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
 
-      <fieldset>
-        <legend>Identification Information</legend>
         <div>
-          <label htmlFor="phone">Phone:</label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            required
-            placeholder="(555) 555-5555"
-            autoComplete="tel"
-          />
+          <div>
+            <label>Passport Number </label>
+            <input type="text" placeholder="123456789" />
+          </div>
+          <div>
+            <label>Passport Expiration Date </label>
+            <input type="date" />
+          </div>
+          <div>
+            <label>Passport Country </label>
+            <input type="text" placeholder="USA" />
+          </div>
         </div>
-        <div>
-          <label htmlFor="passport">Passport Number:</label>
-          <input
-            type="text"
-            id="passport"
-            name="passport"
-            required
-            placeholder="123456789"
-            autoComplete="off"
-          />
-        </div>
-        <div>
-          <label htmlFor="expiration-date">Passport Expiration Date:</label>
-          <input
-            type="date"
-            id="expiration-date"
-            name="expiration-date"
-            required
-            autoComplete="off"
-          />
-        </div>
-        <div>
-          <label htmlFor="country">Passport Country:</label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            required
-            placeholder="USA"
-            autoComplete="off"
-          />
-        </div>
-        <div>
-          <label htmlFor="dob">Date of Birth:</label>
-          <input type="date" id="dob" name="dob" required autoComplete="off" />
-        </div>
-      </fieldset>
-
-      <button type="submit">Submit</button>
-    </form>
+        <button className={styles.submitButton} type="submit">Submit</button>
+      </form>
+    </div>
   );
 };
 

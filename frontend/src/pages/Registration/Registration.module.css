@@ -1,0 +1,54 @@
+.registrationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.registration div div {
+  display: inline-block;
+}
+
+.registration label {
+  display: block;
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+.registration input {
+  margin-bottom: 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 50px;
+  background-color: rgb(235, 235, 235);
+  border: solid;
+  border-width: 0.5px;
+  border-color: rgb(214, 214, 214);
+  padding-left: 10px;
+  transition: background-color 0.15s;
+}
+
+.registration input:hover {
+  background-color: rgb(219, 219, 219);
+}
+
+.registration button {
+  background-color: var(--main-purple);
+  cursor: pointer;
+  border: none;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.registration button:hover {
+  background-color: var(--hover-purple);
+  color: white;
+}
+
+.registration div div button {
+  margin-left: 10px;
+}

@@ -9,6 +9,7 @@
 }
 
 .registration label {
+  color: var(--font-purple);
   display: block;
   margin-left: 10px;
   font-size: 12px;
@@ -50,5 +51,10 @@
 }
 
 .registration div div button {
+  margin-left: 10px;
+}
+
+.registration h2 {
+  color: var(--font-purple);
   margin-left: 10px;
 }

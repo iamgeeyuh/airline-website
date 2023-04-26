@@ -1,0 +1,17 @@
+.flightSearch {
+  position: relative;
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  width: 80%;
+  border: solid;
+  margin: 0 auto;
+  margin-top: 50px;
+  border-radius: 20px;
+  border-width: 1px;
+  border-color: var(--main-purple);
+}
+
+.flightSearch div {
+  display: inline-block;
+}

@@ -30,9 +30,9 @@ const Navbar = () => {
           </NavLink>
         </li>
         <li>
-          <button onClick={loginHandler}>
-            {isLoggedIn ? "Logout" : "Login"}
-          </button>
+          <NavLink to="/" className={styles.links}>
+            Home
+          </NavLink>
         </li>
         {!isLoggedIn && (
           <li>
@@ -48,6 +48,11 @@ const Navbar = () => {
             </NavLink>
           </li>
         )}
+        <li>
+          <button onClick={loginHandler}>
+            {isLoggedIn ? "Logout" : "Login"}
+          </button>
+        </li>
       </ul>
     </div>
   );

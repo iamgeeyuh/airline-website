@@ -15,7 +15,7 @@ const Navbar = () => {
 
   const loginHandler = () => {
     if (!isLoggedIn) {
-      ctx.setModal(true);
+      ctx.setLoginModal(true);
     } else {
       ctx.setIsLoggedIn("logout");
     }

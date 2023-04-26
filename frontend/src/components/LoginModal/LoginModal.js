@@ -13,7 +13,7 @@ const LoginModal = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (ctx.isLoggedIn.isLoggeD) {
+    if (ctx.isLoggedIn.isLoggedIn) {
       navigate("/");
     }
   }, [ctx.isLoggedIn]);
@@ -21,7 +21,7 @@ const LoginModal = () => {
   useEffect(() => {
     const clickOutsideHandler = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        ctx.setModal(false);
+        ctx.setLoginModal(false);
       }
     };
     document.addEventListener("mousedown", clickOutsideHandler);
@@ -65,7 +65,7 @@ const LoginModal = () => {
       .then((data) => {
         if (data.user) {
           ctx.setIsLoggedIn(isCustomer ? "customer" : "staff");
-          ctx.setModal(false);
+          ctx.setLoginModal(false);
         } else {
           setValid(data.user);
         }
@@ -79,7 +79,7 @@ const LoginModal = () => {
 
   const navHandler = () => {
     console.log("hi");
-    ctx.setModal(false);
+    ctx.setLoginModal(false);
   };
 
   return (

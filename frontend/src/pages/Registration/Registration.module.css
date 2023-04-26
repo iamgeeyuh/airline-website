@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 50px;
 }
 
 .registration div div {
@@ -56,4 +57,9 @@
 
 .registration h2 {
   margin-left: 10px;
+}
+
+.registration p {
+  text-align: center;
+  color: rgb(211, 0, 0);
 }

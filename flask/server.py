@@ -63,7 +63,7 @@ def registerAuth():
     fname = request.form["fname"]
     lname = request.form["lname"]
     date_of_birth = request.form["date_of_birth"]
-    if isCustomer:
+    if isCustomer == True:
         bldg_num = request.form["bldg_num"]
         apt = request.form["apt"]
         street = request.form["street"]
@@ -72,7 +72,7 @@ def registerAuth():
         phone_num = request.form["phone_num"]
         passport_num = request.form["passport_num"]
         passport_exp = request.form["passport_exp"]
-        passport_contry = request.form["passport_country"]
+        passport_country = request.form["passport_country"]
     else:
         username = request.form["username"]
         airline_name = request.form["airline_name"]
@@ -81,8 +81,8 @@ def registerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    if isCustomer:
-        query = "SELECT * FROM Customer WHERE username = %s"
+    if isCustomer == True:
+        query = "SELECT * FROM Customer WHERE email = %s"
     else:
         query = "SELECT * FROM Staff WHERE username = %s"
 
@@ -96,7 +96,7 @@ def registerAuth():
             "register": False
         }  # TODO: display an error message (according to page6 3B)
     else:
-        if isCustomer:
+        if isCustomer == True:
             ins = (
                 "INSERT INTO Customer VALUES(%s, %s, %s, %s, %d, %s, %s, %s,"
                 " %s, %s, %s, %s, %s)"
@@ -116,7 +116,7 @@ def registerAuth():
                     phone_num,
                     passport_num,
                     passport_exp,
-                    passport_contry,
+                    passport_country,
                     date_of_birth,
                 ),
             )

@@ -1,0 +1,39 @@
+.registrationModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background-color: white;
+  width: 50%;
+  padding: 25px;
+  padding-bottom: 50px;
+  max-width: 500px;
+  text-align: center;
+}
+
+.registrationModal h2 {
+  color: var(--font-purple);
+  line-height: 35px;
+  padding-bottom: 20px;
+}
+
+.registrationModal a {
+  text-decoration: none;
+  color: black;
+  background-color: var(--main-purple);
+  cursor: pointer;
+  border: none;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.registrationModal a:hover {
+  background-color: var(--hover-purple);
+  color: white;
+}

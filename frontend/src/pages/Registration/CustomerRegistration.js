@@ -17,6 +17,7 @@ const CustomerRegistration = () => {
   const [passNum, setPassNum] = useState();
   const [passExp, setPassExp] = useState();
   const [passCountry, setPassCountry] = useState();
+  const [valid, setValid] = useState(true);
 
   const fnameHandler = (event) => {
     setFname(event.target.value);
@@ -87,7 +88,42 @@ const CustomerRegistration = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    
+    const formData = new URLSearchParams();
+    const [bldg_num, street] = address.split(" ", 2);
+    formData.append("fname", fname);
+    formData.append("lname", lname);
+    formData.append("date_of_birth", dob);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("bldg_num", bldg_num);
+    formData.append("apt", apt);
+    formData.append("street", street);
+    formData.append("zip", zip);
+    formData.append("city", city);
+    formData.append("state", state);
+    formData.append("passport_num", passNum);
+    formData.append("passport_exp", passExp);
+    formData.append("passport_country", passCountry);
+    formData.append("phone_num", phoneNumbers);
+    formData.append("isCustomer", true);
+    fetch("http://localhost:5000/registerAuth", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error authenticating");
+        }
+      })
+      .then((data) => {
+        setValid(data.register);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -105,7 +141,7 @@ const CustomerRegistration = () => {
           </div>
           <div>
             <label>Date of Birth </label>
-            <input type="date" />
+            <input type="date" onChange={dobHandler} />
           </div>
         </div>
         <div>
@@ -213,6 +249,7 @@ const CustomerRegistration = () => {
             />
           </div>
         </div>
+        {!valid && <p>Email already in use.</p>}
         <button type="submit" onClick={submitHandler}>
           Submit
         </button>

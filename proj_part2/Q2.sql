@@ -8,7 +8,6 @@ CREATE TABLE Customer(
     apt varchar(20) not null,
     city varchar(20) not null,
     state varchar(20) not null,
-    phone_num varchar(10) not null,
     passport_num varchar(20) not null,
     passport_exp date not null,
     passport_country varchar(20) not null,

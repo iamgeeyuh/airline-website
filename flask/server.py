@@ -57,7 +57,9 @@ def login():
 @app.route("/registerAuth", methods=["GET", "POST"])
 def registerAuth():
     # grabs information from the forms #TODO: needs to be fetched in front end
-    email = request.form["email"]
+    email = request.form["email[0]"]
+    print(request.form["email[0]"])
+    print(request.form["email[1]"])
     password = request.form["password"]
     isCustomer = request.form["isCustomer"]
     fname = request.form["fname"]
@@ -69,7 +71,9 @@ def registerAuth():
         street = request.form["street"]
         city = request.form["city"]
         state = request.form["state"]
-        phone_num = request.form["phone_num"]
+        phone_num = request.form["phone_num[0]"]
+        print(request.form["phone_num[0]"])
+        print(request.form["phone_num[1]"])
         passport_num = request.form["passport_num"]
         passport_exp = request.form["passport_exp"]
         passport_country = request.form["passport_country"]

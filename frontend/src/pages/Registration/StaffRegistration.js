@@ -7,14 +7,17 @@ const StaffRegistration = () => {
 
   const [phoneNumbers, setPhoneNumbers] = useState([]);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
-  const [fname, setFname] = useState();
-  const [lname, setLname] = useState();
-  const [dob, setDOB] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [username, setUsername] = useState();
-  const [airline, setAirline] = useState();
+  const [emails, setEmails] = useState([]);
+  const [currentEmails, setCurrentEmails] = useState("");
+
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [dob, setDOB] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [airline, setAirline] = useState("");
   const [valid, setValid] = useState(true);
+  const [complete, setComplete] = useState(true);
 
   const airlineHandler = (event) => {
     setAirline(event.target.value);
@@ -36,10 +39,6 @@ const StaffRegistration = () => {
     setDOB(event.target.value);
   };
 
-  const emailHandler = (event) => {
-    setEmail(event.target.value);
-  };
-
   const passwordHandler = (event) => {
     setPassword(event.target.value);
   };
@@ -59,18 +58,61 @@ const StaffRegistration = () => {
     setPhoneNumbers(newPhoneNumbers);
   };
 
+  const handleCurrentEmailsChange = (event) => {
+    setCurrentEmails(event.target.value);
+  };
+
+  const handleAddEmails = () => {
+    setEmails([...emails, currentEmails]);
+    setCurrentEmails("");
+  };
+
+  const handleRemoveEmails = (index) => {
+    const newEmails = [...emails];
+    newEmails.splice(index, 1);
+    setEmails(newEmails);
+  };
+
   const submitHandler = (event) => {
     event.preventDefault();
     const formData = new URLSearchParams();
+    const newPhoneNumbers = [...phoneNumbers, currentPhoneNumber];
+    const newEmails = [...emails, currentEmails];
+    const phoneLength = newPhoneNumbers.length;
+    const emailLength = newEmails.length;
+
+    formData.append("num_of_emails", emailLength);
+    formData.append("num_of_phones", phoneLength);
     formData.append("fname", fname);
     formData.append("lname", lname);
     formData.append("date_of_birth", dob);
-    formData.append("email", email);
+    for (let i = 0; i < newEmails.length; i++) {
+      formData.append(`email[${i}]`, newEmails[i]);
+    }
     formData.append("password", password);
-    formData.append("phone_num", phoneNumbers);
+    for (let i = 0; i < newPhoneNumbers.length; i++) {
+      formData.append(`phone_num[${i}]`, newPhoneNumbers[i]);
+      console.log(newPhoneNumbers[i]);
+    }
     formData.append("isCustomer", false);
     formData.append("username", username);
     formData.append("airline_name", airline);
+    const formValues = [
+      fname,
+      lname,
+      dob,
+      ...newEmails,
+      username,
+      password,
+      airline,
+      ...newPhoneNumbers,
+    ];
+    const isEmpty = formValues.some((value) => value.trim() === "");
+    if (isEmpty) {
+      setComplete(false);
+      setValid(true);
+      return;
+    }
     fetch("http://localhost:5000/registerAuth", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -89,6 +131,7 @@ const StaffRegistration = () => {
         } else {
           setValid(false);
         }
+        setComplete(true);
       })
       .catch((error) => {
         console.log(error);
@@ -106,14 +149,6 @@ const StaffRegistration = () => {
               type="text"
               placeholder="Jet Blue"
               onChange={airlineHandler}
-            />
-          </div>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              placeholder="john.doe@example.com"
-              onChange={emailHandler}
             />
           </div>
         </div>
@@ -141,6 +176,43 @@ const StaffRegistration = () => {
             <input type="password" onChange={passwordHandler} />
           </div>
         </div>
+        <div>
+          <div>
+            <label>Primary Email</label>
+            <input
+              type="email"
+              placeholder="johndoe@gmail.com"
+              value={currentEmails}
+              onChange={handleCurrentEmailsChange}
+            />
+            <div>
+              <button type="button" onClick={handleAddEmails}>
+                Add Email
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {emails.map((email, index) => (
+          <div key={index}>
+            <label>Additional Email </label>
+            <input
+              type="email"
+              value={email}
+              placeholder="johndoe@gmail.com"
+              onChange={(e) => {
+                const newEmails = [...emails];
+                newEmails[index] = e.target.value;
+                setEmails(newEmails);
+              }}
+            />
+            <div>
+              <button type="button" onClick={() => handleRemoveEmails(index)}>
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
         <div>
           <div>
             <label>Primary Phone </label>
@@ -182,6 +254,7 @@ const StaffRegistration = () => {
           </div>
         ))}
         {!valid && <p>Username has been taken.</p>}
+        {!complete && <p>Form must be completely filled.</p>}
         <button type="submit" onClick={submitHandler}>
           Submit
         </button>

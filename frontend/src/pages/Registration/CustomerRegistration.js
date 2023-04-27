@@ -1,23 +1,28 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styles from "./Registration.module.css";
+import AuthContext from "../../context/auth-context";
 
 const CustomerRegistration = () => {
+  const ctx = useContext(AuthContext);
+
   const [phoneNumbers, setPhoneNumbers] = useState([]);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
-  const [fname, setFname] = useState();
-  const [lname, setLname] = useState();
-  const [dob, setDOB] = useState();
-  const [address, setAddress] = useState();
-  const [apt, setApt] = useState();
-  const [city, setCity] = useState();
-  const [state, setState] = useState();
-  const [zip, setZip] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [passNum, setPassNum] = useState();
-  const [passExp, setPassExp] = useState();
-  const [passCountry, setPassCountry] = useState();
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [dob, setDOB] = useState("");
+  const [bldg, setBldg] = useState("");
+  const [street, setStreet] = useState("");
+  const [apt, setApt] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passNum, setPassNum] = useState("");
+  const [passExp, setPassExp] = useState("");
+  const [passCountry, setPassCountry] = useState("");
   const [valid, setValid] = useState(true);
+  const [complete, setComplete] = useState(true);
 
   const fnameHandler = (event) => {
     setFname(event.target.value);
@@ -31,8 +36,12 @@ const CustomerRegistration = () => {
     setDOB(event.target.value);
   };
 
-  const addressHandler = (event) => {
-    setAddress(event.target.value);
+  const bldgHandler = (event) => {
+    setBldg(event.target.value);
+  };
+
+  const streetHandler = (event) => {
+    setStreet(event.target.value);
   };
 
   const aptHandler = (event) => {
@@ -89,13 +98,16 @@ const CustomerRegistration = () => {
   const submitHandler = (event) => {
     event.preventDefault();
     const formData = new URLSearchParams();
-    const [bldg_num, street] = address.split(" ", 2);
+    const newPhoneNumbers = [...phoneNumbers, currentPhoneNumber];
+    const phoneLength = newPhoneNumbers.length;
+
+    formData.append("num_of_phones", phoneLength);
     formData.append("fname", fname);
     formData.append("lname", lname);
     formData.append("date_of_birth", dob);
     formData.append("email", email);
     formData.append("password", password);
-    formData.append("bldg_num", bldg_num);
+    formData.append("bldg_num", bldg);
     formData.append("apt", apt);
     formData.append("street", street);
     formData.append("zip", zip);
@@ -104,8 +116,34 @@ const CustomerRegistration = () => {
     formData.append("passport_num", passNum);
     formData.append("passport_exp", passExp);
     formData.append("passport_country", passCountry);
-    formData.append("phone_num", phoneNumbers);
+    for (let i = 0; i < newPhoneNumbers.length; i++) {
+      formData.append(`phone_num[${i}]`, newPhoneNumbers[i]);
+      console.log(newPhoneNumbers[i]);
+    }
     formData.append("isCustomer", true);
+    const formValues = [
+      fname,
+      lname,
+      dob,
+      bldg,
+      street,
+      apt,
+      city,
+      state,
+      zip,
+      email,
+      password,
+      passNum,
+      passExp,
+      passCountry,
+      newPhoneNumbers,
+    ];
+    const isEmpty = formValues.some((value) => value.trim() === "");
+    if (isEmpty) {
+      setComplete(false);
+      setValid(true);
+      return;
+    }
     fetch("http://localhost:5000/registerAuth", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -119,7 +157,12 @@ const CustomerRegistration = () => {
         }
       })
       .then((data) => {
-        setValid(data.register);
+        if (data.register) {
+          ctx.setRegModal(true);
+        } else {
+          setValid(false);
+        }
+        setComplete(true);
       })
       .catch((error) => {
         console.log(error);
@@ -146,11 +189,19 @@ const CustomerRegistration = () => {
         </div>
         <div>
           <div>
-            <label>Address </label>
+            <label>Building Number </label>
             <input
               type="text"
               placeholder="123 Main St"
-              onChange={addressHandler}
+              onChange={bldgHandler}
+            />
+          </div>
+          <div>
+            <label>Street </label>
+            <input
+              type="text"
+              placeholder="123 Main St"
+              onChange={streetHandler}
             />
           </div>
           <div>
@@ -250,6 +301,7 @@ const CustomerRegistration = () => {
           </div>
         </div>
         {!valid && <p>Email already in use.</p>}
+        {!complete && <p>Form must be completely filled.</p>}
         <button type="submit" onClick={submitHandler}>
           Submit
         </button>

@@ -23,6 +23,7 @@ conn = pymysql.connect(
 # Members API route
 @app.route("/login", methods=["POST"])
 def login():
+    print(request.form)
     username = request.form[
         "username"
     ]
@@ -33,19 +34,23 @@ def login():
 
     cursor = conn.cursor()
 
-    if isCustomer == True:
+    if isCustomer == "true":
         # get the username and password
         query = "SELECT * FROM Customer WHERE email = %s and password = %s"
 
     else:
         query = "SELECT * FROM Staff WHERE username = %s and password = %s"
 
-    cursor.execute(query, (username, hashlib.md5(password.encode('utf-8'))))
+    # cursor.execute(query, (username, hashlib.md5(password.encode('utf-8'))))
+    print(username)
+    print(password)
+    print(isCustomer)
+    cursor.execute(query, (username, password))
 
     data = cursor.fetchone()
     print(data)
     cursor.close()
-    if data:
+    if (data):
         # creates a session for the the user
         # session is a built in
         session["username"] = username
@@ -60,17 +65,28 @@ def login():
 @app.route("/registerAuth", methods=["GET", "POST"])
 def registerAuth():
     # grabs information from the forms #TODO: needs to be fetched in front end
-    # email = request.form["email[0]"]
-    # print(request.form["email[0]"])
-    # print(request.form["email[1]"])
-
+    email = []
     num_of_emails = request.form["num_of_emails"]
+    for i in range(int(num_of_emails)):
+        email.append(request.form["email["+str(i)+"]"])
+
     password = request.form["password"]
     isCustomer = request.form["isCustomer"]
     fname = request.form["fname"]
     lname = request.form["lname"]
     date_of_birth = request.form["date_of_birth"]
-    phone_num = request.form["phone_num"]
+    num_of_phones = request.form["num_of_phones"]
+    print(request.form)
+    phone_num = []
+    for i in range(int(num_of_phones)):
+        phone_num.append(request.form["phone_num["+str(i)+"]"])
+    
+    # phone_num = request.form["phone_num[0]"]
+    # phone_num2 = request.form["phone_num[1]"]
+    # print(phone_num)
+    # print(phone_num2)
+    
+
     if isCustomer == True:
         bldg_num = request.form["bldg_num"]
         apt = request.form["apt"]
@@ -79,26 +95,31 @@ def registerAuth():
         state = request.form["state"]
         print(request.form["phone_num[0]"])
         print(request.form["phone_num[1]"])
-        num_of_phones = request.form["num_of_phones"]
+        
         passport_num = request.form["passport_num"]
         passport_exp = request.form["passport_exp"]
         passport_country = request.form["passport_country"]
-        email = request.form["email[0]"]
+        # email = request.form["email[0]"]
     else:
         username = request.form["username"]
         airline_name = request.form["airline_name"]
-        email = request.form["email"]
+        # email = request.form["email[0]"]
+        # email = request.form["email"]
 
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    if isCustomer == True:
+    
+    if isCustomer == "true":
+        print("hi")
         query = "SELECT * FROM Customer WHERE email = %s"
-        cursor.execute(query, (email))
+        cursor.execute(query, (email[0]))
     else:
+        # print("hi")
         query = "SELECT * FROM Staff WHERE username = %s"
         cursor.execute(query, (username))
 
+    
     # stores the results in a variable
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
@@ -116,10 +137,11 @@ def registerAuth():
             cursor.execute(
                 ins,
                 (
-                    email,
+                    email[0],
                     fname,
                     lname,
-                    hashlib.md5(password),
+                    # hashlib.md5(password.encode('utf-8')),
+                    password,
                     bldg_num,
                     street,
                     apt,
@@ -135,22 +157,31 @@ def registerAuth():
             for p in phone_num:
                 # TODO: need a table for Customer_Phone
                 ins = "INSERT INTO Customer_Phone VALUES(%s, %s)"
-                cursor.execute(ins, (email, p))
+                cursor.execute(ins, (email[0], p))
         else:
+            print("hi")
             ins = "INSERT INTO Staff VALUES(%s, %s, %s, %s, %s, %s)"
             cursor.execute(
                 ins,
-                (username, hashlib.md5(password),
+                # (username, hashlib.md5(password.encode('utf-8')),
+                (username, password,
                  airline_name, fname, lname, date_of_birth),
             )
 
+            
             for e in email:
+                print(e)
                 ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
                 cursor.execute(ins, (username, e))
-
+            # ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
+            # cursor.execute(ins, (username, email))
+            
             for p in phone_num:
+                print(p)
                 ins = "INSERT INTO Staff_Phone VALUES(%s, %s)"
                 cursor.execute(ins, (username, p))
+            # ins = "INSERT INTO Staff_Phone VALUES(%s, %s)"
+            # cursor.execute(ins, (username, phone_num))
 
         conn.commit()
         cursor.close()

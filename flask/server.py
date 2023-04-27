@@ -3,6 +3,7 @@
 import pymysql.cursors
 from flask import Flask, render_template, request, session, url_for, redirect
 from flask_cors import CORS
+import hashlib
 
 app = Flask(__name__)
 CORS(app)
@@ -32,13 +33,15 @@ def login():
 
     cursor = conn.cursor()
 
-    if isCustomer:
+    if isCustomer == True:
         query = (  # get the username and password
             "SELECT * FROM Customer WHERE email = %s and password = %s"
         )
     else:
         query = "SELECT * FROM Staff WHERE username = %s and password = %s"
-    cursor.execute(query, (username, password))
+    
+    cursor.execute(query, (username, hashlib.md5(password)))
+    
 
     data = cursor.fetchone()
     cursor.close()
@@ -87,10 +90,12 @@ def registerAuth():
     # executes query
     if isCustomer == True:
         query = "SELECT * FROM Customer WHERE email = %s"
+        cursor.execute(query, (email))
     else:
         query = "SELECT * FROM Staff WHERE username = %s"
+        cursor.execute(query, (username))
 
-    cursor.execute(query, (username))
+    
     # stores the results in a variable
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
@@ -111,7 +116,7 @@ def registerAuth():
                     email,
                     fname,
                     lname,
-                    password,
+                    hashlib.md5(password),
                     bldg_num,
                     street,
                     apt,
@@ -128,7 +133,7 @@ def registerAuth():
             ins = "INSERT INTO Staff VALUES(%s, %s, %s, %s, %s, %s)"
             cursor.execute(
                 ins,
-                (username, password, airline_name, fname, lname, date_of_birth),
+                (username, hashlib.md5(password), airline_name, fname, lname, date_of_birth),
             )
             ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
             cursor.execute(ins, (username, email))
@@ -143,6 +148,47 @@ def registerAuth():
 @app.route("/home", methods=["GET", "POST"])
 def home():
     return {"members": ["success"]}
+
+@app.route("/flight_status", methods=["GET", "POST"])
+def public_info():
+    dep_city = session['dep_city']
+    dep_airport_name = session['dep_airport_name']
+    arr_city = session['arr_city']
+    arr_airport_name = session['arr_airport_name']
+    departure_datetime = session['departure_datetime']
+
+    cursor = conn.cursor();
+    query = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, '+\
+            'arr_airport_name, arr_city, dep_airport_name, dep_city'+\
+            'FROM Flight NATURAL JOIN'+\
+            '(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN' +\
+            '(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)' +\
+            'WHERE departure_datetime > CURRENT_TIMESTAMP'
+    
+    params = ()
+    if dep_city != "":
+        query += ' and dep_city = %s and'
+        params += (dep_city,)
+    if dep_airport_name != "":
+        query += ' and arr_airport = %s'
+        params += (dep_airport_name,)
+    if arr_city != "":
+        query += ' and arr_city = %s'
+        params += (arr_city,)
+    if arr_airport_name != "":
+        query += ' and arr_airport_name = %s'
+        params += (arr_airport_name,)
+    if departure_datetime != "":
+        query += ' and DATE(departure_datetime) = %s and'
+        params += (departure_datetime,)
+
+
+    cursor.execute(query, params)
+    data = cursor.fetchall() 
+
+    cursor.close()
+    
+    return {"flight_status": True}
 
 
 if __name__ == "__main__":

@@ -25,25 +25,25 @@ conn = pymysql.connect(
 def login():
     username = request.form[
         "username"
-    ]
-    password = request.form["password"]
+    ]  # TODO: needs to be fetched in front end
+    password = request.form["password"]  # TODO:needs to be fetched in front end
     isCustomer = request.form[
         "isCustomer"
-    ]
+    ]  # TODO:needs to be fetched in front end
 
     cursor = conn.cursor()
 
     if isCustomer == True:
-        # get the username and password
-        query = "SELECT * FROM Customer WHERE email = %s and password = %s"
-
+        query = (  # get the username and password
+            "SELECT * FROM Customer WHERE email = %s and password = %s"
+        )
     else:
         query = "SELECT * FROM Staff WHERE username = %s and password = %s"
-
-    cursor.execute(query, (username, hashlib.md5(password.encode('utf-8'))))
+    
+    cursor.execute(query, (username, hashlib.md5(password)))
+    
 
     data = cursor.fetchone()
-    print(data)
     cursor.close()
     if data:
         # creates a session for the the user
@@ -60,34 +60,30 @@ def login():
 @app.route("/registerAuth", methods=["GET", "POST"])
 def registerAuth():
     # grabs information from the forms #TODO: needs to be fetched in front end
-    # email = request.form["email[0]"]
-    # print(request.form["email[0]"])
-    # print(request.form["email[1]"])
-
-    num_of_emails = request.form["num_of_emails"]
+    email = request.form["email[0]"]
+    print(request.form["email[0]"])
+    print(request.form["email[1]"])
     password = request.form["password"]
     isCustomer = request.form["isCustomer"]
     fname = request.form["fname"]
     lname = request.form["lname"]
     date_of_birth = request.form["date_of_birth"]
-    phone_num = request.form["phone_num"]
     if isCustomer == True:
         bldg_num = request.form["bldg_num"]
         apt = request.form["apt"]
         street = request.form["street"]
         city = request.form["city"]
         state = request.form["state"]
+        phone_num = request.form["phone_num[0]"]
         print(request.form["phone_num[0]"])
         print(request.form["phone_num[1]"])
-        num_of_phones = request.form["num_of_phones"]
         passport_num = request.form["passport_num"]
         passport_exp = request.form["passport_exp"]
         passport_country = request.form["passport_country"]
-        email = request.form["email[0]"]
     else:
         username = request.form["username"]
         airline_name = request.form["airline_name"]
-        email = request.form["email"]
+        phone_num = request.form["phone_num"]
 
     # cursor used to send queries
     cursor = conn.cursor()
@@ -99,6 +95,7 @@ def registerAuth():
         query = "SELECT * FROM Staff WHERE username = %s"
         cursor.execute(query, (username))
 
+    
     # stores the results in a variable
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
@@ -132,26 +129,16 @@ def registerAuth():
                     date_of_birth,
                 ),
             )
-            for p in phone_num:
-                # TODO: need a table for Customer_Phone
-                ins = "INSERT INTO Customer_Phone VALUES(%s, %s)"
-                cursor.execute(ins, (email, p))
         else:
             ins = "INSERT INTO Staff VALUES(%s, %s, %s, %s, %s, %s)"
             cursor.execute(
                 ins,
-                (username, hashlib.md5(password),
-                 airline_name, fname, lname, date_of_birth),
+                (username, hashlib.md5(password), airline_name, fname, lname, date_of_birth),
             )
-
-            for e in email:
-                ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
-                cursor.execute(ins, (username, e))
-
-            for p in phone_num:
-                ins = "INSERT INTO Staff_Phone VALUES(%s, %s)"
-                cursor.execute(ins, (username, p))
-
+            ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
+            cursor.execute(ins, (username, email))
+            ins = "INSERT INTO Staff_Phone VALUES(%s, %s)"
+            cursor.execute(ins, (username, phone_num))
         conn.commit()
         cursor.close()
         return {"register": True}
@@ -162,7 +149,6 @@ def registerAuth():
 def home():
     return {"members": ["success"]}
 
-
 @app.route("/flight_status", methods=["GET", "POST"])
 def public_info():
     dep_city = session['dep_city']
@@ -171,14 +157,14 @@ def public_info():
     arr_airport_name = session['arr_airport_name']
     departure_datetime = session['departure_datetime']
 
-    cursor = conn.cursor()
-    query = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, ' +\
-            'arr_airport_name, arr_city, dep_airport_name, dep_city' +\
-            'FROM Flight NATURAL JOIN' +\
+    cursor = conn.cursor();
+    query = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, '+\
+            'arr_airport_name, arr_city, dep_airport_name, dep_city'+\
+            'FROM Flight NATURAL JOIN'+\
             '(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN' +\
             '(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)' +\
             'WHERE departure_datetime > CURRENT_TIMESTAMP'
-
+    
     params = ()
     if dep_city != "":
         query += ' and dep_city = %s and'
@@ -196,11 +182,12 @@ def public_info():
         query += ' and DATE(departure_datetime) = %s and'
         params += (departure_datetime,)
 
+
     cursor.execute(query, params)
-    data = cursor.fetchall()
+    data = cursor.fetchall() 
 
     cursor.close()
-
+    
     return {"flight_status": True}
 
 

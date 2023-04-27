@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import StaffHome from "./StaffHome/StaffHome";
 import CustomerHome from "./CustomerHome/CustomerHome";
 import FlightSearch from "../../components/FlightSearch/FlightSearch";
+import FoundFlight from "../../components/FoundFlight/FoundFlight";
 import styles from "./Home.module.css";
 import AuthContext from "../../context/auth-context";
 
@@ -16,6 +17,7 @@ const Home = () => {
   return (
     <div className={styles.home}>
       <FlightSearch />
+      <FoundFlight />
       {isLoggedIn.isLoggedIn &&
         (isLoggedIn.isCustomer ? <CustomerHome /> : <StaffHome />)}
     </div>

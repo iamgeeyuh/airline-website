@@ -15,6 +15,13 @@ CREATE TABLE Customer(
     date_of_birth date not null
 );
 
+CREATE TABLE Customer_Phone(
+    email varchar(50),
+    phone_num varchar(10),
+    primary key (email, phone_num),
+    foreign key (email) references Customer(email)
+);
+
 CREATE TABLE Airline(airline_name varchar(20) primary key);
 
 CREATE TABLE Airport(

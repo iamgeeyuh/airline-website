@@ -5,8 +5,9 @@ import AuthContext from "../../context/auth-context";
 const CustomerRegistration = () => {
   const ctx = useContext(AuthContext);
 
-  const [phoneNumbers, setPhoneNumbers] = useState([]);
+  const [phoneNumbers, setPhoneNumbers] = useState([]); 
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
+
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [dob, setDOB] = useState("");
@@ -136,7 +137,7 @@ const CustomerRegistration = () => {
       passNum,
       passExp,
       passCountry,
-      newPhoneNumbers,
+      ...newPhoneNumbers,
     ];
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {

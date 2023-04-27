@@ -1,0 +1,35 @@
+.flightStatus {
+  position: relative;
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  width: 80%;
+  border: solid;
+  margin: 0 auto;
+  margin-top: 50px;
+  border-radius: 20px;
+  border-width: 1px;
+  border-color: var(--main-purple);
+}
+
+.flightStatus div {
+  display: inline-block;
+}
+
+.flightStatus input {
+  display: block;
+}
+
+.flightStatus button {
+  display: block;
+}
+
+.flightStatus h2 {
+  color: var(--font-purple);
+  margin-bottom: 50px;
+}
+
+.flightStatus p {
+  text-align: center;
+  color: rgb(211, 0, 0);
+}

@@ -3,7 +3,7 @@ import StaffHome from "./StaffHome/StaffHome";
 import CustomerHome from "./CustomerHome/CustomerHome";
 import FlightSearch from "../../components/FlightSearch/FlightSearch";
 import FoundFlight from "../../components/FoundFlight/FoundFlight";
-import styles from "./Home.module.css";
+import FlightStatus from "../../components/FlightStatus/FlightStatus";
 import AuthContext from "../../context/auth-context";
 
 const Home = () => {
@@ -15,8 +15,9 @@ const Home = () => {
   }, [ctx.isLoggedIn]);
 
   return (
-    <div className={styles.home}>
+    <div>
       <FlightSearch />
+      <FlightStatus />
       <FoundFlight />
       {isLoggedIn.isLoggedIn &&
         (isLoggedIn.isCustomer ? <CustomerHome /> : <StaffHome />)}

@@ -10,6 +10,7 @@ const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [valid, setValid] = useState(true);
+  const [complete, setComplete] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +35,7 @@ const LoginModal = () => {
     event.stopPropagation();
     setIsCustomer(event.target.value === "customer");
     setValid(true);
+    setComplete(true);
   };
 
   const userHandler = (event) => {
@@ -47,9 +49,19 @@ const LoginModal = () => {
   const submitHandler = (event) => {
     event.preventDefault();
     const formData = new URLSearchParams();
+
     formData.append("username", username);
     formData.append("password", password);
     formData.append("isCustomer", isCustomer);
+
+    const formValues = [username, password];
+    const isEmpty = formValues.some((value) => value.trim() === "");
+    if (isEmpty) {
+      setComplete(false);
+      setValid(true);
+      return;
+    }
+
     fetch("http://localhost:5000/login", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -66,19 +78,19 @@ const LoginModal = () => {
         if (data.user) {
           ctx.setIsLoggedIn(isCustomer ? "customer" : "staff");
           ctx.setLoginModal(false);
-        } else {
-          setValid(data.user);
         }
+        setValid(data.user);
+        setComplete(true);
       })
       .catch((error) => {
         console.log(error);
       });
+
     setUsername("");
     setPassword("");
   };
 
   const navHandler = () => {
-    console.log("hi");
     ctx.setLoginModal(false);
   };
 
@@ -116,6 +128,7 @@ const LoginModal = () => {
           onChange={passHandler}
         />
         {!valid && <p>Incorrect login information.</p>}
+        {!complete && <p>Missing fields.</p>}
         <button type="submit">Sign In</button>
         <div>
           {isCustomer ? (

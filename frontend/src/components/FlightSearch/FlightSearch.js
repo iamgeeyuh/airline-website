@@ -4,9 +4,9 @@ import styles from "./FlightSearch.module.css";
 const FlightSearch = () => {
   const [way, setWay] = useState(true);
   const [srcCity, setSrcCity] = useState("");
-  const [srcAirline, setSrcAirline] = useState("");
+  const [srcAirport, setSrcAirport] = useState("");
   const [dstCity, setDstCity] = useState("");
-  const [dstAirline, setDstAirline] = useState("");
+  const [dstAirport, setDstAirport] = useState("");
   const [depDate, setDepDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
 
@@ -18,12 +18,12 @@ const FlightSearch = () => {
     setDstCity(event.target.value);
   };
 
-  const srcAirlineHandler = (event) => {
-    setSrcAirline(event.target.value);
+  const srcAirportHandler = (event) => {
+    setSrcAirport(event.target.value);
   };
 
-  const dstAirlineHandler = (event) => {
-    setDstAirline(event.target.value);
+  const dstAirportHandler = (event) => {
+    setDstAirport(event.target.value);
   };
 
   const depDateHandler = (event) => {
@@ -40,10 +40,21 @@ const FlightSearch = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
+    const formData = new URLSearchParams();
+
+    formData.append("src_city", srcCity);
+    formData.append("src_airport", srcAirport);
+    formData.append("dst_city", dstCity);
+    formData.append("dst_airport", dstAirport);
+    formData.append("dep_date", depDate);
+    formData.append("return_date", returnDate);
+
+    
   };
 
   return (
     <form className={styles.flightSearch}>
+      <h2>Search Flights</h2>
       <div>
         <div>
           <label>From</label>
@@ -53,7 +64,7 @@ const FlightSearch = () => {
               placeholder="New York City"
               onChange={srcCityHandler}
             />
-            <input type="text" placeholder="JFK" onChange={srcAirlineHandler} />
+            <input type="text" placeholder="JFK" onChange={srcAirportHandler} />
           </div>
         </div>
         <div>
@@ -67,7 +78,7 @@ const FlightSearch = () => {
             <input
               type="text"
               placeholder="O'Hare"
-              onChange={dstAirlineHandler}
+              onChange={dstAirportHandler}
             />
           </div>
         </div>

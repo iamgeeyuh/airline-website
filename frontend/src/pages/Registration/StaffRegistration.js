@@ -128,9 +128,8 @@ const StaffRegistration = () => {
       .then((data) => {
         if (data.register) {
           ctx.setRegModal(true);
-        } else {
-          setValid(false);
         }
+        setValid(data.register);
         setComplete(true);
       })
       .catch((error) => {
@@ -218,7 +217,7 @@ const StaffRegistration = () => {
             <label>Primary Phone </label>
             <input
               type="tel"
-              placeholder="(555) 555-5555"
+              placeholder="5555555555"
               value={currentPhoneNumber}
               onChange={handleCurrentPhoneNumberChange}
             />
@@ -254,7 +253,7 @@ const StaffRegistration = () => {
           </div>
         ))}
         {!valid && <p>Username has been taken.</p>}
-        {!complete && <p>Form must be completely filled.</p>}
+        {!complete && <p>Missing fields.</p>}
         <button type="submit" onClick={submitHandler}>
           Submit
         </button>

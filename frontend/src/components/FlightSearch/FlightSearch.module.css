@@ -30,3 +30,8 @@
 .flightSearch button {
   display: block;
 }
+
+.flightSearch h2 {
+  color: var(--font-purple);
+  margin-bottom: 50px;
+}

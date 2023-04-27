@@ -5,7 +5,7 @@ import AuthContext from "../../context/auth-context";
 const CustomerRegistration = () => {
   const ctx = useContext(AuthContext);
 
-  const [phoneNumbers, setPhoneNumbers] = useState([]); 
+  const [phoneNumbers, setPhoneNumbers] = useState([]);
   const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
 
   const [fname, setFname] = useState("");
@@ -122,6 +122,7 @@ const CustomerRegistration = () => {
       console.log(newPhoneNumbers[i]);
     }
     formData.append("isCustomer", true);
+
     const formValues = [
       fname,
       lname,
@@ -139,12 +140,14 @@ const CustomerRegistration = () => {
       passCountry,
       ...newPhoneNumbers,
     ];
+    
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
       setComplete(false);
       setValid(true);
       return;
     }
+
     fetch("http://localhost:5000/registerAuth", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -160,9 +163,8 @@ const CustomerRegistration = () => {
       .then((data) => {
         if (data.register) {
           ctx.setRegModal(true);
-        } else {
-          setValid(false);
         }
+        setValid(data.register);
         setComplete(true);
       })
       .catch((error) => {
@@ -191,19 +193,11 @@ const CustomerRegistration = () => {
         <div>
           <div>
             <label>Building Number </label>
-            <input
-              type="text"
-              placeholder="123 Main St"
-              onChange={bldgHandler}
-            />
+            <input type="text" placeholder="123" onChange={bldgHandler} />
           </div>
           <div>
             <label>Street </label>
-            <input
-              type="text"
-              placeholder="123 Main St"
-              onChange={streetHandler}
-            />
+            <input type="text" placeholder="Main St" onChange={streetHandler} />
           </div>
           <div>
             <label>Apartment</label>
@@ -243,7 +237,7 @@ const CustomerRegistration = () => {
             <label>Primary Phone </label>
             <input
               type="tel"
-              placeholder="(555) 555-5555"
+              placeholder="5555555555"
               value={currentPhoneNumber}
               onChange={handleCurrentPhoneNumberChange}
             />
@@ -302,7 +296,7 @@ const CustomerRegistration = () => {
           </div>
         </div>
         {!valid && <p>Email already in use.</p>}
-        {!complete && <p>Form must be completely filled.</p>}
+        {!complete && <p>Missing fields.</p>}
         <button type="submit" onClick={submitHandler}>
           Submit
         </button>

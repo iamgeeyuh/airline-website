@@ -25,11 +25,11 @@ conn = pymysql.connect(
 def login():
     username = request.form[
         "username"
-    ]  # TODO: needs to be fetched in front end
-    password = request.form["password"]  # TODO:needs to be fetched in front end
+    ]  
+    password = request.form["password"]  
     isCustomer = request.form[
         "isCustomer"
-    ]  # TODO:needs to be fetched in front end
+    ] 
 
     cursor = conn.cursor()
 
@@ -60,30 +60,34 @@ def login():
 @app.route("/registerAuth", methods=["GET", "POST"])
 def registerAuth():
     # grabs information from the forms #TODO: needs to be fetched in front end
-    email = request.form["email[0]"]
-    print(request.form["email[0]"])
-    print(request.form["email[1]"])
+    # email = request.form["email[0]"]
+    # print(request.form["email[0]"])
+    # print(request.form["email[1]"])
+    
+    num_of_emails = request.form["num_of_emails"]
     password = request.form["password"]
     isCustomer = request.form["isCustomer"]
     fname = request.form["fname"]
     lname = request.form["lname"]
     date_of_birth = request.form["date_of_birth"]
+    phone_num = request.form["phone_num"]
     if isCustomer == True:
         bldg_num = request.form["bldg_num"]
         apt = request.form["apt"]
         street = request.form["street"]
         city = request.form["city"]
         state = request.form["state"]
-        phone_num = request.form["phone_num[0]"]
         print(request.form["phone_num[0]"])
         print(request.form["phone_num[1]"])
+        num_of_phones = request.form["num_of_phones"]
         passport_num = request.form["passport_num"]
         passport_exp = request.form["passport_exp"]
         passport_country = request.form["passport_country"]
+        email = request.form["email[0]"]
     else:
         username = request.form["username"]
         airline_name = request.form["airline_name"]
-        phone_num = request.form["phone_num"]
+        email = request.form["email"]
 
     # cursor used to send queries
     cursor = conn.cursor()
@@ -129,16 +133,24 @@ def registerAuth():
                     date_of_birth,
                 ),
             )
+            for p in phone_num:
+                ins = "INSERT INTO Customer_Phone VALUES(%s, %s)" #TODO: need a table for Customer_Phone
+                cursor.execute(ins, (email, p))
         else:
             ins = "INSERT INTO Staff VALUES(%s, %s, %s, %s, %s, %s)"
             cursor.execute(
                 ins,
                 (username, hashlib.md5(password), airline_name, fname, lname, date_of_birth),
             )
-            ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
-            cursor.execute(ins, (username, email))
-            ins = "INSERT INTO Staff_Phone VALUES(%s, %s)"
-            cursor.execute(ins, (username, phone_num))
+
+            for e in email:
+                ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
+                cursor.execute(ins, (username, e))
+            
+            for p in phone_num:
+                ins = "INSERT INTO Staff_Phone VALUES(%s, %s)"
+                cursor.execute(ins, (username, p))
+
         conn.commit()
         cursor.close()
         return {"register": True}

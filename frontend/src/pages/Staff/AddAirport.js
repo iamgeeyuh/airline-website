@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import styles from "./StaffForm.module.css";
 import AuthContext from "../../context/auth-context";
 
 const AddAirport = () => {
@@ -10,9 +11,12 @@ const AddAirport = () => {
   }, [ctx.isLoggedIn]);
 
   return (
-    <div>
+    <div className={styles.staffFormContainer}>
       {isLoggedIn.isLoggedIn && !isLoggedIn.isCustomer && (
-        <div>Add Airport</div>
+        <form className={styles.staffForm}>
+          <h2>Add Airport</h2>
+          <button type="submit">Submit</button>
+        </form>
       )}
     </div>
   );

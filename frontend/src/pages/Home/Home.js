@@ -1,20 +1,10 @@
-import { useContext, useState, useEffect } from "react";
-import StaffHome from "./StaffHome/StaffHome";
-import CustomerHome from "./CustomerHome/CustomerHome";
-import FlightSearch from "../../components/FlightSearch/FlightSearch";
-import FlightStatus from "../../components/FlightStatus/FlightStatus";
-import FoundFlight from "../../components/FoundFlight/FoundFlight";
+import FlightSearch from "../../components/Flight/FlightSearch/FlightSearch";
+import FlightStatus from "../../components/Flight/FlightStatus/FlightStatus";
+import FoundFlight from "../../components/Flight/FoundFlight/FoundFlight";
 import styles from "./Home.module.css";
-import AuthContext from "../../context/auth-context";
+
 
 const Home = () => {
-  const ctx = useContext(AuthContext);
-  const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
-
-  useEffect(() => {
-    setIsLoggedIn(ctx.isLoggedIn);
-  }, [ctx.isLoggedIn]);
-
   return (
     <div>
       <div className={styles.home}>
@@ -26,8 +16,6 @@ const Home = () => {
         </div>
       </div>
       <FoundFlight />
-      {isLoggedIn.isLoggedIn &&
-        (isLoggedIn.isCustomer ? <CustomerHome /> : <StaffHome />)}
     </div>
   );
 };

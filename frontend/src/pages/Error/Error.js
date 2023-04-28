@@ -1,7 +1,12 @@
+import { NavLink } from "react-router-dom";
+
 const Error = () => {
-    return (
-        <p>Oops! Are you lost?</p>
-    )
+  return (
+    <div>
+      <p>Oops! Are you lost?</p>
+      <NavLink to="/">Home!</NavLink>
+    </div>
+  );
 };
 
 export default Error;

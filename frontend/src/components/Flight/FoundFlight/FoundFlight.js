@@ -1,4 +1,4 @@
-import Flight from "../Flight/Flight";
+import Flight from "../Flight";
 import styles from "./FoundFlight.module.css";
 
 const FoundFlight = () => {

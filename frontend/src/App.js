@@ -4,6 +4,7 @@ import Error from "./pages/Error/Error";
 import Home from "./pages/Home/Home";
 import CustomerRegistration from "./pages/Registration/CustomerRegistration";
 import StaffRegistration from "./pages/Registration/StaffRegistration";
+import ViewFlights from "./pages/ViewFlights/ViewFlights";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/StaffRegistration", element: <StaffRegistration /> },
       { path: "/CustomerRegistration", element: <CustomerRegistration /> },
+      { path: "/ViewFlights", element: <ViewFlights /> },
     ],
   },
 ]);

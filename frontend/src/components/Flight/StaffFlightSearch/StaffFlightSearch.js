@@ -1,14 +1,17 @@
 import { useState } from "react";
-import styles from "./FlightSearch.module.css";
+import styles from "./StaffFlightSearch.module.css";
 
-const FlightSearch = () => {
-  const [way, setWay] = useState(true);
+const StaffFlightSearch = () => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  const currentMonthString = `${currentYear}-${currentMonth}`;
+
   const [srcCity, setSrcCity] = useState("");
   const [srcAirport, setSrcAirport] = useState("");
   const [dstCity, setDstCity] = useState("");
   const [dstAirport, setDstAirport] = useState("");
-  const [depDate, setDepDate] = useState("");
-  const [returnDate, setReturnDate] = useState("");
+  const [range, setRange] = useState(currentMonthString);
 
   const srcCityHandler = (event) => {
     setSrcCity(event.target.value);
@@ -26,16 +29,8 @@ const FlightSearch = () => {
     setDstAirport(event.target.value);
   };
 
-  const depDateHandler = (event) => {
-    setDepDate(event.target.value);
-  };
-
-  const returnDateHandler = (event) => {
-    setReturnDate(event.target.value);
-  };
-
-  const wayHandler = (event) => {
-    setWay(event.target.value == "One Way");
+  const rangeHandler = (event) => {
+    setRange(event.target.value);
   };
 
   const submitHandler = (event) => {
@@ -46,14 +41,11 @@ const FlightSearch = () => {
     formData.append("src_airport", srcAirport);
     formData.append("dst_city", dstCity);
     formData.append("dst_airport", dstAirport);
-    formData.append("dep_date", depDate);
-    formData.append("return_date", returnDate);
-    formData.append("isOneWay", way);
+    formData.append("range", range);
   };
 
   return (
     <form className={styles.flightSearch}>
-      <h2>Search Flights</h2>
       <div>
         <div>
           <label>From</label>
@@ -81,26 +73,20 @@ const FlightSearch = () => {
             />
           </div>
         </div>
-      </div>
-      <div>
         <div>
-          <select onChange={wayHandler}>
-            <option>One Way</option>
-            <option>Two Way</option>
-          </select>
-          <label>Departure</label>
-          <input type="date" onChange={depDateHandler} />
-        </div>
-        {!way && (
+          <label>Range</label>
           <div>
-            <label>Return</label>
-            <input type="date" onChange={returnDateHandler} />
+            <input
+              type="month"
+              value={currentMonthString}
+              onChange={rangeHandler}
+            />
           </div>
-        )}
+        </div>
       </div>
       <button onClick={submitHandler}>Search</button>
     </form>
   );
 };
 
-export default FlightSearch;
+export default StaffFlightSearch;

@@ -1,10 +1,8 @@
-import Flight from "../Flight";
-import styles from "./FoundFlight.module.css";
+import Flight from "../Flight/Flight";
 
 const FoundFlight = () => {
   return (
     <div>
-      <h2 className={styles.foundFlight}>Flights Found</h2>
       <Flight
         airline="Jet Blue"
         srcCity="New York City"

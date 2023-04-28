@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-
 import styles from "./Navbar.module.css";
 import AuthContext from "../../context/auth-context";
+import ViewFlights from "../../pages/ViewFlights/ViewFlights";
 
 const Navbar = () => {
   const ctx = useContext(AuthContext);
@@ -14,11 +14,10 @@ const Navbar = () => {
   }, [ctx.isLoggedIn]);
 
   const loginHandler = () => {
-    if (!isLoggedIn) {
-      ctx.setLoginModal(true);
-    } else {
+    if (isLoggedIn) {
       ctx.setIsLoggedIn("logout");
     }
+    ctx.setLoginModal(true);
   };
 
   return (
@@ -34,6 +33,13 @@ const Navbar = () => {
             Home
           </NavLink>
         </li>
+        {isLoggedIn && (
+          <li>
+            <NavLink to="/ViewFlights" className={styles.links}>
+              View Flights
+            </NavLink>
+          </li>
+        )}
         {!isLoggedIn && (
           <li>
             <NavLink to="/CustomerRegistration" className={styles.links}>

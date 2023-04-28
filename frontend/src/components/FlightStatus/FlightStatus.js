@@ -1,4 +1,5 @@
 import { useState } from "react";
+import FlightStatusModal from "../FlightStatusModal/FlightStatusModal";
 import styles from "./FlightStatus.module.css";
 
 const FlightStatus = () => {
@@ -8,6 +9,12 @@ const FlightStatus = () => {
   const [depDate, setDepDate] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
+  const [modal, setModal] = useState(true);
+  const [status, setStatus] = useState("delayed");
+
+  const modalHandler = () => {
+    setModal(false);
+  };
 
   const airlineHandler = (event) => {
     setAirline(event.target.value);
@@ -46,6 +53,10 @@ const FlightStatus = () => {
 
   return (
     <form className={styles.flightStatus}>
+      {modal && (
+        <FlightStatusModal status={status} modalHandler={modalHandler} />
+      )}
+      {modal && <div className={styles.dimmedBackground} />}
       <h2>Check Flight Status</h2>
       <div>
         <div>

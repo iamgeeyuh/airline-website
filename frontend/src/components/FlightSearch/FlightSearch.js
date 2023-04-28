@@ -1,4 +1,5 @@
 import { useState } from "react";
+import FoundFlight from "../FoundFlight/FoundFlight";
 import styles from "./FlightSearch.module.css";
 
 const FlightSearch = () => {
@@ -48,59 +49,65 @@ const FlightSearch = () => {
     formData.append("dst_airport", dstAirport);
     formData.append("dep_date", depDate);
     formData.append("return_date", returnDate);
-
-    
+    formData.append("isOneWay", way);
   };
 
   return (
-    <form className={styles.flightSearch}>
-      <h2>Search Flights</h2>
-      <div>
+    <div>
+      <form className={styles.flightSearch}>
+        <h2>Search Flights</h2>
         <div>
-          <label>From</label>
           <div>
-            <input
-              type="text"
-              placeholder="New York City"
-              onChange={srcCityHandler}
-            />
-            <input type="text" placeholder="JFK" onChange={srcAirportHandler} />
+            <label>From</label>
+            <div>
+              <input
+                type="text"
+                placeholder="New York City"
+                onChange={srcCityHandler}
+              />
+              <input
+                type="text"
+                placeholder="JFK"
+                onChange={srcAirportHandler}
+              />
+            </div>
+          </div>
+          <div>
+            <label>To</label>
+            <div>
+              <input
+                type="text"
+                placeholder="Chicago"
+                onChange={dstCityHandler}
+              />
+              <input
+                type="text"
+                placeholder="O'Hare"
+                onChange={dstAirportHandler}
+              />
+            </div>
           </div>
         </div>
         <div>
-          <label>To</label>
           <div>
-            <input
-              type="text"
-              placeholder="Chicago"
-              onChange={dstCityHandler}
-            />
-            <input
-              type="text"
-              placeholder="O'Hare"
-              onChange={dstAirportHandler}
-            />
+            <select onChange={wayHandler}>
+              <option>One Way</option>
+              <option>Two Way</option>
+            </select>
+            <label>Departure</label>
+            <input type="date" onChange={depDateHandler} />
           </div>
+          {!way && (
+            <div>
+              <label>Return</label>
+              <input type="date" onChange={returnDateHandler} />
+            </div>
+          )}
         </div>
-      </div>
-      <div>
-        <div>
-          <select onChange={wayHandler}>
-            <option>One Way</option>
-            <option>Two Way</option>
-          </select>
-          <label>Departure</label>
-          <input type="date" onChange={depDateHandler} />
-        </div>
-        {!way && (
-          <div>
-            <label>Return</label>
-            <input type="date" onChange={returnDateHandler} />
-          </div>
-        )}
-      </div>
-      <button onClick={submitHandler}>Search</button>
-    </form>
+        <button onClick={submitHandler}>Search</button>
+      </form>
+      <FoundFlight />
+    </div>
   );
 };
 

@@ -3,13 +3,10 @@
   text-align: center;
   padding-top: 50px;
   padding-bottom: 50px;
-  width: 80%;
-  border: solid;
   margin: 0 auto;
-  margin-top: 50px;
-  border-radius: 20px;
+  border-right: solid;
+  border-color: rgb(229, 229, 229);
   border-width: 1px;
-  border-color: var(--main-purple);
 }
 
 .flightSearch div {

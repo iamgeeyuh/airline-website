@@ -5,15 +5,15 @@ import AuthContext from "../../context/auth-context";
 const CreateFlight = () => {
   const ctx = useContext(AuthContext);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
-  const [flightNum, setFlightNum] = useState();
-  const [airline, setAirline] = useState();
-  const [airplaneID, setAirplaneID] = useState();
-  const [depTime, setDepTime] = useState();
-  const [depCode, setDepCode] = useState();
-  const [arrTime, setArrTime] = useState();
-  const [arrCode, setArrCode] = useState();
-  const [price, setPrice] = useState();
-  const [status, setStatus] = useState();
+  const [flightNum, setFlightNum] = useState("");
+  const [airline, setAirline] = useState("");
+  const [airplaneID, setAirplaneID] = useState("");
+  const [depTime, setDepTime] = useState("");
+  const [depCode, setDepCode] = useState("");
+  const [arrTime, setArrTime] = useState("");
+  const [arrCode, setArrCode] = useState("");
+  const [price, setPrice] = useState("");
+  const [status, setStatus] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
 
@@ -152,7 +152,7 @@ const CreateFlight = () => {
               />
             </div>
           </div>
-          {!valid && <p>Flight number already in use.</p>}
+          {!valid && <p>Flight already exists.</p>}
           {!complete && <p>Missing fields.</p>}
           <button onClick={submitHandler} type="submit">
             Submit

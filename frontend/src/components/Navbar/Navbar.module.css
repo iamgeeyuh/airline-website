@@ -10,23 +10,26 @@
   display: flex;
   justify-content: flex-start;
   margin-top: 25px;
+  margin-left: 35px;
 }
 
 .nav li {
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 
-.navTitle {
+.nav h2 {
   text-decoration: none;
   font-weight: bold;
   font-size: 30px;
   color: var(--font-purple);
-  margin-left: 35px;
-  margin-right: 35px;
+  margin: 0;
+  margin-right: 15px;
+  line-height: 30px;
+  padding: 0;
 }
 
-.links {
+.nav a {
   text-decoration: none;
   transition: color 0.05s;
   color: black;
@@ -34,8 +37,8 @@
   padding: 0;
 }
 
-.links:hover {
-  color: var(--font-purple)
+.nav a:hover {
+  color: var(--font-purple);
 }
 
 .nav button {
@@ -52,5 +55,10 @@
 }
 
 .nav button:hover {
-  color: var(--font-purple)
+  color: var(--font-purple);
+}
+
+.active {
+  border-bottom: solid;
+  border-color: var(--font-purple);
 }

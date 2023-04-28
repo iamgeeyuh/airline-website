@@ -5,7 +5,7 @@ const StaffViewFlights = () => {
   return (
     <div>
       <StaffFlightSearch />
-      <FoundFlight />
+      <FoundFlight page="staff" />
     </div>
   );
 };

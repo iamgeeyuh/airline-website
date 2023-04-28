@@ -1,6 +1,6 @@
-import HomeFlightSearch from "../../components/Flight/HomeFlightSearch/HomeFlightSearch";
-import FlightStatus from "../../components/Flight/FlightStatus/FlightStatus";
-import FoundFlight from "../../components/Flight/FoundFlight/FoundFlight";
+import HomeFlightSearch from "../../../components/Flight/HomeFlightSearch/HomeFlightSearch";
+import FlightStatus from "../../../components/Flight/FlightStatus/FlightStatus";
+import FoundFlight from "../../../components/Flight/FoundFlight/FoundFlight";
 import styles from "./Home.module.css";
 
 const Home = () => {
@@ -15,7 +15,7 @@ const Home = () => {
         </div>
       </div>
       <h2 className={styles.foundFlight}>Flights</h2>
-      <FoundFlight />
+      <FoundFlight page="home" />
     </div>
   );
 };

@@ -1,0 +1,23 @@
+.staffFormContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+}
+
+.staffForm div div {
+  display: inline-block;
+}
+
+.staffForm div div button {
+  margin-left: 10px;
+}
+
+.staffForm h2 {
+  margin-left: 10px;
+}
+
+.staffForm p {
+  text-align: center;
+  color: rgb(211, 0, 0);
+}

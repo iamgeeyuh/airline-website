@@ -140,7 +140,7 @@ const CustomerRegistration = () => {
       passCountry,
       ...newPhoneNumbers,
     ];
-    
+
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
       setComplete(false);
@@ -255,7 +255,7 @@ const CustomerRegistration = () => {
             <input
               type="tel"
               value={phoneNumber}
-              placeholder="(555) 555-5555"
+              placeholder="5555555555"
               onChange={(e) => {
                 const newPhoneNumbers = [...phoneNumbers];
                 newPhoneNumbers[index] = e.target.value;

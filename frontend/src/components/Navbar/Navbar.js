@@ -1,22 +1,19 @@
 import { NavLink } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import LogoutModal from "../LogoutModal/LogoutModal";
 import styles from "./Navbar.module.css";
 import AuthContext from "../../context/auth-context";
-import ViewFlights from "../../pages/ViewFlights/ViewFlights";
 
 const Navbar = () => {
   const ctx = useContext(AuthContext);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn.isLoggedIn);
+  const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
 
   useEffect(() => {
-    setIsLoggedIn(ctx.isLoggedIn.isLoggedIn);
+    setIsLoggedIn(ctx.isLoggedIn);
   }, [ctx.isLoggedIn]);
 
   const loginHandler = () => {
-    if (isLoggedIn) {
-      ctx.setIsLoggedIn("logout");
-    }
     ctx.setLoginModal(true);
   };
 
@@ -24,39 +21,102 @@ const Navbar = () => {
     <div className={styles.nav}>
       <ul>
         <li>
-          <NavLink className={styles.navTitle} to="/">
-            Sky Quest L'avion
-          </NavLink>
+          <h2>Sky Quest L'avion</h2>
         </li>
         <li>
-          <NavLink to="/" className={styles.links}>
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? styles.active : undefined)}
+          >
             Home
           </NavLink>
         </li>
-        {isLoggedIn && (
+        {isLoggedIn.isLoggedIn && (
           <li>
-            <NavLink to="/ViewFlights" className={styles.links}>
+            <NavLink
+              to="/ViewFlights"
+              className={({ isActive }) =>
+                isActive ? styles.active : undefined
+              }
+            >
               View Flights
             </NavLink>
           </li>
         )}
-        {!isLoggedIn && (
+        {isLoggedIn.isLoggedIn &&
+          (isLoggedIn.isCustomer ? (
+            <li></li>
+          ) : (
+            <>
+              <li>
+                <NavLink
+                  to="/CreateFlight"
+                  className={({ isActive }) =>
+                    isActive ? styles.active : undefined
+                  }
+                >
+                  Create Flight{" "}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/ChangeFlightStatus"
+                  className={({ isActive }) =>
+                    isActive ? styles.active : undefined
+                  }
+                >
+                  Change Flight Status
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/AddPlane"
+                  className={({ isActive }) =>
+                    isActive ? styles.active : undefined
+                  }
+                >
+                  Add Plane
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/AddAirport"
+                  className={({ isActive }) =>
+                    isActive ? styles.active : undefined
+                  }
+                >
+                  Add Airport
+                </NavLink>
+              </li>
+            </>
+          ))}
+        {!isLoggedIn.isLoggedIn && (
           <li>
-            <NavLink to="/CustomerRegistration" className={styles.links}>
+            <NavLink
+              to="/CustomerRegistration"
+              className={({ isActive }) =>
+                isActive ? styles.active : undefined
+              }
+            >
               Register
             </NavLink>
           </li>
         )}
-        {!isLoggedIn && (
+        {!isLoggedIn.isLoggedIn && (
           <li>
-            <NavLink to="/StaffRegistration" className={styles.links}>
+            <NavLink
+              to="/StaffRegistration"
+              className={({ isActive }) =>
+                isActive ? styles.active : undefined
+              }
+            >
               Join the Team
             </NavLink>
           </li>
         )}
         <li>
           <button onClick={loginHandler}>
-            {isLoggedIn ? "Logout" : "Login"}
+            {isLoggedIn.isLoggedIn ? "Logout" : "Login"}
           </button>
         </li>
       </ul>

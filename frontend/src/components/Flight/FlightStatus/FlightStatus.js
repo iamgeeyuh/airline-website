@@ -9,8 +9,8 @@ const FlightStatus = () => {
   const [depDate, setDepDate] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
-  const [modal, setModal] = useState(true);
-  const [status, setStatus] = useState("delayed");
+  const [modal, setModal] = useState(false);
+  const [status, setStatus] = useState("");
 
   const modalHandler = () => {
     setModal(false);

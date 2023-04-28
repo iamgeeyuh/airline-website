@@ -1,9 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import CustomerViewFlights from "./CustomerViewFlights";
-import StaffViewFlights from "./StaffViewFlights";
 import AuthContext from "../../context/auth-context";
 
-const ViewFlights = () => {
+const AddPlane = () => {
   const ctx = useContext(AuthContext);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
 
@@ -13,14 +11,11 @@ const ViewFlights = () => {
 
   return (
     <div>
-      {isLoggedIn.isLoggedIn &&
-        (isLoggedIn.isCustomer ? (
-          <CustomerViewFlights />
-        ) : (
-          <StaffViewFlights />
-        ))}
+      {isLoggedIn.isLoggedIn && !isLoggedIn.isCustomer && (
+        <div>Add Plane</div>
+      )}
     </div>
   );
 };
 
-export default ViewFlights;
+export default AddPlane;

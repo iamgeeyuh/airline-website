@@ -92,7 +92,6 @@ const StaffRegistration = () => {
     formData.append("password", password);
     for (let i = 0; i < newPhoneNumbers.length; i++) {
       formData.append(`phone_num[${i}]`, newPhoneNumbers[i]);
-      console.log(newPhoneNumbers[i]);
     }
     formData.append("isCustomer", false);
     formData.append("username", username);
@@ -235,7 +234,7 @@ const StaffRegistration = () => {
             <input
               type="tel"
               value={phoneNumber}
-              placeholder="(555) 555-5555"
+              placeholder="5555555555"
               onChange={(e) => {
                 const newPhoneNumbers = [...phoneNumbers];
                 newPhoneNumbers[index] = e.target.value;

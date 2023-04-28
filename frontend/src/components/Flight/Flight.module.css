@@ -1,0 +1,44 @@
+.flight {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.flightAirline {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.flight label {
+  margin-left: 0;
+}
+
+.flight h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.flight h5 {
+  margin: 0;
+  font-size: 12px;
+  line-height: 15px;
+  margin-bottom: 5px;
+}
+
+.flight div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.flight div div {
+  display: block;
+  padding-left: 20px;
+  padding-right: 20px;
+}

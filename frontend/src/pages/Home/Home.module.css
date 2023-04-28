@@ -1,6 +1,9 @@
 .home {
   display: flex;
   flex-wrap: wrap;
+  border-bottom: solid;
+  border-color: rgb(229, 229, 229);
+  border-width: 1px;
 }
 
 .search {

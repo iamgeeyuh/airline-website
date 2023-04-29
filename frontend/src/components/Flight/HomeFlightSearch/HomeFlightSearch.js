@@ -49,6 +49,25 @@ const FlightSearch = () => {
     formData.append("dep_date", depDate);
     formData.append("return_date", returnDate);
     formData.append("isOneWay", way);
+
+    fetch("http://localhost:5000/search_flight", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error searching");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

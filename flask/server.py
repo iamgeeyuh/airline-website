@@ -168,14 +168,14 @@ def home():
 @app.route("/search_flight", methods=["GET", "POST"])
 def search_flight():
     print(request.form)
-    dep_city = session['src_city']
-    dep_airport_name = session['src_airport']
-    arr_city = session['dst_city']
-    arr_airport_name = session['dst_airport']
-    departure_date = session['dep_date']
+    dep_city = request.form['src_city']
+    dep_airport_name = request.form['src_airport']
+    arr_city = request.form['dst_city']
+    arr_airport_name = request.form['dst_airport']
+    departure_date = request.form['dep_date']
 
-    isOneWay = session['isOneWay']
-    return_date = session['return_date']
+    isOneWay = request.form['isOneWay']
+    return_date = request.form['return_date']
 
     cursor = conn.cursor()
     query = 'SELECT flight_num, departure_date, airline_name, arrival_datetime, ' +\
@@ -272,10 +272,10 @@ def search_flight():
 @app.route("/check_flight_status", methods=["GET", "POST"])
 def check_flight_status():
 
-    airline_name = session['airline_name']
-    flight_num = session['flight_num']
-    arrival_date = session['arrival_date']
-    dep_date = session['dep_date']
+    airline_name = request.form['airline_name']
+    flight_num = request.form['flight_num']
+    arrival_date = request.form['arrival_date']
+    dep_date = request.form['dep_date']
 
     cursor = conn.cursor()
     query = "SELECT airline_name, flight_num, DATE(arrival_datetime), TIME(arrival_datetime), DATE(departure_datetime), TIME(departure_datetime), "+\

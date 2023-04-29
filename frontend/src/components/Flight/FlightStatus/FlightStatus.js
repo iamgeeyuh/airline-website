@@ -49,6 +49,27 @@ const FlightStatus = () => {
       setValid(true);
       return;
     }
+
+    fetch("http://localhost:5000/check_flight_status", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error searching for status");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+        setValid(data.user);
+        setComplete(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

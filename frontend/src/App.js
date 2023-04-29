@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./pages/Root/Root";
 import Error from "./pages/Error/Error";
-import Home from "./pages/Home/Home/Home";
+import Home from "./pages/Home/Home";
 import CustomerRegistration from "./pages/Registration/CustomerRegistration";
 import StaffRegistration from "./pages/Registration/StaffRegistration";
 import ViewFlights from "./pages/ViewFlights/ViewFlights";

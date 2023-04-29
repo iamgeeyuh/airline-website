@@ -178,94 +178,101 @@ def search_flight():
     return_date = request.form['return_date']
 
     cursor = conn.cursor()
-    query = 'SELECT flight_num, departure_date, airline_name, arrival_datetime, ' +\
-            'arr_airport_name, arr_city, dep_airport_name, dep_city, base_price ' +\
-            'FROM Flight NATURAL JOIN' +\
-            '(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN' +\
-            '(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)' +\
-            'WHERE departure_date > CURRENT_TIMESTAMP'
 
+
+    query = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, ' +\
+            'arr_airport.airport_name, arr_airport.city, dep_airport.airport_name, dep_airport.city, base_price ' +\
+            'FROM Flight INNER JOIN Airport as arr_airport ON Flight.arrival_airport_code = arr_airport.airport_code ' +\
+            'INNER JOIN Airport as dep_airport ON Flight.departure_airport_code = dep_airport.airport_code ' +\
+            'WHERE departure_datetime > CURRENT_TIMESTAMP'
+    
     params = ()
     if dep_city != "":
-        query += ' and dep_city = %s'
+        query += ' and dep_airport.city = %s'
         params += (dep_city,)
     if dep_airport_name != "":
-        query += ' and dep_airport = %s'
+        query += ' and dep_airport.airport_name = %s'
         params += (dep_airport_name,)
     if arr_city != "":
-        query += ' and arr_city = %s'
+        query += ' and arr_airport.city = %s'
         params += (arr_city,)
     if arr_airport_name != "":
-        query += ' and arr_airport_name = %s'
+        query += ' and arr_airport.airport_name = %s'
         params += (arr_airport_name,)
     if departure_date != "":
-        query += ' and DATE(departure_date) = %s'
+        query += ' and DATE(departure_datetime) = %s'
         params += (departure_date,)
 
-    print(params)
+    # print(query)
     cursor.execute(query, params)
     data_array = cursor.fetchall()
-
 
     flights = [] #a 2D array that stores flights and their info
     for data in data_array:
         flight = {
-            'flight_num': data[0],
-            'departure_date': data[1],
-            'airline_name': data[2],
-            'arrival_datetime': data[3],
-            'arr_airport_name': data[4],
-            'arr_city': data[5],
-            'dep_airport_name': data[6],
-            'dep_city': data[7],
-            'price': data[8]
+            'flight_num': data['flight_num'],
+            'departure_date': data['departure_datetime'].date(),
+            'departure_time': data['departure_datetime'].time(),
+            'airline_name': data['airline_name'],
+            'arrival_date': data['arrival_datetime'].date(),
+            'arrival_time': data['arrival_datetime'].time(),
+            'arr_airport_name': data['airport_name'],
+            'arr_city': data['city'],
+            'dep_airport_name': data['dep_airport.airport_name'],
+            'dep_city': data['dep_airport.city'],
+            'price': data['base_price']
         }
         flights.append(flight)
     if isOneWay == "true":
         cursor.close()
+        print(flights)
         return jsonify(flights)
     else:
+        return_date = request.form["return_date"]
         query2 = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, ' +\
-            'arr_airport_name, arr_city, dep_airport_name, dep_city, base_price ' +\
-            'FROM Flight NATURAL JOIN' +\
-            '(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN' +\
-            '(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)' +\
-            'WHERE departure_date > CURRENT_TIMESTAMP'
+            'arr_airport.airport_name, arr_airport.city, dep_airport.airport_name, dep_airport.city, base_price ' +\
+            'FROM Flight INNER JOIN Airport as arr_airport ON Flight.arrival_airport_code = arr_airport.airport_code ' +\
+            'INNER JOIN Airport as dep_airport ON Flight.departure_airport_code = dep_airport.airport_code ' +\
+            'WHERE departure_datetime > CURRENT_TIMESTAMP'
         params2 = ()
+
         if dep_city != "":
-            query2 += ' AND arr_city = %s'
+            query2 += ' and arr_airport.city = %s'
             params2 += (dep_city,)
         if dep_airport_name != "":
-            query2 += ' AND arr_airport_name = %s'
+            query2 += ' and arr_airport.airport_name = %s'
             params2 += (dep_airport_name,)
         if arr_city != "":
-            query2 += ' AND dep_city = %s'            
-            params2 += (arr_city,)  
+            query2 += ' and dep_airport.city = %s'
+            params2 += (arr_city,)
         if arr_airport_name != "":
-            query2 += ' AND dep_airport = %s'  
-            params2 += (arr_airport_name,)        
-        query2 += ' AND DATE(return_date) = %s'
-        params2 += (return_date,)
+            query2 += ' and dep_airport.airport_name = %s'
+            params2 += (arr_airport_name,)
+        if departure_date != "":
+            query2 += ' and DATE(departure_datetime) = %s'
+            params2 += (return_date,)
 
         cursor.execute(query2, params2)
 
         data_array2 = cursor.fetchall()
         for data in data_array2:
             flight = {
-                'flight_num': data[0],
-                'departure_date': data[1],
-                'airline_name': data[2],
-                'arrival_datetime': data[3],
-                'arr_airport_name': data[4],
-                'arr_city': data[5],
-                'dep_airport_name': data[6],
-                'dep_city': data[7],
-                'price': data[8]
+                'flight_num': data['flight_num'],
+                'departure_date': data['departure_datetime'].date(),
+                'departure_time': data['departure_datetime'].time(),
+                'airline_name': data['airline_name'],
+                'arrival_date': data['arrival_datetime'].date(),
+                'arrival_time': data['arrival_datetime'].time(),
+                'arr_airport_name': data['airport_name'],
+                'arr_city': data['city'],
+                'dep_airport_name': data['dep_airport.airport_name'],
+                'dep_city': data['dep_airport.city'],
+                'price': data['base_price']
             }
             flights.append(flight)
         
         cursor.close()
-
+        print(flights)
         return jsonify(flights)
 
 
@@ -278,32 +285,17 @@ def check_flight_status():
     dep_date = request.form['dep_date']
 
     cursor = conn.cursor()
-    query = "SELECT airline_name, flight_num, DATE(arrival_datetime), TIME(arrival_datetime), DATE(departure_datetime), TIME(departure_datetime), "+\
-    "status, arr_airport_name, arr_city, dep_airport_name, dep_city, base_price"+\
-    "FROM Flight NATURAL JOIN" +\
-    "(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN" +\
-    "(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)"+\
-    "WHERE airline_name = %s AND flight_num = %s AND DATE(arrival_datetime) = %s AND DATE(departure_datetime) = %s"
 
+    query = 'SELECT status FROM Flight ' +\
+        "WHERE airline_name = %s AND flight_num = %s AND DATE(arrival_datetime) = %s AND DATE(departure_datetime) = %s"
 
-    cursor.execute(query, (airline_name, flight_num, arrival_date, dep_date))
+    cursor.execute(query, (airline_name, int(flight_num), arrival_date, dep_date))
     data = cursor.fetchone()
-
-    return jsonify({
-        'airline_name': data[0],
-        'flight_num': data[1],
-        'arrival_date': data[2].date(),
-        'arrival_time': data[2].time(),
-        # 'departure_datetime': data[3],
-        'departure_datetime': data[3].date(),
-        'departure_datetime': data[3].time(),
-        'status': data[4],
-        'arr_airport_name': data[5],
-        'arr_city': data[6],
-        'dep_airport_name': data[7],
-        'dep_city': data[8],
-        'base_price': data[9]
-    })
+    print(data)
+    if data:
+        return {"status": data["status"]}
+    else:
+        return {"status": "empty"}
 
 
 

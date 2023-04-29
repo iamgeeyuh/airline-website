@@ -1,7 +1,8 @@
 import pymysql.cursors
-from flask import Flask, render_template, request, session, url_for, redirect
+from flask import Flask, render_template, request, session, url_for, redirect, jsonify
 from flask_cors import CORS
 import hashlib
+
 
 app = Flask(__name__)
 CORS(app)
@@ -107,7 +108,6 @@ def registerAuth():
     
     # stores the results in a variable
     data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
     if data:
         # If the previous query returns data, then user exists
         return {
@@ -179,7 +179,7 @@ def search_flight():
 
     cursor = conn.cursor()
     query = 'SELECT flight_num, departure_date, airline_name, arrival_datetime, ' +\
-            'arr_airport_name, arr_city, dep_airport_name, dep_city' +\
+            'arr_airport_name, arr_city, dep_airport_name, dep_city, base_price ' +\
             'FROM Flight NATURAL JOIN' +\
             '(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN' +\
             '(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)' +\
@@ -204,12 +204,29 @@ def search_flight():
 
     print(params)
     cursor.execute(query, params)
-    data = cursor.fetchall()
+    data_array = cursor.fetchall()
 
 
-    if isOneWay == "false":
+    flights = [] #a 2D array that stores flights and their info
+    for data in data_array:
+        flight = {
+            'flight_num': data[0],
+            'departure_date': data[1],
+            'airline_name': data[2],
+            'arrival_datetime': data[3],
+            'arr_airport_name': data[4],
+            'arr_city': data[5],
+            'dep_airport_name': data[6],
+            'dep_city': data[7],
+            'price': data[8]
+        }
+        flights.append(flight)
+    if isOneWay == "true":
+        cursor.close()
+        return jsonify(flights)
+    else:
         query2 = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, ' +\
-            'arr_airport_name, arr_city, dep_airport_name, dep_city' +\
+            'arr_airport_name, arr_city, dep_airport_name, dep_city, base_price ' +\
             'FROM Flight NATURAL JOIN' +\
             '(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN' +\
             '(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)' +\
@@ -231,11 +248,25 @@ def search_flight():
         params2 += (return_date,)
 
         cursor.execute(query2, params2)
-        data2 = cursor.fetchall()
 
-    cursor.close()
+        data_array2 = cursor.fetchall()
+        for data in data_array2:
+            flight = {
+                'flight_num': data[0],
+                'departure_date': data[1],
+                'airline_name': data[2],
+                'arrival_datetime': data[3],
+                'arr_airport_name': data[4],
+                'arr_city': data[5],
+                'dep_airport_name': data[6],
+                'dep_city': data[7],
+                'price': data[8]
+            }
+            flights.append(flight)
+        
+        cursor.close()
 
-    return {"flight_status": True}
+        return jsonify(flights)
 
 
 @app.route("/check_flight_status", methods=["GET", "POST"])
@@ -247,8 +278,8 @@ def check_flight_status():
     dep_date = session['dep_date']
 
     cursor = conn.cursor()
-    query = "SELECT airline_name, flight_num, arrival_datetime, departure_datetime, status, "+\
-    "arr_airport_name, arr_city, dep_airport_name, dep_city, base_price"+\
+    query = "SELECT airline_name, flight_num, DATE(arrival_datetime), TIME(arrival_datetime), DATE(departure_datetime), TIME(departure_datetime), "+\
+    "status, arr_airport_name, arr_city, dep_airport_name, dep_city, base_price"+\
     "FROM Flight NATURAL JOIN" +\
     "(SELECT airport_name AS arr_airport_name, city AS arr_city FROM Airport) NATURAL JOIN" +\
     "(SELECT airport_name AS dep_airport_name, city AS dep_city FROM Airport)"+\
@@ -257,10 +288,22 @@ def check_flight_status():
 
     cursor.execute(query, (airline_name, flight_num, arrival_date, dep_date))
     data = cursor.fetchone()
-    status = data[4]
-    price = data[9]
-    cursor.close()
-    return {airline_name, flight_num, dep_date, arrival_date, status, price}
+
+    return jsonify({
+        'airline_name': data[0],
+        'flight_num': data[1],
+        'arrival_date': data[2].date(),
+        'arrival_time': data[2].time(),
+        # 'departure_datetime': data[3],
+        'departure_datetime': data[3].date(),
+        'departure_datetime': data[3].time(),
+        'status': data[4],
+        'arr_airport_name': data[5],
+        'arr_city': data[6],
+        'dep_airport_name': data[7],
+        'dep_city': data[8],
+        'base_price': data[9]
+    })
 
 
 

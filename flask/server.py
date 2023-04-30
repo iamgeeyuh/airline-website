@@ -56,7 +56,7 @@ def login():
     if data:
         # creates a session for the the user
         # session is a built in
-        session["username"] = username
+        username = request.form["username"]
         return {
             "user": True
         }  # TODO:redirect to the home page in front end for testing
@@ -314,6 +314,159 @@ def check_flight_status():
         return {"status": data["status"]}
     else:
         return {"status": "empty"}
+
+
+#staff
+
+#2 Create flight
+#TODO: showing all the future flights operated by the airline he/she works 
+# for the next 30 days.
+@app.route("/create_flight", methods=["GET", "POST"])
+def create_flight():
+    isLoggedIn = request.form["isLoggedIn"]
+    if isLoggedIn == "false":
+        return {"create_flight": False}
+
+    flight_num = request.form["flight_num"]
+    airline_name = request.form["airline_name"]
+    airplane_id = request.form["airplane_id"]
+    departure_datetime = request.form["departure_datetime"]
+    departure_airport_code = request.form["departure_airport_code"]
+    arrival_datetime = request.form["arrival_datetime"]
+    arrival_airport_code = request.form["arrival_airport_code"]
+    base_price = request.form["base_price"]
+    status = request.form["status"]
+
+
+    cursor = conn.cursor() 
+
+    #check if airline exists
+    query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
+    cursor.execute(query, (airline_name))
+    data = cursor.fetchone()
+    if not data:
+        return {"add_airport": False}
+    
+    #check if both airports exist
+    query = "SELECT airport_code FROM Airport WHERE airport_code = %s"
+    cursor.execute(query, (departure_airport_code))
+    data = cursor.fetchone()
+    if not data:
+        return {"add_airport": False}
+    
+    query = "SELECT airport_code FROM Airport WHERE airport_code = %s"
+    cursor.execute(query, (arrival_airport_code))
+    data = cursor.fetchone()
+    if not data:
+        return {"add_airport": False}
+    
+    #check if airplane id exists
+    query = "SELECT airplane_id FROM Airplane WHERE airplane_id = %s"
+    cursor.execute(query, (airplane_id))
+    data = cursor.fetchone()
+    if not data:
+        return {"add_airport": False}
+    
+    query = "INSERT INTO Flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (
+        flight_num, 
+        departure_datetime, 
+        airline_name,
+        arrival_datetime,
+        arrival_airport_code,
+        departure_airport_code,
+        airplane_id,
+        base_price,
+        status
+        ))
+    
+    conn.commit()
+    cursor.close()
+
+    return {"create_flight": True}
+    
+
+#3 change flight status
+@app.route("/change_status", methods=["GET", "POST"])
+def change_status():
+    flight_num = request.form["flight_num"]
+    airline_name = request.form["airline_name"]
+    departure_datetime = request.form["departure_datetime"]
+    new_status = request.form["new_status"]
+
+    #check if flight exists
+    query = "SELECT airline_name, flight_num FROM Flight WHERE airline_name = %s AND flight_num = %s AND departure_datetime = %s"
+    cursor.execute(query, (airline_name, flight_num, departure_datetime))
+    data = cursor.fetchone()
+    if not data:
+        return {"change_status": False}
+
+    cursor = conn.cursor()
+    query = "UPDATE Flight SET status = %s"+\
+        "WHERE flight_num = %s AND departure_datetime = %s AND airline_name = %s"
+    cursor.execute(query, (new_status, flight_num, departure_datetime, airline_name))
+    conn.commit()
+    cursor.close()
+    return {"change_status": True}
+
+#4 Add new airplane in the system
+#TODO: display all the airplanes owned by the airline he/she works for.
+@app.route("/add_airplane", methods=["GET", "POST"])
+def add_airplane():
+    airplane_id = request.form["airplane_id"]
+    airline_name = request.form["airline_name"]
+    manufacturer = request.form["manufacturer"]
+    manufacturing_date = request.form["manufacturing_date"]
+    seats = request.form["seats"]
+    age = request.form["age"]
+
+    #check if airline exists
+    cursor = conn.cursor()
+    query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
+    cursor.execute(query, (airline_name))
+    data = cursor.fetchone()
+    if not data:
+        return {"add_airplane": False}
+    
+    query = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, age))
+    conn.commit()
+    cursor.close()
+
+    return {"add_airplane": True}
+
+
+#5 Add new airport in the system
+@app.route("/add_airport", methods=["GET", "POST"])
+def add_airport():
+    airport_code = request.form["airport_code"]
+    airport_name = request.form["airport_name"]
+    airport_type = request.form["airport_type"]
+    city = request.form["city"]
+    country = request.form["country"]
+
+    cursor = conn.cursor()
+
+    query = "SELECT airport_code FROM Airport WHERE airport_code = %s"
+    cursor.execute(query, (airport_code))
+    data = cursor.fetchone()
+    if data:
+        return {"add_airport": False} #Duplicate data
+
+    query2 = "INSERT INTO Airport VALUES(%s, %s, %s, %s, %s)"
+    cursor.execute(query2, (airport_code, airport_name, city, country, airport_type))
+
+    conn.commit()
+    cursor.close()
+
+    return {"add_airport": True}
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":

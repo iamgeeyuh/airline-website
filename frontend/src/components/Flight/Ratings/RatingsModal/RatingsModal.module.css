@@ -9,14 +9,10 @@
   padding-bottom: 20px;
   max-width: 500px;
   padding: 40px;
+  overflow-y: scroll;
+  max-height: 90vh;
 }
 
-.modal div {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.modal div p:last-child {
-  color: var(--font-purple);
+.modal button {
+  margin-top: 20px;
 }

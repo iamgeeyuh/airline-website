@@ -1,5 +1,13 @@
 import pymysql.cursors
-from flask import Flask, render_template, request, session, url_for, redirect, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    session,
+    url_for,
+    redirect,
+    jsonify,
+)
 from flask_cors import CORS
 import hashlib
 
@@ -23,13 +31,9 @@ conn = pymysql.connect(
 @app.route("/login", methods=["POST"])
 def login():
     print(request.form)
-    username = request.form[
-        "username"
-    ]
+    username = request.form["username"]
     password = request.form["password"]
-    isCustomer = request.form[
-        "isCustomer"
-    ]
+    isCustomer = request.form["isCustomer"]
 
     cursor = conn.cursor()
 
@@ -49,7 +53,7 @@ def login():
     data = cursor.fetchone()
     print(data)
     cursor.close()
-    if (data):
+    if data:
         # creates a session for the the user
         # session is a built in
         session["username"] = username
@@ -72,15 +76,15 @@ def registerAuth():
     num_of_phones = request.form["num_of_phones"]
     phone_num = []
     for i in range(int(num_of_phones)):
-        phone_num.append(request.form["phone_num["+str(i)+"]"])
-    
+        phone_num.append(request.form["phone_num[" + str(i) + "]"])
+
     if isCustomer == "true":
         bldg_num = request.form["bldg_num"]
         apt = request.form["apt"]
         street = request.form["street"]
         city = request.form["city"]
         state = request.form["state"]
-        
+
         passport_num = request.form["passport_num"]
         passport_exp = request.form["passport_exp"]
         passport_country = request.form["passport_country"]
@@ -91,12 +95,12 @@ def registerAuth():
         email = []
         num_of_emails = request.form["num_of_emails"]
         for i in range(int(num_of_emails)):
-            email.append(request.form["email["+str(i)+"]"])
+            email.append(request.form["email[" + str(i) + "]"])
 
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    
+
     if isCustomer == "true":
         print("hi")
         query = "SELECT * FROM Customer WHERE email = %s"
@@ -105,7 +109,6 @@ def registerAuth():
         query = "SELECT * FROM Staff WHERE username = %s"
         cursor.execute(query, (username))
 
-    
     # stores the results in a variable
     data = cursor.fetchone()
     if data:
@@ -115,7 +118,10 @@ def registerAuth():
         }  # TODO: display an error message (according to page6 3B)
     else:
         if isCustomer == "true":
-            ins = ("INSERT INTO Customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+            ins = (
+                "INSERT INTO Customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s,"
+                " %s, %s, %s, %s, %s)"
+            )
             cursor.execute(
                 ins,
                 (
@@ -132,7 +138,7 @@ def registerAuth():
                     passport_exp,
                     passport_country,
                     date_of_birth,
-                )
+                ),
             )
             for p in phone_num:
                 ins = "INSERT INTO Customer_Phone VALUES(%s, %s)"
@@ -142,14 +148,13 @@ def registerAuth():
             ins = "INSERT INTO Staff VALUES(%s, %s, %s, %s, %s, %s)"
             cursor.execute(
                 ins,
-                (username, password,
-                 airline_name, fname, lname, date_of_birth),
+                (username, password, airline_name, fname, lname, date_of_birth),
             )
-           
+
             for e in email:
                 ins = "INSERT INTO Staff_Email VALUES(%s, %s)"
                 cursor.execute(ins, (username, e))
-            
+
             for p in phone_num:
                 print(p)
                 ins = "INSERT INTO Staff_Phone VALUES(%s, %s)"
@@ -168,59 +173,65 @@ def home():
 @app.route("/search_flight", methods=["GET", "POST"])
 def search_flight():
     print(request.form)
-    dep_city = request.form['src_city']
-    dep_airport_name = request.form['src_airport']
-    arr_city = request.form['dst_city']
-    arr_airport_name = request.form['dst_airport']
-    departure_date = request.form['dep_date']
+    dep_city = request.form["src_city"]
+    dep_airport_name = request.form["src_airport"]
+    arr_city = request.form["dst_city"]
+    arr_airport_name = request.form["dst_airport"]
+    departure_date = request.form["dep_date"].replace("T", " ") + ":00"
 
-    isOneWay = request.form['isOneWay']
-    return_date = request.form['return_date']
+    isOneWay = request.form["isOneWay"]
+    return_date = request.form["return_date"]
 
     cursor = conn.cursor()
 
+    query = (
+        "SELECT flight_num, departure_datetime, airline_name,"
+        " arrival_datetime, "
+        + "arr_airport.airport_name, arr_airport.city,"
+        " dep_airport.airport_name, dep_airport.city, base_price "
+        + "FROM Flight INNER JOIN Airport as arr_airport ON"
+        " Flight.arrival_airport_code = arr_airport.airport_code "
+        + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
+        " dep_airport.airport_code "
+        + "WHERE departure_datetime > CURRENT_TIMESTAMP"
+    )
 
-    query = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, ' +\
-            'arr_airport.airport_name, arr_airport.city, dep_airport.airport_name, dep_airport.city, base_price ' +\
-            'FROM Flight INNER JOIN Airport as arr_airport ON Flight.arrival_airport_code = arr_airport.airport_code ' +\
-            'INNER JOIN Airport as dep_airport ON Flight.departure_airport_code = dep_airport.airport_code ' +\
-            'WHERE departure_datetime > CURRENT_TIMESTAMP'
-    
+
     params = ()
     if dep_city != "":
-        query += ' and dep_airport.city = %s'
+        query += " and dep_airport.city = %s"
         params += (dep_city,)
     if dep_airport_name != "":
-        query += ' and dep_airport.airport_name = %s'
+        query += " and dep_airport.airport_name = %s"
         params += (dep_airport_name,)
     if arr_city != "":
-        query += ' and arr_airport.city = %s'
+        query += " and arr_airport.city = %s"
         params += (arr_city,)
     if arr_airport_name != "":
-        query += ' and arr_airport.airport_name = %s'
+        query += " and arr_airport.airport_name = %s"
         params += (arr_airport_name,)
     if departure_date != "":
-        query += ' and DATE(departure_datetime) = %s'
+        query += " and departure_datetime = %s"
         params += (departure_date,)
 
     # print(query)
     cursor.execute(query, params)
     data_array = cursor.fetchall()
 
-    flights = [] #a 2D array that stores flights and their info
+    flights = []  # a 2D array that stores flights and their info
     for data in data_array:
         flight = {
-            'flight_num': data['flight_num'],
-            'departure_date': data['departure_datetime'].date(),
-            'departure_time': data['departure_datetime'].time(),
-            'airline_name': data['airline_name'],
-            'arrival_date': data['arrival_datetime'].date(),
-            'arrival_time': data['arrival_datetime'].time(),
-            'arr_airport_name': data['airport_name'],
-            'arr_city': data['city'],
-            'dep_airport_name': data['dep_airport.airport_name'],
-            'dep_city': data['dep_airport.city'],
-            'price': data['base_price']
+            "flight_num": data["flight_num"],
+            "departure_date": data["departure_datetime"].date(),
+            "departure_time": data["departure_datetime"].time(),
+            "airline_name": data["airline_name"],
+            "arrival_date": data["arrival_datetime"].date(),
+            "arrival_time": data["arrival_datetime"].time(),
+            "arr_airport_name": data["airport_name"],
+            "arr_city": data["city"],
+            "dep_airport_name": data["dep_airport.airport_name"],
+            "dep_city": data["dep_airport.city"],
+            "price": data["base_price"],
         }
         flights.append(flight)
     if isOneWay == "true":
@@ -229,27 +240,33 @@ def search_flight():
         return jsonify(flights)
     else:
         return_date = request.form["return_date"]
-        query2 = 'SELECT flight_num, departure_datetime, airline_name, arrival_datetime, ' +\
-            'arr_airport.airport_name, arr_airport.city, dep_airport.airport_name, dep_airport.city, base_price ' +\
-            'FROM Flight INNER JOIN Airport as arr_airport ON Flight.arrival_airport_code = arr_airport.airport_code ' +\
-            'INNER JOIN Airport as dep_airport ON Flight.departure_airport_code = dep_airport.airport_code ' +\
-            'WHERE departure_datetime > CURRENT_TIMESTAMP'
+        query2 = (
+            "SELECT flight_num, departure_datetime, airline_name,"
+            " arrival_datetime, "
+            + "arr_airport.airport_name, arr_airport.city,"
+            " dep_airport.airport_name, dep_airport.city, base_price "
+            + "FROM Flight INNER JOIN Airport as arr_airport ON"
+            " Flight.arrival_airport_code = arr_airport.airport_code "
+            + "INNER JOIN Airport as dep_airport ON"
+            " Flight.departure_airport_code = dep_airport.airport_code "
+            + "WHERE departure_datetime > CURRENT_TIMESTAMP"
+        )
         params2 = ()
 
         if dep_city != "":
-            query2 += ' and arr_airport.city = %s'
+            query2 += " and arr_airport.city = %s"
             params2 += (dep_city,)
         if dep_airport_name != "":
-            query2 += ' and arr_airport.airport_name = %s'
+            query2 += " and arr_airport.airport_name = %s"
             params2 += (dep_airport_name,)
         if arr_city != "":
-            query2 += ' and dep_airport.city = %s'
+            query2 += " and dep_airport.city = %s"
             params2 += (arr_city,)
         if arr_airport_name != "":
-            query2 += ' and dep_airport.airport_name = %s'
+            query2 += " and dep_airport.airport_name = %s"
             params2 += (arr_airport_name,)
         if departure_date != "":
-            query2 += ' and DATE(departure_datetime) = %s'
+            query2 += " and departure_datetime = %s"
             params2 += (return_date,)
 
         cursor.execute(query2, params2)
@@ -257,20 +274,20 @@ def search_flight():
         data_array2 = cursor.fetchall()
         for data in data_array2:
             flight = {
-                'flight_num': data['flight_num'],
-                'departure_date': data['departure_datetime'].date(),
-                'departure_time': data['departure_datetime'].time(),
-                'airline_name': data['airline_name'],
-                'arrival_date': data['arrival_datetime'].date(),
-                'arrival_time': data['arrival_datetime'].time(),
-                'arr_airport_name': data['airport_name'],
-                'arr_city': data['city'],
-                'dep_airport_name': data['dep_airport.airport_name'],
-                'dep_city': data['dep_airport.city'],
-                'price': data['base_price']
+                "flight_num": data["flight_num"],
+                "departure_date": data["departure_datetime"].date(),
+                "departure_time": data["departure_datetime"].time(),
+                "airline_name": data["airline_name"],
+                "arrival_date": data["arrival_datetime"].date(),
+                "arrival_time": data["arrival_datetime"].time(),
+                "arr_airport_name": data["airport_name"],
+                "arr_city": data["city"],
+                "dep_airport_name": data["dep_airport.airport_name"],
+                "dep_city": data["dep_airport.city"],
+                "price": data["base_price"],
             }
             flights.append(flight)
-        
+
         cursor.close()
         print(flights)
         return jsonify(flights)
@@ -278,25 +295,24 @@ def search_flight():
 
 @app.route("/check_flight_status", methods=["GET", "POST"])
 def check_flight_status():
-
-    airline_name = request.form['airline_name']
-    flight_num = request.form['flight_num']
-    arrival_date = request.form['arrival_date']
-    dep_date = request.form['dep_date']
-
+    airline_name = request.form["airline_name"]
+    flight_num = request.form["flight_num"]
+    dep_date = request.form["dep_date"].replace("T", " ") + ":00"
     cursor = conn.cursor()
 
-    query = 'SELECT status FROM Flight ' +\
-        "WHERE airline_name = %s AND flight_num = %s AND DATE(arrival_datetime) = %s AND DATE(departure_datetime) = %s"
+    query = (
+        "SELECT status FROM Flight "
+        + "WHERE airline_name = %s AND flight_num = %s AND departure_datetime"
+        " = %s"
+    )
 
-    cursor.execute(query, (airline_name, int(flight_num), arrival_date, dep_date))
+    cursor.execute(query, (airline_name, int(flight_num), dep_date))
     data = cursor.fetchone()
     print(data)
     if data:
         return {"status": data["status"]}
     else:
         return {"status": "empty"}
-
 
 
 if __name__ == "__main__":

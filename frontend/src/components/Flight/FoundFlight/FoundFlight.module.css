@@ -9,3 +9,7 @@
   z-index: 1;
   pointer-events: auto;
 }
+
+.foundFlight {
+  padding: 15px;
+}

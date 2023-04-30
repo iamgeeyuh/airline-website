@@ -80,9 +80,15 @@ const FlightSearch = () => {
             <input
               type="text"
               placeholder="New York City"
+              valus={srcCity}
               onChange={srcCityHandler}
             />
-            <input type="text" placeholder="JFK" onChange={srcAirportHandler} />
+            <input
+              type="text"
+              placeholder="JFK"
+              value={srcAirport}
+              onChange={srcAirportHandler}
+            />
           </div>
         </div>
         <div>
@@ -91,11 +97,13 @@ const FlightSearch = () => {
             <input
               type="text"
               placeholder="Chicago"
+              value={dstCity}
               onChange={dstCityHandler}
             />
             <input
               type="text"
               placeholder="O'Hare"
+              value={dstAirport}
               onChange={dstAirportHandler}
             />
           </div>
@@ -108,12 +116,16 @@ const FlightSearch = () => {
             <option>Two Way</option>
           </select>
           <label>Departure</label>
-          <input type="date" onChange={depDateHandler} />
+          <input type="datetime-local" value={depDate} onChange={depDateHandler} />
         </div>
         {!way && (
           <div>
             <label>Return</label>
-            <input type="date" onChange={returnDateHandler} />
+            <input
+              type="datetime-local"
+              value={returnDate}
+              onChange={returnDateHandler}
+            />
           </div>
         )}
       </div>

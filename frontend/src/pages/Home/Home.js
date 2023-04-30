@@ -14,7 +14,6 @@ const Home = () => {
           <FlightStatus />
         </div>
       </div>
-      <h2 className={styles.foundFlight}>Flights</h2>
       <FoundFlight page="home" />
     </div>
   );

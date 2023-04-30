@@ -1,24 +1,11 @@
-import { useState } from "react";
 import Flight from "../Flight/Flight";
-import StaffFlightCustomerModal from "../StaffFlightCustomersModal/StaffFlightCustomerModal";
 import styles from "./FoundFlight.module.css";
 
 const FoundFlight = (props) => {
-  const [modal, setModal] = useState(false);
-
-  const modalHandler = () => {
-    setModal(false);
-  };
-
-  const checkCustomers = () => {
-    if (props.page == "staff") {
-      setModal(true);
-    }
-  };
-
   return (
     <div>
-      <div onClick={checkCustomers}>
+      <h2 className={styles.foundFlight}>Flights</h2>
+      <div>
         <Flight
           airline="Jet Blue"
           srcCity="New York City"
@@ -31,9 +18,10 @@ const FoundFlight = (props) => {
           arrDate="2023-04-04"
           arrTime="8:00:00"
           price="3000.00"
+          page={props.page}
         />
       </div>
-      <div onClick={checkCustomers}>
+      <div>
         <Flight
           airline="Jet Blue"
           srcCity="New York City"
@@ -46,11 +34,9 @@ const FoundFlight = (props) => {
           arrDate="2023-04-04"
           arrTime="8:00:00"
           price="3000.00"
-          onClick={checkCustomers}
+          page={props.page}
         />
       </div>
-      {modal && <StaffFlightCustomerModal modalHandler={modalHandler} />}
-      {modal && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

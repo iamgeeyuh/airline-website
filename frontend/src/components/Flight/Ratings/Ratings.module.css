@@ -1,0 +1,27 @@
+.ratingsContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.ratings {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ratings h5 {
+  margin: 0;
+}
+
+.review h6 {
+  font-weight: normal;
+  font-style: italic;
+  margin: 0;
+  padding: 5px;
+}
+
+.review {
+  border: solid;
+  border-width: 1px;
+  border-color: var(--font-purple);
+}

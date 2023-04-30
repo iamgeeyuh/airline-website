@@ -177,7 +177,9 @@ def search_flight():
     dep_airport_name = request.form["src_airport"]
     arr_city = request.form["dst_city"]
     arr_airport_name = request.form["dst_airport"]
-    departure_date = request.form["dep_date"].replace("T", " ") + ":00"
+    # departure_date = request.form["dep_date"].replace("T", " ") + ":00"
+    departure_date = request.form["dep_date"]
+    
 
     isOneWay = request.form["isOneWay"]
     return_date = request.form["return_date"]
@@ -222,11 +224,11 @@ def search_flight():
     for data in data_array:
         flight = {
             "flight_num": data["flight_num"],
-            "departure_date": data["departure_datetime"].date(),
-            "departure_time": data["departure_datetime"].time(),
+            "departure_date": data["departure_datetime"].date().strftime('%M:%D:%Y'),
+            "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
             "airline_name": data["airline_name"],
-            "arrival_date": data["arrival_datetime"].date(),
-            "arrival_time": data["arrival_datetime"].time(),
+            "arrival_date": data["arrival_datetime"].date().strftime('%M:%D:%Y'),
+            "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
             "arr_airport_name": data["airport_name"],
             "arr_city": data["city"],
             "dep_airport_name": data["dep_airport.airport_name"],
@@ -236,7 +238,6 @@ def search_flight():
         flights.append(flight)
     if isOneWay == "true":
         cursor.close()
-        print(flights)
         return jsonify(flights)
     else:
         return_date = request.form["return_date"]
@@ -275,11 +276,11 @@ def search_flight():
         for data in data_array2:
             flight = {
                 "flight_num": data["flight_num"],
-                "departure_date": data["departure_datetime"].date(),
-                "departure_time": data["departure_datetime"].time(),
+                "departure_date": data["departure_datetime"].date().strftime('%M:%D:%Y'),
+                "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
                 "airline_name": data["airline_name"],
-                "arrival_date": data["arrival_datetime"].date(),
-                "arrival_time": data["arrival_datetime"].time(),
+                "arrival_date": data["arrival_datetime"].date().strftime('%M:%D:%Y'),
+                "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
                 "arr_airport_name": data["airport_name"],
                 "arr_city": data["city"],
                 "dep_airport_name": data["dep_airport.airport_name"],

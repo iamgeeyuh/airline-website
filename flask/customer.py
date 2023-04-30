@@ -33,8 +33,8 @@ def my_flights():
     cursor = conn.cursor()
     query = """
         SELECT *
-        FROM Purchase NATURAL JOIN Ticket NATURAL JOIN Flight
-        WHERE customer_email = %s AND departure_time > NOW()
+        FROM Customer NATURAL JOIN Ticket NATURAL JOIN Flight
+        WHERE customer_email = %s AND departure_datetime > NOW()
         ORDER BY departure_time ASC
     """
     cursor.execute(query, (session["username"],))

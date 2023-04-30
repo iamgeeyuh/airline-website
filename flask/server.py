@@ -1,3 +1,5 @@
+#TODO: HASH PASSWORDS!!!!!!!!
+
 import pymysql.cursors
 from flask import (
     Flask,
@@ -238,6 +240,7 @@ def search_flight():
         flights.append(flight)
     if isOneWay == "true":
         cursor.close()
+        print(flights)
         return jsonify(flights)
     else:
         return_date = request.form["return_date"]
@@ -317,18 +320,42 @@ def check_flight_status():
 
 
 #staff
+#TODO: 1, 6, 7, 8, 9, 10, testings for all
 
 #2 Create flight
-#TODO: showing all the future flights operated by the airline he/she works 
-# for the next 30 days.
+# return all flights that will depart within 30 days
 @app.route("/create_flight", methods=["GET", "POST"])
 def create_flight():
-    isLoggedIn = request.form["isLoggedIn"]
-    if isLoggedIn == "false":
-        return {"create_flight": False}
+    airline_name = request.form["airline_name"]
+    
+    #check if the airline exists
+    query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
+    cursor.execute(query, (airline_name))
+    data = cursor.fetchone()
+    if not data:
+        return jsonify([])
+    
+    #display flights
+    cursor = conn.cursor() 
+    query = (
+            "SELECT flight_num, departure_datetime, airline_name,"
+            +" arrival_datetime, "
+            + "arr_airport.airport_name, arr_airport.city,"
+            +" dep_airport.airport_name, dep_airport.city, base_price "
+            + "FROM Flight INNER JOIN Airport as arr_airport ON"
+            +" Flight.arrival_airport_code = arr_airport.airport_code "
+            + "INNER JOIN Airport as dep_airport ON"
+            +" Flight.departure_airport_code = dep_airport.airport_code "
+            + "WHERE departure_datetime > CURRENT_TIMESTAMP AND "
+            + "departure_datetime <= DATEADD(day, 30, CURRENT_TIMESTAMP) "
+            + "AND airline_name = %s"
+    )
+
+    cursor.execute(query, (airline_name))
+    flights = cursor.fetchall()
+
 
     flight_num = request.form["flight_num"]
-    airline_name = request.form["airline_name"]
     airplane_id = request.form["airplane_id"]
     departure_datetime = request.form["departure_datetime"]
     departure_airport_code = request.form["departure_airport_code"]
@@ -338,34 +365,28 @@ def create_flight():
     status = request.form["status"]
 
 
-    cursor = conn.cursor() 
+    # insert new data. if the value(s) is invalid, return the flights info
+    # that will be displayed
 
-    #check if airline exists
-    query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
-    cursor.execute(query, (airline_name))
-    data = cursor.fetchone()
-    if not data:
-        return {"add_airport": False}
-    
     #check if both airports exist
     query = "SELECT airport_code FROM Airport WHERE airport_code = %s"
     cursor.execute(query, (departure_airport_code))
     data = cursor.fetchone()
     if not data:
-        return {"add_airport": False}
+        return jsonify(flights)
     
     query = "SELECT airport_code FROM Airport WHERE airport_code = %s"
     cursor.execute(query, (arrival_airport_code))
     data = cursor.fetchone()
     if not data:
-        return {"add_airport": False}
+        return jsonify(flights)
     
     #check if airplane id exists
     query = "SELECT airplane_id FROM Airplane WHERE airplane_id = %s"
     cursor.execute(query, (airplane_id))
     data = cursor.fetchone()
     if not data:
-        return {"add_airport": False}
+        return jsonify(flights)
     
     query = "INSERT INTO Flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(query, (
@@ -383,10 +404,11 @@ def create_flight():
     conn.commit()
     cursor.close()
 
-    return {"create_flight": True}
+    return jsonify(flights)
     
 
 #3 change flight status
+# return if change_status is successful
 @app.route("/change_status", methods=["GET", "POST"])
 def change_status():
     flight_num = request.form["flight_num"]
@@ -410,33 +432,47 @@ def change_status():
     return {"change_status": True}
 
 #4 Add new airplane in the system
-#TODO: display all the airplanes owned by the airline he/she works for.
+# return all airplanes owned by the airline
 @app.route("/add_airplane", methods=["GET", "POST"])
 def add_airplane():
-    airplane_id = request.form["airplane_id"]
     airline_name = request.form["airline_name"]
+    
+    #check if airline exists
+    query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
+    cursor.execute(query, (airline_name))
+    data = cursor.fetchone()
+    if not data:
+        return jsonify([])
+    
+    #find all airplanes
+    query = "SELECT * FROM Airplane WHERE airline_name = %s"
+    cursor.execute(query, (airline_name))
+    airplanes = cursor.fetchall()
+    
+    airplane_id = request.form["airplane_id"]
     manufacturer = request.form["manufacturer"]
     manufacturing_date = request.form["manufacturing_date"]
     seats = request.form["seats"]
     age = request.form["age"]
 
-    #check if airline exists
+    #check if the airplane exists. If it exists, do not insert again
     cursor = conn.cursor()
-    query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
-    cursor.execute(query, (airline_name))
+    query = "SELECT airline_name FROM Airline WHERE airplane_id = %s"
+    cursor.execute(query, (airplane_id))
     data = cursor.fetchone()
-    if not data:
-        return {"add_airplane": False}
+    if data:
+        return jsonify(airplanes)
     
     query = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
     cursor.execute(query, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, age))
     conn.commit()
     cursor.close()
 
-    return {"add_airplane": True}
+    return jsonify(airplanes)
 
 
-#5 Add new airport in the system
+#5 Add a new airport in the system
+# return if the addition is successful
 @app.route("/add_airport", methods=["GET", "POST"])
 def add_airport():
     airport_code = request.form["airport_code"]
@@ -460,10 +496,6 @@ def add_airport():
     cursor.close()
 
     return {"add_airport": True}
-
-
-
-
 
 
 

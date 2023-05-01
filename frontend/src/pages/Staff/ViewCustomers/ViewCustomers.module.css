@@ -1,0 +1,27 @@
+.viewCustomers {
+  margin-left: 15px;
+}
+
+.viewCustomers p {
+  color: var(--font-purple);
+  font-size: 24px;
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.topCustomer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.viewCustomers button {
+  display: inline-block;
+}
+
+.error p {
+  color: red;
+  font-weight: normal;
+  font-size: 15px;
+  margin-top: 0px;
+}

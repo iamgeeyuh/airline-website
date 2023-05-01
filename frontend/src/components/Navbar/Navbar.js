@@ -31,6 +31,18 @@ const Navbar = () => {
             Home
           </NavLink>
         </li>
+        {isLoggedIn.isLoggedIn && !isLoggedIn.isCustomer && (
+          <li>
+            <NavLink
+              to="/Revenue"
+              className={({ isActive }) =>
+                isActive ? styles.active : undefined
+              }
+            >
+              Revenue
+            </NavLink>
+          </li>
+        )}
         {isLoggedIn.isLoggedIn && (
           <li>
             <NavLink
@@ -48,6 +60,16 @@ const Navbar = () => {
             <li></li>
           ) : (
             <>
+              <li>
+                <NavLink
+                  to="/ViewCustomers"
+                  className={({ isActive }) =>
+                    isActive ? styles.active : undefined
+                  }
+                >
+                  View Customers
+                </NavLink>
+              </li>
               <li>
                 <NavLink
                   to="/CreateFlight"

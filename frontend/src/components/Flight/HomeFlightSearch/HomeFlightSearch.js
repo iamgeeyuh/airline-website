@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./HomeFlightSearch.module.css";
 
-const FlightSearch = () => {
+const FlightSearch = (props) => {
   const [way, setWay] = useState(true);
   const [srcCity, setSrcCity] = useState("");
   const [srcAirport, setSrcAirport] = useState("");
@@ -63,7 +63,7 @@ const FlightSearch = () => {
         }
       })
       .then((data) => {
-        console.log(data);
+        props.flightsHandler(data);
       })
       .catch((error) => {
         console.log(error);
@@ -116,7 +116,11 @@ const FlightSearch = () => {
             <option>Two Way</option>
           </select>
           <label>Departure</label>
-          <input type="datetime-local" value={depDate} onChange={depDateHandler} />
+          <input
+            type="datetime-local"
+            value={depDate}
+            onChange={depDateHandler}
+          />
         </div>
         {!way && (
           <div>

@@ -9,6 +9,8 @@ import CreateFlight from "./pages/Staff/CreateFlight";
 import AddAirport from "./pages/Staff/AddAirport";
 import AddPlane from "./pages/Staff/AddPlane";
 import ChangeFlightStatus from "./pages/Staff/ChangeFlightStatus";
+import ViewCustomers from "./pages/Staff/ViewCustomers/ViewCustomers";
+import Revenue from "./pages/Staff/Revenue/Revenue";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,8 @@ const router = createBrowserRouter([
       { path: "/AddAirport", element: <AddAirport /> },
       { path: "/AddPlane", element: <AddPlane /> },
       { path: "/ChangeFlightStatus", element: <ChangeFlightStatus /> },
+      { path: "/ViewCustomers", element: <ViewCustomers /> },
+      { path: "/Revenue", element: <Revenue /> },
     ],
   },
 ]);

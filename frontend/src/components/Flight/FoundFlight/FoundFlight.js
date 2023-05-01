@@ -3,40 +3,32 @@ import styles from "./FoundFlight.module.css";
 
 const FoundFlight = (props) => {
   return (
-    <div>
-      <h2 className={styles.foundFlight}>Flights</h2>
-      <div>
-        <Flight
-          airline="Jet Blue"
-          srcCity="New York City"
-          srcAirport="JFK"
-          dstCity="Boston"
-          dstAirport="Boston Airport"
-          flightNum="587"
-          depDate="2023-04-04"
-          depTime="15:00:00"
-          arrDate="2023-04-04"
-          arrTime="8:00:00"
-          price="3000.00"
-          page={props.page}
-        />
-      </div>
-      <div>
-        <Flight
-          airline="Jet Blue"
-          srcCity="New York City"
-          srcAirport="JFK"
-          dstCity="Boston"
-          dstAirport="Boston Airport"
-          flightNum="587"
-          depDate="2023-04-04"
-          depTime="15:00:00"
-          arrDate="2023-04-04"
-          arrTime="8:00:00"
-          price="3000.00"
-          page={props.page}
-        />
-      </div>
+    <div className={styles.foundFlight}>
+      <h2>Flights</h2>
+      {props.flights.length == 0 ? (
+        <p>No flights found.</p>
+      ) : (
+        <>
+          {props.flights.map((flight) => (
+            <div>
+              <Flight
+                airline={flight.airline_name}
+                srcCity={flight.dep_city}
+                srcAirport={flight.dep_airport_name}
+                dstCity={flight.arr_city}
+                dstAirport={flight.arr_airport_name}
+                key={flight.flight_num}
+                depDate={flight.departure_date}
+                depTime={flight.departure_time}
+                arrDate={flight.arrival_date}
+                arrTime={flight.arrival_time}
+                price={flight.price}
+                page={props.page}
+              />
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 };

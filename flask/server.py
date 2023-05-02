@@ -327,21 +327,32 @@ def check_flight_status():
 # return all flights that are departing within 30 days
 @app.route("/view_flights", methods=["GET"])
 def view_flights():
-    cursor = conn.cursor()
+    airline_name = request.form["airline_name"]
+    
+    #check if the airline exists
+    query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
+    cursor.execute(query, (airline_name))
+    data = cursor.fetchone()
+    if not data:
+        return jsonify([])
+    
+    #display flights
+    cursor = conn.cursor() 
     query = (
             "SELECT flight_num, departure_datetime, airline_name,"
             +" arrival_datetime, "
             + "arr_airport.airport_name, arr_airport.city,"
-            +" dep_airport.airport_name, dep_airport.city, base_price, status "
+            +" dep_airport.airport_name, dep_airport.city, base_price "
             + "FROM Flight INNER JOIN Airport as arr_airport ON"
             +" Flight.arrival_airport_code = arr_airport.airport_code "
             + "INNER JOIN Airport as dep_airport ON"
             +" Flight.departure_airport_code = dep_airport.airport_code "
             + "WHERE departure_datetime > CURRENT_TIMESTAMP AND "
             + "departure_datetime <= DATEADD(day, 30, CURRENT_TIMESTAMP) "
-            + "ORDER BY departure_datetime ASC"
+            + "AND airline_name = %s"
     )
-    cursor.execute(query)
+
+    cursor.execute(query, (airline_name))
     flights = cursor.fetchall()
     cursor.close()
     return jsonify(flights)

@@ -495,14 +495,14 @@ def add_airplane():
 
     #check if the airplane exists. If it exists, do not insert again
     
-    query = "SELECT airline_name FROM Airline WHERE airplane_id = %s"
-    cursor.execute(query, (airplane_id))
-    data = cursor.fetchone()
-    if data:
+    query1 = "SELECT airline_name FROM Airplane WHERE airplane_id = %s"
+    cursor.execute(query1, (airplane_id))
+    data1 = cursor.fetchone()
+    if data1:
         return jsonify(airplanes)
     
-    query = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, (current_year-manufacturing_date)))
+    query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
+    cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, (current_year-manufacturing_date)))
     conn.commit()
     cursor.close()
 
@@ -544,7 +544,7 @@ def view_flight_ratings():
     cursor.execute(query, (flight_number))
     data = cursor.fetchone()
     
-    if data is not None:
+    if data:
         return {"average_rating": round(data['avg_rate'], 1), "comments": data['comment']}
     
     conn.commit()

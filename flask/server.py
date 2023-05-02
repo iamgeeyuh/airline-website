@@ -502,7 +502,7 @@ def add_airplane():
         return jsonify(airplanes)
     
     query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
-    cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date))))
+    cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date[0:4]))))
     conn.commit()
     cursor.close()
 
@@ -556,7 +556,7 @@ def view_flight_ratings():
 @app.route("/view_frequent_customers", methods=["GET"])
 def view_frequent_customers():
     cursor = conn.cursor()
-    query = "SELECT Customer.customer_id, Customer.first_name, COUNT(*) AS frequency FROM Customer INNER JOIN Booking ON Customer.customer_id = Booking.customer_id WHERE DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <= Booking.booking_date GROUP BY Customer.customer_id ORDER BY frequency DESC LIMIT 1"
+    query = "SELECT Customer.email, Customer.fname, COUNT(*) AS frequency FROM Customer INNER JOIN Ticket ON Customer.email = Ticket.email WHERE DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <= Booking.booking_date GROUP BY Customer.email ORDER BY frequency DESC LIMIT 1"
     cursor.execute(query)
     data = cursor.fetchone()
     

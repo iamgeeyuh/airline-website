@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import StaffFlightSearch from "../../components/StaffFlightSearch/StaffFlightSearch";
 import FoundFlight from "../../components/Flight/FoundFlight/FoundFlight";
+import AuthContext from "../../context/auth-context";
 
 const StaffViewFlights = () => {
+  const ctx = useContext(AuthContext);
+
   const [flights, setFlights] = useState([]);
   const [showFlights, setShowFlights] = useState(false);
 
@@ -10,6 +13,32 @@ const StaffViewFlights = () => {
     setFlights(flightsLst);
     setShowFlights(true);
   };
+
+  const futureFlights = () => {
+    const formData = new URLSearchParams();
+    formData.append("airline_name", ctx.isLoggedIn.airline);
+
+    fetch("http://localhost:5000/view_flights", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error logging in");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  futureFlights();
 
   return (
     <div>

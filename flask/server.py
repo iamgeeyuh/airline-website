@@ -577,7 +577,26 @@ def view_frequent_customers():
 @app.route("/logout")
 def logout():
     session.pop("username", None)
-    return redirect(url_for("login_page"))
+
+#Customer use cases 
+
+#Use case 1. my_flights
+@app.route("/myflights", methods=["GET"])
+def my_flights():
+    # if not session.get("username"):
+    #     return {"error": "not authenticated"}
+    cursor = conn.cursor()
+    query = """
+        SELECT *
+        FROM Customer NATURAL JOIN Ticket NATURAL JOIN Flight
+        WHERE customer_email = %s AND departure_datetime > NOW()
+        ORDER BY departure_time ASC
+    """
+    cursor.execute(query, (session["username"],))
+    data = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    return jsonify(data)
 
 
 @app.route("/myflights", methods=["GET"])

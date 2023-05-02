@@ -499,7 +499,7 @@ def add_airplane():
     cursor.execute(query1, (airplane_id))
     data1 = cursor.fetchone()
     if data1:
-        return jsonify(airplanes)
+        return jsonify([])
     
     query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
     cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date[0:4]))))
@@ -542,7 +542,7 @@ def view_flight_ratings():
     cursor = conn.cursor()
     query = "SELECT AVG(Reviews.rating) AS avg_rate, Reviews.comment AS comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticketid WHERE flight_number = %s"
     cursor.execute(query, (flight_number))
-    data = cursor.fetchone()
+    data = cursor.fetchall()
     
     if data:
         return {"average_rating": round(data['avg_rate'], 1), "comments": data['comment']}

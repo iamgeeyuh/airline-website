@@ -78,7 +78,7 @@ const LoginModal = () => {
         if (data.user) {
           ctx.setIsLoggedIn(
             isCustomer
-              ? { type: "customer", name: data.firstName }
+              ? { type: "customer", name: data.firstName, email: data.email }
               : {
                   type: "staff",
                   name: data.firstName,

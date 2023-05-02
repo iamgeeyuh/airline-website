@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import FoundFlight from "../../components/Flight/FoundFlight/FoundFlight";
+import AuthContext from "../../context/auth-context";
 
 const CustomerViewFlights = () => {
+  const ctx = useContext(AuthContext);
+
   const [flights, setFlights] = useState([]);
   const [showFlights, setShowFlights] = useState(false);
 
@@ -11,9 +14,13 @@ const CustomerViewFlights = () => {
   };
 
   const futureFlights = () => {
+    const formData = new URLSearchParams();
+    formData.append("customer_email", ctx.isLoggedIn.email);
+
     fetch("http://localhost:5000/myflights", {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
     })
       .then((response) => {
         if (response.ok) {
@@ -30,7 +37,7 @@ const CustomerViewFlights = () => {
       });
   };
 
-  futureFlights()
+  futureFlights();
 
   return <div></div>;
 };

@@ -10,6 +10,7 @@ const loginReducer = (state, action) => {
         isLoggedIn: true,
         name: action.name,
         airline: "",
+        email: action.email,
       };
     case "staff":
       return {
@@ -17,9 +18,16 @@ const loginReducer = (state, action) => {
         isLoggedIn: true,
         name: action.name,
         airline: action.airline,
+        email: "",
       };
     case "logout":
-      return { isCustomer: null, isLoggedIn: false, name: "", airline: "" };
+      return {
+        isCustomer: null,
+        isLoggedIn: false,
+        name: "",
+        airline: "",
+        email: "",
+      };
     default:
       return state;
   }
@@ -31,6 +39,7 @@ export const AuthContextProvider = (props) => {
     isLoggedIn: false,
     name: "",
     airline: "",
+    email: "",
   });
 
   const [loginModal, setLoginModal] = useState(false);

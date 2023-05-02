@@ -584,7 +584,7 @@ def logout():
 #Customer use cases 
 
 # Use case 1. my_flights
-@app.route("/myflights", methods=["GET"])
+@app.route("/myflights", methods=["GET", "POST"])
 def my_flights():
     if not session.get("user"):
         return {"error": "not authenticated"}

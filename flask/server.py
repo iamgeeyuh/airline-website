@@ -332,7 +332,7 @@ def check_flight_status():
 @app.route("/view_flights", methods=["GET"])
 def view_flights():
     airline_name = request.form["airline_name"]
-    
+    cursor = conn.cursor() 
     #check if the airline exists
     query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
     cursor.execute(query, (airline_name))
@@ -341,7 +341,6 @@ def view_flights():
         return jsonify([])
     
     #display flights
-    cursor = conn.cursor() 
     query = (
             "SELECT flight_num, departure_datetime, airline_name,"
             +" arrival_datetime, "
@@ -358,6 +357,7 @@ def view_flights():
 
     cursor.execute(query, (airline_name))
     flights = cursor.fetchall()
+    conn.commit()
     cursor.close()
     return jsonify(flights)
 
@@ -366,7 +366,7 @@ def view_flights():
 @app.route("/create_flight", methods=["GET", "POST"])
 def create_flight():
     airline_name = request.form["airline_name"]
-    
+    cursor = conn.cursor() 
     #check if the airline exists
     query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
     cursor.execute(query, (airline_name))
@@ -375,7 +375,7 @@ def create_flight():
         return jsonify([])
     
     #display flights
-    cursor = conn.cursor() 
+    #cursor = conn.cursor() 
     query = (
             "SELECT flight_num, departure_datetime, airline_name,"
             +" arrival_datetime, "
@@ -454,15 +454,13 @@ def change_status():
     airline_name = request.form["airline_name"]
     departure_datetime = request.form["departure_datetime"]
     new_status = request.form["new_status"]
-
+    cursor = conn.cursor()
     #check if flight exists
     query = "SELECT airline_name, flight_num FROM Flight WHERE airline_name = %s AND flight_num = %s AND departure_datetime = %s"
     cursor.execute(query, (airline_name, flight_num, departure_datetime))
     data = cursor.fetchone()
     if not data:
         return {"change_status": False}
-
-    cursor = conn.cursor()
     query = "UPDATE Flight SET status = %s"+\
         "WHERE flight_num = %s AND departure_datetime = %s AND airline_name = %s"
     cursor.execute(query, (new_status, flight_num, departure_datetime, airline_name))
@@ -475,7 +473,7 @@ def change_status():
 @app.route("/add_airplane", methods=["GET", "POST"])
 def add_airplane():
     airline_name = request.form["airline_name"]
-    
+    cursor = conn.cursor()
     #check if airline exists
     query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
     cursor.execute(query, (airline_name))
@@ -495,7 +493,7 @@ def add_airplane():
     age = request.form["age"]
 
     #check if the airplane exists. If it exists, do not insert again
-    cursor = conn.cursor()
+    
     query = "SELECT airline_name FROM Airline WHERE airplane_id = %s"
     cursor.execute(query, (airplane_id))
     data = cursor.fetchone()
@@ -537,7 +535,7 @@ def add_airport():
     return {"add_airport": True}
 
 #6. View flight ratings:
-@app.route("/flight_ratings", methods=["GET", "POST"])
+@app.route("/view_flight_ratings", methods=["GET"])
 def view_flight_ratings():
     flight_number = request.form["flight_number"]
     cursor = conn.cursor()
@@ -552,6 +550,21 @@ def view_flight_ratings():
     cursor.close()
 
     return {"average_rating": None, "comments": None}
+
+#7. View frequent customers partially done query is not correct.... needs to be modified
+@app.route("/view_frequent_customers", methods=["GET"])
+def view_frequent_customers():
+    cursor = conn.cursor()
+    query = "SELECT Customer.customer_id, Customer.first_name, COUNT(*) AS frequency FROM Customer INNER JOIN Booking ON Customer.customer_id = Booking.customer_id WHERE DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <= Booking.booking_date GROUP BY Customer.customer_id ORDER BY frequency DESC LIMIT 1"
+    cursor.execute(query)
+    data = cursor.fetchone()
+    
+    if data:
+        return {"customer_id": data[0], "first_name": data[1], "frequency": data[2]}
+    
+    conn.commit()
+    cursor.close()
+    return {"customer_id": None, "first_name": None, "frequency": None}
 
 #10 logout
 @app.route("/logout")

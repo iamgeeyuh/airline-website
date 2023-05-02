@@ -532,8 +532,11 @@ def add_airport():
 
     return {"add_airport": True}
 
-
-
+#10 logout
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    return redirect(url_for("login_page"))
 
 
 if __name__ == "__main__":

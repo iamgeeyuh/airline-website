@@ -491,7 +491,7 @@ def add_airplane():
     manufacturer = request.form["manufacturer"]
     manufacturing_date = request.form["manufacturing_date"]
     seats = request.form["seats"]
-    current_year = datetime.datetime.now().year
+    current_year = int(datetime.datetime.now().year)
 
     #check if the airplane exists. If it exists, do not insert again
     
@@ -502,7 +502,7 @@ def add_airplane():
         return jsonify(airplanes)
     
     query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
-    cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, (current_year-manufacturing_date)))
+    cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date))))
     conn.commit()
     cursor.close()
 
@@ -540,7 +540,7 @@ def add_airport():
 def view_flight_ratings():
     flight_number = request.form["flight_number"]
     cursor = conn.cursor()
-    query = "SELECT AVG(rating) AS avg_rate, comment FROM Reviews INNER JOIN Ticket ON ticket_id WHERE flight_number = %s"
+    query = "SELECT AVG(rating) AS avg_rate, comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = WHERE flight_number = %s"
     cursor.execute(query, (flight_number))
     data = cursor.fetchone()
     

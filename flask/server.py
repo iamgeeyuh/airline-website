@@ -598,22 +598,5 @@ def my_flights():
     cursor.close()
     return jsonify(data)
 
-
-@app.route("/myflights", methods=["GET"])
-def my_flights():
-    if not session.get("username"):
-        return {"error": "not authenticated"}
-    cursor = conn.cursor()
-    query = """
-        SELECT *
-        FROM Customer NATURAL JOIN Ticket NATURAL JOIN Flight
-        WHERE customer_email = %s AND departure_datetime > NOW()
-        ORDER BY departure_time ASC
-    """
-    cursor.execute(query, (session["username"],))
-    data = cursor.fetchall()
-    cursor.close()
-    return jsonify(data)
-
 if __name__ == "__main__":
     app.run(debug=True)

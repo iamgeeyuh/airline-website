@@ -11,9 +11,7 @@ const LogoutModal = () => {
   useEffect(() => {
     const clickOutsideHandler = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        ctx.setIsLoggedIn({ type: "logout" });
-        ctx.setLoginModal(false);
-        navigate("/");
+        logoutHandler();
       }
     };
     document.addEventListener("mousedown", clickOutsideHandler);
@@ -25,7 +23,25 @@ const LogoutModal = () => {
   const logoutHandler = () => {
     ctx.setIsLoggedIn({ type: "logout" });
     ctx.setLoginModal(false);
+    logout();
     navigate("/");
+  };
+
+  const logout = () => {
+    fetch("http://localhost:5000/logout", {
+      method: "GET",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error logging in");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

@@ -576,7 +576,7 @@ def view_frequent_customers():
 #10 logout
 @app.route("/logout")
 def logout():
-    session.pop("username", None)
+    session.pop("user", None)
 
 #Customer use cases 
 

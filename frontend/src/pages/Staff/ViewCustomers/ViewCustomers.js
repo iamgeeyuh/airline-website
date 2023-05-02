@@ -9,6 +9,8 @@ const ViewCustomers = () => {
   const [email, setEmail] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
+  const [flights, setFlights] = useState([]);
+  const [showFlights, setShowFlights] = useState(false);
 
   useEffect(() => {
     setIsLoggedIn(ctx.isLoggedIn);
@@ -23,11 +25,16 @@ const ViewCustomers = () => {
     const formData = new URLSearchParams();
 
     formData.append("email", email);
-    if (email == "") {
+    if (email === "") {
       setComplete(false);
       setValid(true);
       return;
     }
+  };
+
+  const flightsHandler = (flightsLst) => {
+    setFlights(flightsLst);
+    setShowFlights(true);
   };
 
   return (
@@ -58,9 +65,7 @@ const ViewCustomers = () => {
               </div>
             </form>
           </div>
-          <div>
-            <FoundFlight />
-          </div>
+          <div>{showFlights && <FoundFlight flights={flights} />}</div>
         </>
       )}
     </div>

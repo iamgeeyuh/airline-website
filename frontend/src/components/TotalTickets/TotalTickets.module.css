@@ -1,0 +1,19 @@
+.totalTickets div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.totalTickets div div {
+  display: block;
+}
+
+.totalTickets button {
+  margin-left: 10px;
+}
+
+.totalTickets p {
+  color: red;
+  margin-left: 10px;
+  margin-top: 0;
+}

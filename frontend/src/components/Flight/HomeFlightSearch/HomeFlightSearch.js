@@ -35,7 +35,7 @@ const FlightSearch = (props) => {
   };
 
   const wayHandler = (event) => {
-    setWay(event.target.value == "One Way");
+    setWay(event.target.value === "One Way");
   };
 
   const submitHandler = (event) => {
@@ -68,6 +68,12 @@ const FlightSearch = (props) => {
       .catch((error) => {
         console.log(error);
       });
+    setDepDate("");
+    setSrcAirport("");
+    setSrcCity("");
+    setDstAirport("");
+    setDstCity("");
+    setReturnDate("");
   };
 
   return (
@@ -80,7 +86,7 @@ const FlightSearch = (props) => {
             <input
               type="text"
               placeholder="New York City"
-              valus={srcCity}
+              value={srcCity}
               onChange={srcCityHandler}
             />
             <input

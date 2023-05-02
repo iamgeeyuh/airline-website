@@ -6,7 +6,6 @@ const CreateFlight = () => {
   const ctx = useContext(AuthContext);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
   const [flightNum, setFlightNum] = useState("");
-  const [airline, setAirline] = useState("");
   const [airplaneID, setAirplaneID] = useState("");
   const [depTime, setDepTime] = useState("");
   const [depCode, setDepCode] = useState("");
@@ -19,10 +18,6 @@ const CreateFlight = () => {
 
   const flightNumHandler = (event) => {
     setFlightNum(event.target.value);
-  };
-
-  const airlineHandler = (event) => {
-    setAirline(event.target.value);
   };
 
   const airplaneIDHandler = (event) => {
@@ -63,7 +58,6 @@ const CreateFlight = () => {
 
     formData.append("flight_num", flightNum);
     formData.append("departure_datetime", depTime);
-    formData.append("airline_name", airline);
     formData.append("arrival_datetime", arrTime);
     formData.append("arrival_airport_code", arrCode);
     formData.append("departure_airport_code", depCode);
@@ -74,7 +68,6 @@ const CreateFlight = () => {
     const formValues = [
       flightNum,
       depTime,
-      airline,
       arrTime,
       arrCode,
       depCode,
@@ -89,6 +82,25 @@ const CreateFlight = () => {
       setValid(true);
       return;
     }
+
+    fetch("http://localhost:5000/create_flight", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error creating flight");
+        }
+      })
+      .then((data) => {
+        
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -102,52 +114,63 @@ const CreateFlight = () => {
               <input
                 type="text"
                 placeholder="370"
+                value={flightNum}
                 onChange={flightNumHandler}
               />
             </div>
             <div>
-              <label>Airline Name</label>
+              <label>Airplane ID</label>
               <input
                 type="text"
-                placeholder="Jet Blue"
-                onChange={airlineHandler}
+                value={airplaneID}
+                onChange={airplaneIDHandler}
               />
-            </div>
-            <div>
-              <label>Airplane ID</label>
-              <input type="text" onChange={airplaneIDHandler} />
             </div>
           </div>
           <div>
             <div>
               <label>Departure Time</label>
-              <input type="datetime-local" onChange={depTimeHandler} />
+              <input
+                type="datetime-local"
+                value={depTime}
+                onChange={depTimeHandler}
+              />
             </div>
             <div>
               <label>Departure Airport Code</label>
-              <input type="text" onChange={depCodeHandler} />
+              <input type="text" value={depCode} onChange={depCodeHandler} />
             </div>
           </div>
           <div>
             <div>
               <label>Arrival Time</label>
-              <input type="datetime-local" onChange={arrTimeHandler} />
+              <input
+                type="datetime-local"
+                value={arrTime}
+                onChange={arrTimeHandler}
+              />
             </div>
             <div>
               <label>Arrival Airport Code</label>
-              <input type="text" onChange={arrCodeHandler} />
+              <input type="text" value={arrCode} onChange={arrCodeHandler} />
             </div>
           </div>
           <div>
             <div>
               <label>Price</label>
-              <input type="number" placeholder="3000" onChange={priceHandler} />
+              <input
+                type="number"
+                placeholder="3000"
+                value={price}
+                onChange={priceHandler}
+              />
             </div>
             <div>
               <label>Status</label>
               <input
                 type="text"
                 placeholder="on-time"
+                value={status}
                 onChange={statusHandler}
               />
             </div>

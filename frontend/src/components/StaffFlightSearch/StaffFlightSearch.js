@@ -12,6 +12,8 @@ const StaffFlightSearch = () => {
   const [dstCity, setDstCity] = useState("");
   const [dstAirport, setDstAirport] = useState("");
   const [range, setRange] = useState(currentMonthString);
+  const [valid, setValid] = useState(true);
+  const [complete, setComplete] = useState(true);
 
   const srcCityHandler = (event) => {
     setSrcCity(event.target.value);
@@ -42,10 +44,20 @@ const StaffFlightSearch = () => {
     formData.append("dst_city", dstCity);
     formData.append("dst_airport", dstAirport);
     formData.append("range", range);
+
+    const formValues = [srcCity, srcAirport, dstCity, dstAirport];
+
+    const isEmpty = formValues.some((value) => value.trim() === "");
+    if (isEmpty) {
+      setComplete(false);
+      setValid(true);
+      return;
+    }
   };
 
   return (
     <form className={styles.flightSearch}>
+      <h2>View Flights</h2>
       <div>
         <div>
           <label>From</label>
@@ -53,6 +65,7 @@ const StaffFlightSearch = () => {
             <input
               type="text"
               placeholder="New York City"
+              value={srcCity}
               onChange={srcCityHandler}
             />
             <input type="text" placeholder="JFK" onChange={srcAirportHandler} />
@@ -64,11 +77,13 @@ const StaffFlightSearch = () => {
             <input
               type="text"
               placeholder="Chicago"
+              value={dstCity}
               onChange={dstCityHandler}
             />
             <input
               type="text"
               placeholder="O'Hare"
+              value={dstAirport}
               onChange={dstAirportHandler}
             />
           </div>
@@ -76,14 +91,12 @@ const StaffFlightSearch = () => {
         <div>
           <label>Range</label>
           <div>
-            <input
-              type="month"
-              value={currentMonthString}
-              onChange={rangeHandler}
-            />
+            <input type="month" value={range} onChange={rangeHandler} />
           </div>
         </div>
       </div>
+      {!valid && <p>Airport already exists.</p>}
+      {!complete && <p>Missing fields.</p>}
       <button onClick={submitHandler}>Search</button>
     </form>
   );

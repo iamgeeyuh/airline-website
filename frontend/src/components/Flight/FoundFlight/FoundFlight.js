@@ -5,7 +5,7 @@ const FoundFlight = (props) => {
   return (
     <div className={styles.foundFlight}>
       <h2>Flights</h2>
-      {props.flights.length == 0 ? (
+      {props.flights.length === 0 ? (
         <p>No flights found.</p>
       ) : (
         <>

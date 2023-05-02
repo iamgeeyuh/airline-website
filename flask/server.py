@@ -58,14 +58,14 @@ def login():
         if isCustomer == "true": 
             return {
                 "user": True,
-                "firstName": data[0],
+                "firstName": data['fname'],
                 "airlineName": None
             }  # TODO:redirect to the home page in front end for testing
         else:
             return {
                 "user": True,
-                "firstName": data[0],
-                "airlineName": data[1]
+                "firstName": data['fname'],
+                "airlineName": data['airline_name']
             }  # TODO:redirect to the home page in front end for testing
     else:
         return {"user": False, "firstName": None, "airlineName": None}

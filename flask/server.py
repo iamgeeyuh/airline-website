@@ -499,7 +499,7 @@ def add_airplane():
     cursor.execute(query1, (airplane_id))
     data1 = cursor.fetchone()
     if data1:
-        return jsonify([])
+        return jsonify(airplanes)
     
     query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
     cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date[0:4]))))

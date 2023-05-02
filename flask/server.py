@@ -342,7 +342,7 @@ def view_flights():
         return jsonify([])
     
     #display flights
-    query = (
+    query1 = (
             "SELECT flight_num, departure_datetime, airline_name,"
             +" arrival_datetime, "
             + "arr_airport.airport_name, arr_airport.city,"
@@ -356,7 +356,7 @@ def view_flights():
             + "AND airline_name = %s"
     )
 
-    cursor.execute(query, (airline_name))
+    cursor.execute(query1, (airline_name))
     flights = cursor.fetchall()
     conn.commit()
     cursor.close()
@@ -377,7 +377,7 @@ def create_flight():
     
     #display flights
     #cursor = conn.cursor() 
-    query = (
+    query1 = (
             "SELECT flight_num, departure_datetime, airline_name,"
             +" arrival_datetime, "
             + "arr_airport.airport_name, arr_airport.city,"
@@ -391,7 +391,7 @@ def create_flight():
             + "AND airline_name = %s"
     )
 
-    cursor.execute(query, (airline_name))
+    cursor.execute(query1, (airline_name))
     flights = cursor.fetchall()
 
 
@@ -409,27 +409,27 @@ def create_flight():
     # that will be displayed
 
     #check if both airports exist
-    query = "SELECT airport_code FROM Airport WHERE airport_code = %s"
-    cursor.execute(query, (departure_airport_code))
-    data = cursor.fetchone()
-    if not data:
+    query2 = "SELECT airport_code FROM Airport WHERE airport_code = %s"
+    cursor.execute(query2, (departure_airport_code))
+    data2 = cursor.fetchone()
+    if not data2:
         return jsonify(flights)
     
-    query = "SELECT airport_code FROM Airport WHERE airport_code = %s"
-    cursor.execute(query, (arrival_airport_code))
-    data = cursor.fetchone()
-    if not data:
+    query3 = "SELECT airport_code FROM Airport WHERE airport_code = %s"
+    cursor.execute(query3, (arrival_airport_code))
+    data3 = cursor.fetchone()
+    if not data3:
         return jsonify(flights)
     
     #check if airplane id exists
-    query = "SELECT airplane_id FROM Airplane WHERE airplane_id = %s"
-    cursor.execute(query, (airplane_id))
-    data = cursor.fetchone()
-    if not data:
+    query4 = "SELECT airplane_id FROM Airplane WHERE airplane_id = %s"
+    cursor.execute(query4, (airplane_id))
+    data4 = cursor.fetchone()
+    if not data4:
         return jsonify(flights)
     
-    query = "INSERT INTO Flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (
+    query5 = "INSERT INTO Flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query5, (
         flight_num, 
         departure_datetime, 
         airline_name,
@@ -447,7 +447,7 @@ def create_flight():
     return jsonify(flights)
     
 
-#3 change flight status
+#3 change flight status works
 # return if change_status is successful
 @app.route("/change_status", methods=["GET", "POST"])
 def change_status():

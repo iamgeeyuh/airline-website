@@ -41,10 +41,10 @@ def login():
 
     if isCustomer == "true":
         # get the username and password
-        query = "SELECT * FROM Customer WHERE email = %s and password = %s"
+        query = "SELECT fname FROM Customer WHERE email = %s and password = %s"
 
     else:
-        query = "SELECT * FROM Staff WHERE username = %s and password = %s"
+        query = "SELECT fname FROM Staff WHERE username = %s and password = %s"
 
     # cursor.execute(query, (username, hashlib.md5(password.encode('utf-8'))))
     print(username)
@@ -60,10 +60,11 @@ def login():
         # session is a built in
         username = request.form["username"]
         return {
-            "user": True
+            "user": True,
+            "firstName": data[0]
         }  # TODO:redirect to the home page in front end for testing
     else:
-        return {"user": False}
+        return {"user": False, "firstName": None}
 
 
 # Authenticates the register

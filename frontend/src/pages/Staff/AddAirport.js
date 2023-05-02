@@ -7,11 +7,12 @@ const AddAirport = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
   const [airportCode, setAirportCode] = useState("");
   const [airportName, setAirportName] = useState("");
-  const [airportType, setAirportType] = useState("");
+  const [airportType, setAirportType] = useState("international");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   const airportCodeHandler = (event) => {
     setAirportCode(event.target.value);
@@ -47,14 +48,36 @@ const AddAirport = () => {
     formData.append("city", city);
     formData.append("country", country);
 
-    const formValues = [airportCode, airportName, airportType, city, country];
+    const formValues = [airportCode, airportName, city, country];
 
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
       setComplete(false);
       setValid(true);
+      setSuccess(false);
       return;
     }
+
+    fetch("http://localhost:5000/add_airport", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error creating flight");
+        }
+      })
+      .then((data) => {
+        setSuccess(data.add_airport);
+        setValid(data.add_airport);
+        setComplete(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -73,11 +96,11 @@ const AddAirport = () => {
             </div>
             <div>
               <label>Airport Type</label>
-              <input
-                type="text"
-                placeholder="domestic"
-                onChange={airportTypeHandler}
-              />
+              <select onChange={airportTypeHandler}>
+                <option>international</option>
+                <option>domestic</option>
+                <option>both</option>
+              </select>
             </div>
           </div>
           <div>
@@ -96,6 +119,7 @@ const AddAirport = () => {
           </div>
           {!valid && <p>Airport already exists.</p>}
           {!complete && <p>Missing fields.</p>}
+          {success && <p style={{ color: "green" }}>Airport added.</p>}
           <button type="submit" onClick={submitHandler}>
             Submit
           </button>

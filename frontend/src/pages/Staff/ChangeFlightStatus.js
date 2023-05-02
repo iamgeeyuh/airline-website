@@ -32,7 +32,7 @@ const ChangeFlightStatus = () => {
     formData.append("airline_name", ctx.isLoggedIn.airline);
     formData.append("new_status", newStatus);
 
-    const formValues = [flightNum, depTime, newStatus];
+    const formValues = [flightNum, depTime];
 
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
@@ -62,6 +62,9 @@ const ChangeFlightStatus = () => {
       .catch((error) => {
         console.log(error);
       });
+    setNewStatus("on-time");
+    setFlightNum("");
+    setDepTime("");
   };
 
   useEffect(() => {

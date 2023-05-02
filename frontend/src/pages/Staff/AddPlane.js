@@ -1,17 +1,19 @@
 import { useContext, useEffect, useState } from "react";
+import AddPlaneModal from "../../components/AddPlaneModal/AddPlaneModal";
 import styles from "./StaffForm.module.css";
 import AuthContext from "../../context/auth-context";
 
 const AddPlane = () => {
   const ctx = useContext(AuthContext);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
-  const [airplaneID, setAirplaneID] = useState("");;
+  const [airplaneID, setAirplaneID] = useState("");
   const [seats, setSeats] = useState("");
   const [manufacturingDate, setManufacturingDate] = useState("");
   const [manufacturer, setManufacturer] = useState("");
-  const [age, setAge] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
+  const [modal, setModal] = useState(false);
+  const [planes, setPlanes] = useState([]);
 
   const airplaneIDHandler = (event) => {
     setAirplaneID(event.target.value);
@@ -29,8 +31,8 @@ const AddPlane = () => {
     setManufacturer(event.target.value);
   };
 
-  const ageHandler = (event) => {
-    setAge(event.target.value);
+  const modalHandler = () => {
+    setModal(false);
   };
 
   useEffect(() => {
@@ -46,15 +48,8 @@ const AddPlane = () => {
     formData.append("manufacturer", manufacturer);
     formData.append("manufacturing_date", manufacturingDate);
     formData.append("seats", seats);
-    formData.append("age", age);
 
-    const formValues = [
-      airplaneID,
-      manufacturer,
-      manufacturingDate,
-      seats,
-      age,
-    ];
+    const formValues = [airplaneID, manufacturer, manufacturingDate, seats];
 
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
@@ -76,7 +71,10 @@ const AddPlane = () => {
         }
       })
       .then((data) => {
-        console.log(data);
+        setModal(data.length === 0);
+        setValid(data.length === 0);
+        setPlanes(data);
+        setComplete(true);
       })
       .catch((error) => {
         console.log(error);
@@ -94,8 +92,8 @@ const AddPlane = () => {
               <input type="text" onChange={airplaneIDHandler} />
             </div>
             <div>
-              <label>Age</label>
-              <input type="number" onChange={ageHandler} />
+              <label>Seats</label>
+              <input type="number" onChange={seatsHandler} />
             </div>
           </div>
           <div>
@@ -109,14 +107,7 @@ const AddPlane = () => {
             </div>
             <div>
               <label>Manufacturing Date</label>
-              <input
-                type="datetime-local"
-                onChange={manufacturingDateHandler}
-              />
-            </div>
-            <div>
-              <label>Seats</label>
-              <input type="number" onChange={seatsHandler} />
+              <input type="date" onChange={manufacturingDateHandler} />
             </div>
           </div>
           {!valid && <p>Plane already exists.</p>}
@@ -126,6 +117,8 @@ const AddPlane = () => {
           </button>
         </form>
       )}
+      {modal && <AddPlaneModal modalHandler={modalHandler} planes={planes} />}
+      {modal && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

@@ -74,7 +74,6 @@ const CreateFlight = () => {
       depCode,
       airplaneID,
       price,
-      status,
     ];
 
     const isEmpty = formValues.some((value) => value.trim() === "");

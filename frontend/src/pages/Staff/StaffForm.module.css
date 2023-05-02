@@ -21,3 +21,8 @@
   text-align: center;
   color: rgb(211, 0, 0);
 }
+
+.staffForm select{
+  margin-left: 10px;
+  margin-bottom: 10px;
+}

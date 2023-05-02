@@ -5,8 +5,7 @@ import AuthContext from "../../context/auth-context";
 const AddPlane = () => {
   const ctx = useContext(AuthContext);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
-  const [airplaneID, setAirplaneID] = useState("");
-  const [airline, setAirline] = useState("");
+  const [airplaneID, setAirplaneID] = useState("");;
   const [seats, setSeats] = useState("");
   const [manufacturingDate, setManufacturingDate] = useState("");
   const [manufacturer, setManufacturer] = useState("");
@@ -16,10 +15,6 @@ const AddPlane = () => {
 
   const airplaneIDHandler = (event) => {
     setAirplaneID(event.target.value);
-  };
-
-  const airlineHandler = (event) => {
-    setAirline(event.target.value);
   };
 
   const seatsHandler = (event) => {
@@ -47,7 +42,7 @@ const AddPlane = () => {
     const formData = new URLSearchParams();
 
     formData.append("airplane_id", airplaneID);
-    formData.append("airline_name", airline);
+    formData.append("airline_name", ctx.isLoggedIn.airline);
     formData.append("manufacturer", manufacturer);
     formData.append("manufacturing_date", manufacturingDate);
     formData.append("seats", seats);
@@ -55,7 +50,6 @@ const AddPlane = () => {
 
     const formValues = [
       airplaneID,
-      airline,
       manufacturer,
       manufacturingDate,
       seats,
@@ -68,6 +62,25 @@ const AddPlane = () => {
       setValid(true);
       return;
     }
+
+    fetch("http://localhost:5000/add_airplane", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error creating flight");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -81,12 +94,8 @@ const AddPlane = () => {
               <input type="text" onChange={airplaneIDHandler} />
             </div>
             <div>
-              <label>Airline</label>
-              <input
-                type="text"
-                placeholder="Jet Blue"
-                onChange={airlineHandler}
-              />
+              <label>Age</label>
+              <input type="number" onChange={ageHandler} />
             </div>
           </div>
           <div>
@@ -107,13 +116,7 @@ const AddPlane = () => {
             </div>
             <div>
               <label>Seats</label>
-              <input type="number" />
-            </div>
-          </div>
-          <div>
-            <div>
-              <label>Age</label>
-              <input type="number" onChange={ageHandler} />
+              <input type="number" onChange={seatsHandler} />
             </div>
           </div>
           {!valid && <p>Plane already exists.</p>}

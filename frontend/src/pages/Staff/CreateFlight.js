@@ -12,7 +12,7 @@ const CreateFlight = () => {
   const [arrTime, setArrTime] = useState("");
   const [arrCode, setArrCode] = useState("");
   const [price, setPrice] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("on-time");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
 
@@ -97,7 +97,12 @@ const CreateFlight = () => {
         }
       })
       .then((data) => {
-        console.log(data);
+        if (data.change_status) {
+          setValid(true);
+        } else {
+          setValid(false);
+        }
+        setComplete(true);
       })
       .catch((error) => {
         console.log(error);
@@ -168,12 +173,10 @@ const CreateFlight = () => {
             </div>
             <div>
               <label>Status</label>
-              <input
-                type="text"
-                placeholder="on-time"
-                value={status}
-                onChange={statusHandler}
-              />
+              <select onChange={statusHandler}>
+                <option>on-time</option>
+                <option>delayed</option>
+              </select>
             </div>
           </div>
           {!valid && <p>Flight already exists.</p>}

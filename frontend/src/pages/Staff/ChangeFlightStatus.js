@@ -6,18 +6,13 @@ const ChangeFlightStatus = () => {
   const ctx = useContext(AuthContext);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
   const [flightNum, setFlightNum] = useState("");
-  const [airline, setAirline] = useState("");
   const [depTime, setDepTime] = useState("");
-  const [newStatus, setNewStatus] = useState("");
+  const [newStatus, setNewStatus] = useState("on-time");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
-
+  const [success, setSuccess] = useState(false);
   const flightNumHandler = (event) => {
     setFlightNum(event.target.value);
-  };
-
-  const airlineHandler = (event) => {
-    setAirline(event.target.value);
   };
 
   const depTimeHandler = (event) => {
@@ -34,17 +29,39 @@ const ChangeFlightStatus = () => {
 
     formData.append("flight_num", flightNum);
     formData.append("departure_datetime", depTime);
-    formData.append("airline_name", airline);
+    formData.append("airline_name", ctx.isLoggedIn.airline);
     formData.append("new_status", newStatus);
 
-    const formValues = [flightNum, depTime, airline, newStatus];
+    const formValues = [flightNum, depTime, newStatus];
 
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
       setComplete(false);
       setValid(true);
+      setSuccess(false);
       return;
     }
+
+    fetch("http://localhost:5000/change_status", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error creating flight");
+        }
+      })
+      .then((data) => {
+        setValid(data.change_status);
+        setSuccess(data.change_status);
+        setComplete(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -59,11 +76,10 @@ const ChangeFlightStatus = () => {
           <div>
             <div>
               <label>New Status</label>
-              <input
-                type="text"
-                onChange={newStatusHandler}
-                placeholder="on-time"
-              />
+              <select onChange={newStatusHandler}>
+                <option>on-time</option>
+                <option>delayed</option>
+              </select>
             </div>
           </div>
           <div>
@@ -73,23 +89,21 @@ const ChangeFlightStatus = () => {
                 type="text"
                 onChange={flightNumHandler}
                 placeholder="370"
-              />
-            </div>
-            <div>
-              <label>Airline</label>
-              <input
-                type="text"
-                onChange={airlineHandler}
-                placeholder="Jet Blue"
+                value={flightNum}
               />
             </div>
             <div>
               <label>Departure Time</label>
-              <input type="datetime-local" onChange={depTimeHandler} />
+              <input
+                type="datetime-local"
+                onChange={depTimeHandler}
+                value={depTime}
+              />
             </div>
           </div>
-          {!valid && <p>Airplane already exists.</p>}
+          {!valid && <p>Flight does not exist.</p>}
           {!complete && <p>Missing fields.</p>}
+          {success && <p style={{ color: "green" }}>Status changed.</p>}
           <button type="submit" onClick={submitHandler}>
             Submit
           </button>

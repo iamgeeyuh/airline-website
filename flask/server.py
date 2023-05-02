@@ -12,6 +12,7 @@ from flask import (
 )
 from flask_cors import CORS
 import hashlib
+import datetime
 
 
 app = Flask(__name__)
@@ -490,7 +491,7 @@ def add_airplane():
     manufacturer = request.form["manufacturer"]
     manufacturing_date = request.form["manufacturing_date"]
     seats = request.form["seats"]
-    age = request.form["age"]
+    current_year = datetime.datetime.now().year
 
     #check if the airplane exists. If it exists, do not insert again
     
@@ -501,7 +502,7 @@ def add_airplane():
         return jsonify(airplanes)
     
     query = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, age))
+    cursor.execute(query, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, (current_year-manufacturing_date)))
     conn.commit()
     cursor.close()
 

@@ -1,0 +1,26 @@
+.flightSearch {
+  position: relative;
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin: 0 auto;
+  border-right: solid;
+  border-color: rgb(229, 229, 229);
+  border-width: 1px;
+}
+
+.flightSearch div {
+  display: inline-block;
+}
+
+.flightSearch input {
+  display: block;
+}
+
+.flightSearch button {
+  display: block;
+}
+
+.flightSearch p {
+  color: red;
+}

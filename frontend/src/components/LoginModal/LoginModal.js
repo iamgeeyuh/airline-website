@@ -76,7 +76,15 @@ const LoginModal = () => {
       })
       .then((data) => {
         if (data.user) {
-          ctx.setIsLoggedIn(isCustomer ? "customer" : "staff");
+          ctx.setIsLoggedIn(
+            isCustomer
+              ? { type: "customer", name: data.firstName }
+              : {
+                  type: "staff",
+                  name: data.firstName,
+                  airline: data.airlineName,
+                }
+          );
           ctx.setLoginModal(false);
         }
         setValid(data.user);

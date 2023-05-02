@@ -6,6 +6,7 @@ import styles from "./Flight.module.css";
 const Flight = (props) => {
   const [modalRatings, setModalRatings] = useState(false);
   const [modalPassenger, setModalPassenger] = useState(false);
+  const [modalPurchase, setModalPurchase] = useState(false);
 
   const modalRatingsHandler = () => {
     setModalRatings(false);
@@ -15,6 +16,10 @@ const Flight = (props) => {
     setModalPassenger(false);
   };
 
+  const modalPurchaseHandler = () => {
+    setModalPurchase(false);
+  };
+
   const checkRatings = () => {
     setModalRatings(true);
   };
@@ -22,21 +27,32 @@ const Flight = (props) => {
   const checkPassengers = () => {
     setModalPassenger(true);
   };
+
+  const checkPurchase = () => {
+    setModalPurchase(true);
+  };
+
   return (
     <div>
       <div className={styles.flight}>
         <label className={styles.flightAirline}>{props.airline}</label>
         <div>
-          {props.page == "staff" ? (
+          {props.page == "staff" && (
             <button className={styles.buttons} onClick={checkRatings}>
               Ratings
             </button>
-          ) : undefined}
-          {props.page == "staff" ? (
+          )}
+          {props.page == "staff" && (
             <button className={styles.buttons} onClick={checkPassengers}>
               Passengers
             </button>
-          ) : undefined}
+          )}
+          {props.page == "customer" && (
+            <button className={styles.buttons} onClick={checkPurchase}>
+              Purchase
+            </button>
+          )}
+
           <div>
             <label>From</label>
             <h2>{props.depTime}</h2>
@@ -64,6 +80,8 @@ const Flight = (props) => {
         <PassengersModal modalHandler={modalPassengersHandler} />
       )}
       {modalPassenger && <div className={styles.dimmedBackground}></div>}
+      {modalPurchase && <PassengersModal modalHandler={modalPurchaseHandler} />}
+      {modalPurchase && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

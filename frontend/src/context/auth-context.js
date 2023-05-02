@@ -3,13 +3,35 @@ import { createContext, useState, useReducer } from "react";
 const AuthContext = createContext();
 
 const loginReducer = (state, action) => {
-  switch (action) {
+  switch (action.type) {
     case "customer":
-      return { isCustomer: true, isLoggedIn: true };
+      console.log({
+        isCustomer: true,
+        isLoggedIn: true,
+        name: action.name,
+        airline: "",
+      })
+      return {
+        isCustomer: true,
+        isLoggedIn: true,
+        name: action.name,
+        airline: "",
+      };
     case "staff":
-      return { isCustomer: false, isLoggedIn: true };
+      console.log({
+        isCustomer: false,
+        isLoggedIn: true,
+        name: action.name,
+        airline: action.airline,
+      })
+      return {
+        isCustomer: false,
+        isLoggedIn: true,
+        name: action.name,
+        airline: action.airline,
+      };
     case "logout":
-      return { isCustomer: null, isLoggedIn: false };
+      return { isCustomer: null, isLoggedIn: false, name: "", airline: "" };
     default:
       return state;
   }
@@ -19,6 +41,8 @@ export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useReducer(loginReducer, {
     isCustomer: null,
     isLoggedIn: false,
+    name: "",
+    airline: "",
   });
 
   const [loginModal, setLoginModal] = useState(false);

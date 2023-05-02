@@ -41,11 +41,11 @@ def login():
 
     if isCustomer == "true":
         # get the first_name of the customer
-        query = "SELECT first_name FROM Customer WHERE email = %s and password = %s"
+        query = "SELECT fname FROM Customer WHERE email = %s and password = %s"
 
     else:
         # get the airline_name of the staff
-        query = "SELECT first_name, airline_name FROM Staff WHERE username = %s and password = %s"
+        query = "SELECT fname, airline_name FROM Staff WHERE username = %s and password = %s"
 
     cursor.execute(query, (username, password))
 
@@ -55,7 +55,7 @@ def login():
         # creates a session for the user
         # session is a built-in Flask variable
         session['user'] = True
-        if isCustomer == "true":
+        if isCustomer == "true": 
             return {
                 "user": True,
                 "firstName": data[0],

@@ -71,6 +71,7 @@ const AddPlane = () => {
         }
       })
       .then((data) => {
+        console.log(data)
         setModal(data.length === 0);
         setValid(data.length === 0);
         setPlanes(data);

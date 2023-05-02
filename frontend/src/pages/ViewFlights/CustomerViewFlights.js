@@ -1,5 +1,4 @@
 import { useState } from "react";
-import CustomerFlightSearch from "../../components/CustomerFlightSearch/CustomerFlightSearch";
 import FoundFlight from "../../components/Flight/FoundFlight/FoundFlight";
 
 const CustomerViewFlights = () => {
@@ -11,12 +10,29 @@ const CustomerViewFlights = () => {
     setShowFlights(true);
   };
 
-  return (
-    <div>
-      <CustomerFlightSearch />
-      {showFlights && <FoundFlight flights={flights} />}
-    </div>
-  );
+  const futureFlights = () => {
+    fetch("http://localhost:5000/myflights", {
+      method: "GET",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error logging in");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  futureFlights()
+
+  return <div></div>;
 };
 
 export default CustomerViewFlights;

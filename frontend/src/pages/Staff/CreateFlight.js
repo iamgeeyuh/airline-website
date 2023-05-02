@@ -12,7 +12,6 @@ const CreateFlight = () => {
   const [arrTime, setArrTime] = useState("");
   const [arrCode, setArrCode] = useState("");
   const [price, setPrice] = useState("");
-  const [status, setStatus] = useState("on-time");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
 
@@ -44,10 +43,6 @@ const CreateFlight = () => {
     setPrice(event.target.value);
   };
 
-  const statusHandler = (event) => {
-    setStatus(event.target.value);
-  };
-
   useEffect(() => {
     setIsLoggedIn(ctx.isLoggedIn);
   }, [ctx.isLoggedIn]);
@@ -63,7 +58,7 @@ const CreateFlight = () => {
     formData.append("departure_airport_code", depCode);
     formData.append("airplane_id", airplaneID);
     formData.append("base_price", price);
-    formData.append("status", status);
+    formData.append("status", "on-time");
     formData.append("airline_name", ctx.isLoggedIn.airline);
 
     const formValues = [
@@ -169,13 +164,6 @@ const CreateFlight = () => {
                 value={price}
                 onChange={priceHandler}
               />
-            </div>
-            <div>
-              <label>Status</label>
-              <select onChange={statusHandler}>
-                <option>on-time</option>
-                <option>delayed</option>
-              </select>
             </div>
           </div>
           {!valid && <p>Flight already exists.</p>}

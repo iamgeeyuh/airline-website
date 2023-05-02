@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import SuccessModal from "../../components/SuccessModal/SuccessModal";
 import styles from "./StaffForm.module.css";
 import AuthContext from "../../context/auth-context";
 
@@ -12,7 +13,7 @@ const AddAirport = () => {
   const [country, setCountry] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
-  const [success, setSuccess] = useState(false);
+  const [modal, setModal] = useState(false);
 
   const airportCodeHandler = (event) => {
     setAirportCode(event.target.value);
@@ -32,6 +33,10 @@ const AddAirport = () => {
 
   const countryHandler = (event) => {
     setCountry(event.target.value);
+  };
+
+  const modalHandler = () => {
+    setModal(false);
   };
 
   useEffect(() => {
@@ -54,7 +59,7 @@ const AddAirport = () => {
     if (isEmpty) {
       setComplete(false);
       setValid(true);
-      setSuccess(false);
+      setModal(false);
       return;
     }
 
@@ -71,7 +76,7 @@ const AddAirport = () => {
         }
       })
       .then((data) => {
-        setSuccess(data.add_airport);
+        setModal(data.add_airport);
         setValid(data.add_airport);
         setComplete(true);
       })
@@ -119,12 +124,13 @@ const AddAirport = () => {
           </div>
           {!valid && <p>Airport already exists.</p>}
           {!complete && <p>Missing fields.</p>}
-          {success && <p style={{ color: "green" }}>Airport added.</p>}
           <button type="submit" onClick={submitHandler}>
             Submit
           </button>
         </form>
       )}
+      {modal && <SuccessModal modalHandler={modalHandler} message="Airport has been added!" />}
+      {modal && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

@@ -1,14 +1,33 @@
 .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    background-color: white;
-    width: 50%;
-    padding-bottom: 20px;
-    max-width: 500px;
-    padding: 40px;
-    overflow-y: scroll;
-    max-height: 90vh;
-  }
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background-color: white;
+  width: 50%;
+  padding-bottom: 20px;
+  max-width: 500px;
+  padding: 40px;
+  overflow-y: scroll;
+  max-height: 90vh;
+}
+
+.purchaseModal {
+  display: flex;
+  flex-direction: column;
+}
+
+.purchaseModal div {
+  display: flex;
+}
+
+.purchaseModal div div {
+  display: flex;
+  flex-direction: column;
+}
+
+.purchaseModal select {
+  margin-left: 10px;
+  margin-right: 10px;
+}

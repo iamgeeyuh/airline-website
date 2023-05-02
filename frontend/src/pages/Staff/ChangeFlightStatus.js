@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import SuccessModal from "../../components/SuccessModal/SuccessModal";
 import styles from "./StaffForm.module.css";
 import AuthContext from "../../context/auth-context";
 
@@ -10,7 +11,8 @@ const ChangeFlightStatus = () => {
   const [newStatus, setNewStatus] = useState("on-time");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
-  const [success, setSuccess] = useState(false);
+  const [modal, setModal] = useState(false);
+
   const flightNumHandler = (event) => {
     setFlightNum(event.target.value);
   };
@@ -21,6 +23,10 @@ const ChangeFlightStatus = () => {
 
   const newStatusHandler = (event) => {
     setNewStatus(event.target.value);
+  };
+
+  const modalHandler = () => {
+    setModal(false);
   };
 
   const submitHandler = (event) => {
@@ -38,7 +44,7 @@ const ChangeFlightStatus = () => {
     if (isEmpty) {
       setComplete(false);
       setValid(true);
-      setSuccess(false);
+      setModal(false);
       return;
     }
 
@@ -56,13 +62,12 @@ const ChangeFlightStatus = () => {
       })
       .then((data) => {
         setValid(data.change_status);
-        setSuccess(data.change_status);
+        setModal(data.change_status);
         setComplete(true);
       })
       .catch((error) => {
         console.log(error);
       });
-    setNewStatus("on-time");
     setFlightNum("");
     setDepTime("");
   };
@@ -82,6 +87,7 @@ const ChangeFlightStatus = () => {
               <select onChange={newStatusHandler}>
                 <option>on-time</option>
                 <option>delayed</option>
+                <option>canceled</option>
               </select>
             </div>
           </div>
@@ -106,12 +112,13 @@ const ChangeFlightStatus = () => {
           </div>
           {!valid && <p>Flight does not exist.</p>}
           {!complete && <p>Missing fields.</p>}
-          {success && <p style={{ color: "green" }}>Status changed.</p>}
           <button type="submit" onClick={submitHandler}>
             Submit
           </button>
         </form>
       )}
+      {modal && <SuccessModal modalHandler={modalHandler} message="Status has been changed!" />}
+      {modal && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

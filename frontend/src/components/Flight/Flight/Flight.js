@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PassengersModal from "../PassengersModal/PassengersModal";
 import RatingsModal from "../Ratings/RatingsModal/RatingsModal";
+import PurchaseModal from "../PurchaseModal/PurchaseModal";
 import styles from "./Flight.module.css";
 
 const Flight = (props) => {
@@ -80,7 +81,7 @@ const Flight = (props) => {
         <PassengersModal modalHandler={modalPassengersHandler} />
       )}
       {modalPassenger && <div className={styles.dimmedBackground}></div>}
-      {modalPurchase && <PassengersModal modalHandler={modalPurchaseHandler} />}
+      {modalPurchase && <PurchaseModal modalHandler={modalPurchaseHandler} />}
       {modalPurchase && <div className={styles.dimmedBackground}></div>}
     </div>
   );

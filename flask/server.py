@@ -503,6 +503,8 @@ def add_airplane():
     
     query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
     cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date[0:4]))))
+    query3 = "SELECT * FROM Airplane WHERE airline_name = %s"
+    cursor.execute(query3, (airline_name))
     airplanes = cursor.fetchall()
     conn.commit()
     cursor.close()

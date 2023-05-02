@@ -40,32 +40,35 @@ def login():
     cursor = conn.cursor()
 
     if isCustomer == "true":
-        # get the username and password
-        query = "SELECT fname FROM Customer WHERE email = %s and password = %s"
+        # get the first_name of the customer
+        query = "SELECT first_name FROM Customer WHERE email = %s and password = %s"
 
     else:
-        query = "SELECT fname FROM Staff WHERE username = %s and password = %s"
+        # get the airline_name of the staff
+        query = "SELECT first_name, airline_name FROM Staff WHERE username = %s and password = %s"
 
-    # cursor.execute(query, (username, hashlib.md5(password.encode('utf-8'))))
-    print(username)
-    print(password)
-    print(isCustomer)
     cursor.execute(query, (username, password))
 
     data = cursor.fetchone()
-    print(data)
     cursor.close()
     if data:
-        # creates a session for the the user
-        # session is a built in
-        username = request.form["username"]
-        return {
-            "user": True,
-            "firstName": data[0]
-        }  # TODO:redirect to the home page in front end for testing
+        # creates a session for the user
+        # session is a built-in Flask variable
+        session['user'] = True
+        if isCustomer == "true":
+            return {
+                "user": True,
+                "firstName": data[0],
+                "airlineName": None
+            }  # TODO:redirect to the home page in front end for testing
+        else:
+            return {
+                "user": True,
+                "firstName": data[0],
+                "airlineName": data[1]
+            }  # TODO:redirect to the home page in front end for testing
     else:
-        return {"user": False, "firstName": None}
-
+        return {"user": False, "firstName": None, "airlineName": None}
 
 # Authenticates the register
 @app.route("/registerAuth", methods=["GET", "POST"])

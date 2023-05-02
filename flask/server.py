@@ -536,6 +536,23 @@ def add_airport():
 
     return {"add_airport": True}
 
+#6. View flight ratings:
+@app.route("/flight_ratings", methods=["GET", "POST"])
+def view_flight_ratings():
+    flight_number = request.form["flight_number"]
+    cursor = conn.cursor()
+    query = "SELECT AVG(rating) AS avg_rate, comment FROM Reviews INNER JOIN Ticket ON ticket_id WHERE flight_number = %s"
+    cursor.execute(query, (flight_number))
+    data = cursor.fetchone()
+    
+    if data is not None:
+        return {"average_rating": round(data['avg_rate'], 1), "comments": data['comment']}
+    
+    conn.commit()
+    cursor.close()
+
+    return {"average_rating": None, "comments": None}
+
 #10 logout
 @app.route("/logout")
 def logout():

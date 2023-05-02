@@ -540,7 +540,7 @@ def add_airport():
 def view_flight_ratings():
     flight_number = request.form["flight_number"]
     cursor = conn.cursor()
-    query = "SELECT AVG(Reviews.rating) AS avg_rate, Reviews.comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticketid WHERE flight_number = %s"
+    query = "SELECT AVG(Reviews.rating) AS avg_rate, Reviews.comment AS comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticketid WHERE flight_number = %s"
     cursor.execute(query, (flight_number))
     data = cursor.fetchone()
     

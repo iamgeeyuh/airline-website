@@ -580,11 +580,12 @@ def logout():
 
 #Customer use cases 
 
-#Use case 1. my_flights
+# Use case 1. my_flights
 @app.route("/myflights", methods=["GET"])
 def my_flights():
     # if not session.get("username"):
     #     return {"error": "not authenticated"}
+    customer_email = request.form["customer_email"]
     cursor = conn.cursor()
     query = """
         SELECT *
@@ -592,7 +593,7 @@ def my_flights():
         WHERE customer_email = %s AND departure_datetime > NOW()
         ORDER BY departure_time ASC
     """
-    cursor.execute(query, (session["username"],))
+    cursor.execute(query, (customer_email))
     data = cursor.fetchall()
     conn.commit()
     cursor.close()

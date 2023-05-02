@@ -469,7 +469,7 @@ def change_status():
     cursor.close()
     return {"change_status": True}
 
-#4 Add new airplane in the system
+#4 Add new airplane in the system works
 # return all airplanes owned by the airline
 @app.route("/add_airplane", methods=["GET", "POST"])
 def add_airplane():
@@ -503,6 +503,9 @@ def add_airplane():
     
     query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
     cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date[0:4]))))
+    data2 = cursor.fetchone()
+    if not data2:
+        return jsonify([])
     query3 = "SELECT * FROM Airplane WHERE airline_name = %s"
     cursor.execute(query3, (airline_name))
     airplanes = cursor.fetchall()

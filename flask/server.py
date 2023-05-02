@@ -42,7 +42,7 @@ def login():
 
     if isCustomer == "true":
         # get the first_name of the customer
-        query = "SELECT fname FROM Customer WHERE email = %s and password = %s"
+        query = "SELECT fname, email FROM Customer WHERE email = %s and password = %s"
 
     else:
         # get the airline_name of the staff
@@ -60,16 +60,18 @@ def login():
             return {
                 "user": True,
                 "firstName": data['fname'],
+                "email": data['email'],
                 "airlineName": None
             }  # TODO:redirect to the home page in front end for testing
         else:
             return {
                 "user": True,
                 "firstName": data['fname'],
+                "email": None,
                 "airlineName": data['airline_name']
             }  # TODO:redirect to the home page in front end for testing
     else:
-        return {"user": False, "firstName": None, "airlineName": None}
+        return {"user": False, "firstName": None, "email": None, "airlineName": None}
 
 # Authenticates the register
 @app.route("/registerAuth", methods=["GET", "POST"])
@@ -583,8 +585,8 @@ def logout():
 # Use case 1. my_flights
 @app.route("/myflights", methods=["GET"])
 def my_flights():
-    # if not session.get("username"):
-    #     return {"error": "not authenticated"}
+    if not session.get("user"):
+        return {"error": "not authenticated"}
     customer_email = request.form["customer_email"]
     cursor = conn.cursor()
     query = """

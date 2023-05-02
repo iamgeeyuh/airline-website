@@ -23,6 +23,9 @@ const Home = () => {
 
   return (
     <div>
+      {isLoggedIn.isLoggedIn && (
+        <h1 style={{ textAlign: "center" }}>Welcome, {isLoggedIn.name}</h1>
+      )}
       <div className={styles.home}>
         <div className={styles.search}>
           <HomeFlightSearch flightsHandler={flightsHandler} />

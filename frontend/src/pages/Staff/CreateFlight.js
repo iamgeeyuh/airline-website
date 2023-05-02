@@ -64,6 +64,7 @@ const CreateFlight = () => {
     formData.append("airplane_id", airplaneID);
     formData.append("base_price", price);
     formData.append("status", status);
+    formData.append("airline_name", ctx.isLoggedIn.airline);
 
     const formValues = [
       flightNum,
@@ -96,7 +97,7 @@ const CreateFlight = () => {
         }
       })
       .then((data) => {
-        
+        console.log(data);
       })
       .catch((error) => {
         console.log(error);

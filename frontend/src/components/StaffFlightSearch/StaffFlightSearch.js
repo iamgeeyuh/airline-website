@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styles from "./StaffFlightSearch.module.css";
+import AuthContext from "../../context/auth-context";
 
 const StaffFlightSearch = () => {
+  const ctx = useContext(AuthContext);
+
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0");
@@ -11,6 +14,7 @@ const StaffFlightSearch = () => {
   const [srcAirport, setSrcAirport] = useState("");
   const [dstCity, setDstCity] = useState("");
   const [dstAirport, setDstAirport] = useState("");
+
   const [range, setRange] = useState(currentMonthString);
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
@@ -44,6 +48,7 @@ const StaffFlightSearch = () => {
     formData.append("dst_city", dstCity);
     formData.append("dst_airport", dstAirport);
     formData.append("range", range);
+    formData.append("airline_name", ctx.isLoggedIn.airline);
 
     const formValues = [srcCity, srcAirport, dstCity, dstAirport];
 
@@ -53,6 +58,27 @@ const StaffFlightSearch = () => {
       setValid(true);
       return;
     }
+
+    fetch("http://localhost:5000/view_flights", {
+      method: "GET",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error searching for flights");
+        }
+      })
+      .then((data) => {
+        console.log(data)
+        //setValid(data.user);
+        setComplete(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

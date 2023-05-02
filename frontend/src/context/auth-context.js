@@ -5,12 +5,6 @@ const AuthContext = createContext();
 const loginReducer = (state, action) => {
   switch (action.type) {
     case "customer":
-      console.log({
-        isCustomer: true,
-        isLoggedIn: true,
-        name: action.name,
-        airline: "",
-      })
       return {
         isCustomer: true,
         isLoggedIn: true,
@@ -18,12 +12,6 @@ const loginReducer = (state, action) => {
         airline: "",
       };
     case "staff":
-      console.log({
-        isCustomer: false,
-        isLoggedIn: true,
-        name: action.name,
-        airline: action.airline,
-      })
       return {
         isCustomer: false,
         isLoggedIn: true,

@@ -11,7 +11,7 @@ const LogoutModal = () => {
   useEffect(() => {
     const clickOutsideHandler = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        ctx.setIsLoggedIn("logout");
+        ctx.setIsLoggedIn({ type: "logout" });
         ctx.setLoginModal(false);
         navigate("/");
       }
@@ -23,7 +23,7 @@ const LogoutModal = () => {
   }, [modalRef]);
 
   const logoutHandler = () => {
-    ctx.setIsLoggedIn("logout");
+    ctx.setIsLoggedIn({ type: "logout" });
     ctx.setLoginModal(false);
     navigate("/");
   };

@@ -37,19 +37,23 @@ const RevenueChart = () => {
   };
 
   return (
-    <div className={styles.revenueChartContainer}>
+    <div>
       <form className={styles.revenueChart}>
         <div>
-          <label>Year</label>
-          <input type="number" value={year} onChange={yearHandler} />
+          <div>
+            <label>Year</label>
+            <input type="number" value={year} onChange={yearHandler} />
+          </div>
+          <div>
+            <button onClick={submitHandler} type="submit">
+              Submit
+            </button>
+          </div>
         </div>
-        <div>
-          <button onClick={submitHandler} type="submit">
-            Submit
-          </button>
-        </div>
+        {!complete && <p>Missing fields.</p>}
+        <h3>Monthly Tickets Sold</h3>
       </form>
-      {!complete && <p className={styles.error}>Missing fields.</p>}
+
       <Chart dataPoints={ticketsSold} />
     </div>
   );

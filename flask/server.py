@@ -323,7 +323,7 @@ def check_flight_status():
 #staff
 #TODO: 1, 6, 7, 8, 9, 10, testings for all
 
-#6 View flights
+#1 View flights
 # return all flights that are departing within 30 days
 @app.route("/view_flights", methods=["GET"])
 def view_flights():

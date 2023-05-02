@@ -585,8 +585,8 @@ def logout():
 # Use case 1. my_flights
 @app.route("/myflights", methods=["GET"])
 def my_flights():
-    if not session.get("user"):
-        return {"error": "not authenticated"}
+    # if not session.get("user"):
+    #     return {"error": "not authenticated"}
     customer_email = request.form["customer_email"]
     cursor = conn.cursor()
     query = """
@@ -601,6 +601,44 @@ def my_flights():
     cursor.close()
     return jsonify(data)
 
+#Use case 2. search_flights
+@app.route("/search_flights", methods=["POST"])
+def search_flights():
+    source = request.form["source"]
+    destination = request.form["destination"]
+    departure_date = request.form["departure_date"]
+    return_date = request.form["return_date"]
+    trip_type = request.form.get["trip_type"]
+    if not (source and destination and departure_date):
+        return {"error": "source, destination and departure_date are required"}
+    cursor = conn.cursor()
+    if trip_type == "one_way":
+        query = """
+            SELECT *
+            FROM Flight INNER JOIN Airport AS dep_airport ON dep_airport.airport_code = Flight.airtport_code INNER JOIN Airport as arr_airport ON arr_airport.airport_code = Flight.airtport_code
+            WHERE dep_airport.airport_name = %s AND arr_airport.airport_name = %s
+                AND departure_time >= %s
+            ORDER BY departure_time ASC
+        """
+        cursor.execute(query, (source, destination, departure_date))
+    else:
+        if not return_date:
+            return {"error": "return_date is required for round trip"}
+        query = """
+            SELECT *
+            FROM Flight f1 JOIN Flight f2
+                ON f1.arrival_airport_name = f2.departure_airport_name
+                AND f1.departure_airport_name = %s
+                AND f2.arrival_airport_name = %s
+                AND f1.departure_time >= %s
+                AND f2.departure_time >= %s
+            ORDER BY f1.departure_time ASC
+        """
+        cursor.execute(query, (source, destination, departure_date, return_date))
+    data = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True)

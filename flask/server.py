@@ -243,10 +243,19 @@ def search_flight():
             "dep_airport_name": data["dep_airport.airport_name"],
             "dep_city": data["dep_airport.city"],
             "price": data["base_price"],
+            "purchased": False
         }
         flights.append(flight)
     if isOneWay == "true":
         print(flights)
+        query3 = (
+            "SELECT DISTINCT flight_num FROM Ticket"
+        )
+        cursor.execute(query3)
+        data3 = cursor.fetchall()
+        for elem in flight:
+                if (elem in data3['flight_num']):
+                   elem['purchased'] = True
         cursor.close()
         print(flights)
         return jsonify(flights)
@@ -297,9 +306,17 @@ def search_flight():
                 "dep_airport_name": data["dep_airport.airport_name"],
                 "dep_city": data["dep_airport.city"],
                 "price": data["base_price"],
+                "purchased": False
             }
             flights.append(flight)
-
+        query3 = (
+            "SELECT DISTINCT flight_num FROM Ticket"
+        )
+        cursor.execute(query3)
+        data3 = cursor.fetchall()
+        for elem in flight:
+                if (elem in data3['flight_num']):
+                   elem['purchased'] = True
         cursor.close()
         print(flights)
         return jsonify(flights)
@@ -657,8 +674,9 @@ def prev_flights():
 	return jsonify(data1)
 
 #Use case 2. search_flights
-#@app.route("/search_flights", methods=["POST"])
-#def search_flights():
+# @app.route("/search_flights", methods=["POST"])
+# def search_flights():
+
     
 
 # #Use case 2. search_flights

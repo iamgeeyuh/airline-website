@@ -330,7 +330,7 @@ def check_flight_status():
 #staff
 #TODO: 1, 6, 7, 8, 9, 10, testings for all
 
-#1 View flights
+#1 View flights done include key in output
 # return all flights that are departing within 30 days
 @app.route("/view_flights", methods=["GET"])
 def view_flights():
@@ -428,6 +428,12 @@ def create_flight():
     cursor.execute(query4, (airplane_id))
     data4 = cursor.fetchone()
     if not data4:
+        return jsonify(flights)
+    
+    query5 = "SELECT flight_num, departure_datetime, departure_airport_code, arrival_datetime, arrival_airport_code FROM Flight WHERE flight_num = %s, departure_datetime = %s, departure_airport_code = %s, arrival_datetime = %s, arrival_airport_code = %s "
+    cursor.execute(query5, (flight_num, departure_datetime, departure_airport_code, arrival_datetime, arrival_airport_code))
+    data5 = cursor.fetchone()
+    if not data5:
         return jsonify(flights)
     
     query5 = "INSERT INTO Flight VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"

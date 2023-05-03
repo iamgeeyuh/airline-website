@@ -89,7 +89,15 @@ const Flight = (props) => {
           </div>
         </div>
       </div>
-      {modalRatings && <RatingsModal modalHandler={modalRatingsHandler} />}
+      {modalRatings && (
+        <RatingsModal
+          modalHandler={modalRatingsHandler}
+          depTime={props.depTime}
+          depDate={props.depDate}
+          flightNum={props.key}
+          airline={props.airline}
+        />
+      )}
       {modalRatings && <div className={styles.dimmedBackground}></div>}
       {modalPassenger && (
         <PassengersModal modalHandler={modalPassengersHandler} />

@@ -243,7 +243,7 @@ def search_flight():
             "dep_airport_name": data["dep_airport.airport_name"],
             "dep_city": data["dep_airport.city"],
             "price": data["base_price"],
-            "purchased": False
+            "purchased": False,
         }
         flights.append(flight)
     if isOneWay == "true":
@@ -588,7 +588,7 @@ def view_flight_ratings():
     return {"average_rating": None, "comments": None}
 
 #7. View frequent customers partially done query is not correct.... needs to be modified
-@app.route("/view_frequent_customers", methods=["GET"])
+@app.route("/view_frequent_customers", methods=["GET","POST"])
 def view_frequent_customers():
     cursor = conn.cursor()
     query = "SELECT Customer.email, Customer.fname, COUNT(*) AS frequency FROM Customer INNER JOIN Ticket ON Customer.email = Ticket.email WHERE DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <= Booking.booking_date GROUP BY Customer.email ORDER BY frequency DESC LIMIT 1"

@@ -17,6 +17,35 @@ const RatingsModal = (props) => {
     };
   }, [modalRef]);
 
+  const loadRatings = () => {
+    const formData = new URLSearchParams();
+    formData.append("airline_name", props.airline);
+    formData.append("flight_num", props.flightNum);
+    formData.append("dep_date", props.depDate);
+    formData.append("dep_time", props.depTime);
+
+    fetch("http://localhost:5000/view_flights", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error logging in");
+        }
+      })
+      .then((data) => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    loadRatings();
+  }, []);
+
   return (
     <div className={styles.modal} ref={modalRef}>
       <div>

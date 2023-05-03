@@ -32,10 +32,33 @@ const ViewCustomers = () => {
     }
   };
 
-  const flightsHandler = (flightsLst) => {
-    setFlights(flightsLst);
-    setShowFlights(true);
+  const topCustomer = () => {
+    const formData = new URLSearchParams();
+    formData.append("airline_name", ctx.isLoggedIn.airline);
+
+    fetch("http://localhost:5000/view_frequent_customers", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error logging in");
+        }
+      })
+      .then((data) => {
+        
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+  useEffect(() => {
+    topCustomer();
+  }, []);
 
   return (
     <div>

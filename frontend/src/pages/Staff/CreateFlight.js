@@ -161,7 +161,7 @@ const CreateFlight = () => {
               />
             </div>
           </div>
-          {!valid && <p>Flight already exists.</p>}
+          {!valid && <p>Invalid input.</p>}
           {!complete && <p>Missing fields.</p>}
           <button onClick={submitHandler} type="submit">
             Submit

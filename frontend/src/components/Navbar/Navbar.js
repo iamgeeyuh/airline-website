@@ -57,7 +57,16 @@ const Navbar = () => {
         )}
         {isLoggedIn.isLoggedIn &&
           (isLoggedIn.isCustomer ? (
-            <li></li>
+            <li>
+              <NavLink
+                to="Review"
+                className={({ isActive }) =>
+                  isActive ? styles.active : undefined
+                }
+              >
+                Review Flights
+              </NavLink>
+            </li>
           ) : (
             <>
               <li>

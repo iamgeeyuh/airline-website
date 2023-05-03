@@ -657,6 +657,11 @@ def prev_flights():
 	cursor.close()
 	return jsonify(data1)
 
+#Use case 2. search_flights
+@app.route("/search_flights", methods=["POST"])
+def search_flights():
+    
+
 # #Use case 2. search_flights
 # @app.route("/search_flights", methods=["POST"])
 # def search_flights():
@@ -696,5 +701,5 @@ def prev_flights():
 #     cursor.close()
 #     return jsonify(data)
 
-if __name__ == "__main__":
+  if __name__ == "__main__":
     app.run(debug=True)

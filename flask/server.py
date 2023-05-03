@@ -587,6 +587,7 @@ def view_frequent_customers():
 @app.route("/logout")
 def logout():
     session.pop("user", None)
+    return jsonify([])
 
 #Customer use cases 
 

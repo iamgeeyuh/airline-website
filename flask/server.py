@@ -332,7 +332,7 @@ def check_flight_status():
 
 #1 View flights done include key in output
 # return all flights that are departing within 30 days
-@app.route("/view_flights", methods=["GET"])
+@app.route("/view_flights", methods=["GET", "POST"])
 def view_flights():
     airline_name = request.form["airline_name"]
     cursor = conn.cursor() 

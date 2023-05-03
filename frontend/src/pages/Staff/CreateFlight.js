@@ -91,12 +91,7 @@ const CreateFlight = () => {
         }
       })
       .then((data) => {
-        if (data.change_status) {
-          setValid(true);
-        } else {
-          setValid(false);
-        }
-        setComplete(true);
+        console.log(data)
       })
       .catch((error) => {
         console.log(error);

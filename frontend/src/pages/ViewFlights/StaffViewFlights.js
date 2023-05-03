@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import StaffFlightSearch from "../../components/StaffFlightSearch/StaffFlightSearch";
 import FoundFlight from "../../components/Flight/FoundFlight/FoundFlight";
 import AuthContext from "../../context/auth-context";
@@ -31,14 +31,16 @@ const StaffViewFlights = () => {
         }
       })
       .then((data) => {
-        console.log(data);
+        flightsHandler(data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  futureFlights();
+  useEffect(() => {
+    futureFlights();
+  }, []);
 
   return (
     <div>

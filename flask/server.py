@@ -253,7 +253,8 @@ def search_flight():
         )
         cursor.execute(query3)
         data3 = cursor.fetchall()
-        for elem in flight['flight_num']:
+        for flight in flights:
+          for elem in flight:
                 if (elem in data3['flight_num']):
                    elem['purchased'] = True
         cursor.close()
@@ -314,7 +315,8 @@ def search_flight():
         )
         cursor.execute(query3)
         data3 = cursor.fetchall()
-        for elem in flight['flight_num']:
+        for flight in flights:
+          for elem in flight:
                 if (elem in data3['flight_num']):
                    elem['purchased'] = True
         cursor.close()

@@ -45,7 +45,7 @@ const StaffViewFlights = () => {
   return (
     <div>
       <StaffFlightSearch />
-      {showFlights && <FoundFlight flights={flights} />}
+      {showFlights && <FoundFlight flights={flights} page="staff"/>}
     </div>
   );
 };

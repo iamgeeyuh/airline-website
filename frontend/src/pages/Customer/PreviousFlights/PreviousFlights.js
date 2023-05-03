@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import FoundFlight from "../../../components/Flight/FoundFlight/FoundFlight";
 import AuthContext from "../../../context/auth-context";
 
 const PreviousFlights = () => {
@@ -12,7 +13,7 @@ const PreviousFlights = () => {
     setShowFlights(true);
   };
 
-  const futureFlights = () => {
+  const prevFlights = () => {
     const formData = new URLSearchParams();
     formData.append("customer_email", ctx.isLoggedIn.email);
 
@@ -29,7 +30,7 @@ const PreviousFlights = () => {
         }
       })
       .then((data) => {
-        console.log(data);
+        flightsHandler(data);
       })
       .catch((error) => {
         console.log(error);
@@ -37,8 +38,12 @@ const PreviousFlights = () => {
   };
 
   useEffect(() => {
-    futureFlights();
+    prevFlights();
   }, []);
+
+  return (
+    <div>{showFlights && <FoundFlight flights={flights} page="review" />}</div>
+  );
 };
 
 export default PreviousFlights;

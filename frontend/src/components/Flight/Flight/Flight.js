@@ -2,12 +2,18 @@ import { useState } from "react";
 import PassengersModal from "../PassengersModal/PassengersModal";
 import RatingsModal from "../Ratings/RatingsModal/RatingsModal";
 import PurchaseModal from "../PurchaseModal/PurchaseModal";
+import ViewReviewModal from "../../ViewReviewModal/ViewReviewModal";
 import styles from "./Flight.module.css";
 
 const Flight = (props) => {
   const [modalRatings, setModalRatings] = useState(false);
   const [modalPassenger, setModalPassenger] = useState(false);
   const [modalPurchase, setModalPurchase] = useState(false);
+  const [modalReview, setModalReview] = useState(false);
+
+  const modalReviewHandler = () => {
+    setModalReview(false);
+  };
 
   const modalRatingsHandler = () => {
     setModalRatings(false);
@@ -19,6 +25,10 @@ const Flight = (props) => {
 
   const modalPurchaseHandler = () => {
     setModalPurchase(false);
+  };
+
+  const checkReviews = () => {
+    setModalReview(true);
   };
 
   const checkRatings = () => {
@@ -53,7 +63,11 @@ const Flight = (props) => {
               Purchase
             </button>
           )}
-
+          {props.page == "review" && (
+            <button className={styles.buttons} onClick={checkReviews}>
+              Review
+            </button>
+          )}
           <div>
             <label>From</label>
             <h2>{props.depTime}</h2>
@@ -83,6 +97,8 @@ const Flight = (props) => {
       {modalPassenger && <div className={styles.dimmedBackground}></div>}
       {modalPurchase && <PurchaseModal modalHandler={modalPurchaseHandler} />}
       {modalPurchase && <div className={styles.dimmedBackground}></div>}
+      {modalReview && <ViewReviewModal modalHandler={modalReviewHandler} />}
+      {modalReview && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

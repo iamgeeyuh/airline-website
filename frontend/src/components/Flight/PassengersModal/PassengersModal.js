@@ -1,5 +1,4 @@
 import { useRef, useEffect } from "react";
-
 import styles from "./PassengersModal.module.css";
 
 const PassengersModal = (props) => {

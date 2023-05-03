@@ -571,7 +571,7 @@ def add_airport():
     return {"add_airport": True}
 
 #6. View flight ratings:
-@app.route("/view_flight_ratings", methods=["GET"])
+@app.route("/view_flight_ratings", methods=["POST"])
 def view_flight_ratings():
     flight_number = request.form["flight_number"]
     cursor = conn.cursor()

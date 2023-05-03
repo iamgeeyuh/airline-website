@@ -64,6 +64,7 @@ const FlightSearch = (props) => {
       })
       .then((data) => {
         props.flightsHandler(data);
+        console.log(data)
       })
       .catch((error) => {
         console.log(error);

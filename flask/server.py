@@ -406,6 +406,8 @@ def create_flight():
     base_price = request.form["base_price"]
     status = request.form["status"]
 
+    if(departure_airport_code == arrival_airport_code):
+        return jsonify([])
 
     # insert new data. if the value(s) is invalid, return the flights info
     # that will be displayed
@@ -592,7 +594,7 @@ def logout():
 @app.route("/myflights", methods=["GET", "POST"])
 def my_flights():
     print(request.form)
-    customer_email = session['user']
+    customer_email = request.form["customer_email"]
     dep_city = request.form["src_city"]
     dep_airport_name = request.form["src_airport"]
     arr_city = request.form["dst_city"]
@@ -728,7 +730,7 @@ def my_flights():
 # queries database to find all of customer's previous flights
 @app.route('/user_prev_flights', methods=['GET', 'POST'])
 def prev_flights():
-	username = session['user']
+	customer_email = request.form["customer_email"]
 	cursor = conn.cursor()
 	query = 'SELECT distinct airline_name, flight_num, departure_datetime, arrival_datetime, ' + \
 			'status, dep_airport, dep_city, arr_airport, arr_city FROM flight NATURAL JOIN ' + \
@@ -736,7 +738,7 @@ def prev_flights():
 			'(SELECT name as dep_airport, city as dep_city FROM Airport) as departure NATURAL JOIN ' + \
 			'( Ticket natural join Customer) WHERE email = %s and departure_datetime < CURRENT_TIMESTAMP'
     
-	cursor.execute(query, (username))
+	cursor.execute(query, (customer_email))
 	data1 = cursor.fetchall() 
 
 	cursor.close()

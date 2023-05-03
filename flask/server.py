@@ -256,7 +256,7 @@ def search_flight():
         for flight in flights:
           for elem in flight:
                 if (elem in data3['flight_num']):
-                   elem['purchased'] = True
+                   flight['purchased'] = True
         cursor.close()
         print(flights)
         return jsonify(flights)
@@ -318,7 +318,7 @@ def search_flight():
         for flight in flights:
           for elem in flight:
                 if (elem in data3['flight_num']):
-                   elem['purchased'] = True
+                   flight['purchased'] = True
         cursor.close()
         print(flights)
         return jsonify(flights)

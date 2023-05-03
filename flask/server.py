@@ -354,7 +354,7 @@ def view_flights():
             + "INNER JOIN Airport as dep_airport ON"
             +" Flight.departure_airport_code = dep_airport.airport_code "
             + "WHERE departure_datetime > CURRENT_TIMESTAMP AND "
-            + "departure_datetime <= DATEADD(day, 30, CURRENT_TIMESTAMP) "
+            + "TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) <= (30 * 60)"
             + "AND airline_name = %s"
     )
 

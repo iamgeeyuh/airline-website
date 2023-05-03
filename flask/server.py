@@ -586,7 +586,7 @@ def logout():
 @app.route("/myflights", methods=["GET", "POST"])
 def my_flights():
     print(request.form)
-    customer_email = request.form["customer_email"]
+    customer_email = session['user']
     dep_city = request.form["src_city"]
     dep_airport_name = request.form["src_airport"]
     arr_city = request.form["dst_city"]
@@ -718,6 +718,23 @@ def my_flights():
         cursor.close()
         print(flights)
         return jsonify(flights)
+    
+# queries database to find all of customer's previous flights
+@app.route('/user_prev_flights', methods=['GET', 'POST'])
+def prev_flights():
+	username = session['user']
+	cursor = conn.cursor()
+	query = 'SELECT distinct airline_name, flight_num, departure_datetime, arrival_datetime, ' + \
+			'status, dep_airport, dep_city, arr_airport, arr_city FROM flight NATURAL JOIN ' + \
+			'(SELECT name as arr_airport, city as arr_city FROM Airport) as arrival NATURAL JOIN ' + \
+			'(SELECT name as dep_airport, city as dep_city FROM Airport) as departure NATURAL JOIN ' + \
+			'( Ticket natural join Customer) WHERE email = %s and departure_datetime < CURRENT_TIMESTAMP'
+    
+	cursor.execute(query, (username))
+	data1 = cursor.fetchall() 
+
+	cursor.close()
+	return jsonify(data1)
 
 # #Use case 2. search_flights
 # @app.route("/search_flights", methods=["POST"])

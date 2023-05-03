@@ -735,8 +735,8 @@ def prev_flights():
 	cursor = conn.cursor()
 	query = 'SELECT distinct airline_name, flight_num, departure_datetime, arrival_datetime, ' + \
 			'status, dep_airport, dep_city, arr_airport, arr_city FROM flight NATURAL JOIN ' + \
-			'(SELECT name as arr_airport, city as arr_city FROM Airport) as arrival NATURAL JOIN ' + \
-			'(SELECT name as dep_airport, city as dep_city FROM Airport) as departure NATURAL JOIN ' + \
+			'(SELECT airport_name as arr_airport, city as arr_city FROM Airport) as arrival NATURAL JOIN ' + \
+			'(SELECT airport_name as dep_airport, city as dep_city FROM Airport) as departure NATURAL JOIN ' + \
 			'( Ticket natural join Customer) WHERE email = %s and departure_datetime < CURRENT_TIMESTAMP'
     
 	cursor.execute(query, (customer_email))

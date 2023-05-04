@@ -608,29 +608,74 @@ def logout():
 
 #Customer use cases 
 
-# Use case 1. my_flights
-@app.route("/myflights", methods=["GET", "POST"])
-def my_flights():
-    print(request.form)
+# # Use case 1. my_flights
+# @app.route("/myflights", methods=["GET", "POST"])
+# def my_flights():
+#     print(request.form)
+#     customer_email = request.form["customer_email"]
+#     cursor = conn.cursor()
+#     query = (
+#         "SELECT flight_num, departure_datetime, airline_name,"
+#         " arrival_datetime, "
+#         + "arr_airport.airport_name, arr_airport.city,"
+#         " dep_airport.airport_name, dep_airport.city, base_price "
+#         + "FROM Flight INNER JOIN Airport as arr_airport ON"
+#         " Flight.arrival_airport_code = arr_airport.airport_code "
+#         + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
+#         " dep_airport.airport_code INNER JOIN Ticket ON Ticket.flight_num = Flight.flight_num"
+#         + "WHERE departure_datetime > CURRENT_TIMESTAMP AND TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) <= (30 * 60) AND email = %s"
+#     )
+
+#     cursor.execute(query, (customer_email))
+#     data_array = cursor.fetchall()
+
+#     for data in data_array:
+#         flight = {
+#             "flight_num": data["flight_num"],
+#             "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
+#             "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
+#             "airline_name": data["airline_name"],
+#             "arrival_date": str(data["arrival_datetime"].date()).replace("00:00:00 GMT", ""),
+#             "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
+#             "arr_airport_name": data["airport_name"],
+#             "arr_city": data["city"],
+#             "dep_airport_name": data["dep_airport.airport_name"],
+#             "dep_city": data["dep_airport.city"],
+#             "price": data["base_price"],
+#             "purchased": False
+#         }
+        
+#         query3 = (
+#             "SELECT DISTINCT flight_num FROM Ticket WHERE email = %s"
+#         )
+#         cursor.execute(query3, (customer_email))
+#         data3 = cursor.fetchall()
+#         for elem in flight:
+#                 if (elem in data3['flight_num']):
+#                    elem['purchased'] = True
+#         cursor.close()
+#         print(flight)
+#         return jsonify(flight)
+
+# queries database to find all of customer's previous flights
+@app.route('/prev_flights', methods=['GET', 'POST'])
+def prev_flights():
     customer_email = request.form["customer_email"]
     cursor = conn.cursor()
-    query = (
-        "SELECT flight_num, departure_datetime, airline_name,"
-        " arrival_datetime, "
-        + "arr_airport.airport_name, arr_airport.city,"
-        " dep_airport.airport_name, dep_airport.city, base_price "
-        + "FROM Flight INNER JOIN Airport as arr_airport ON"
-        " Flight.arrival_airport_code = arr_airport.airport_code "
-        + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
-        " dep_airport.airport_code INNER JOIN Ticket ON Ticket.flight_num = Flight.flight_num"
-        + "WHERE departure_datetime > CURRENT_TIMESTAMP AND TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) <= (30 * 60) AND email = %s"
-    )
-
+    query = "SELECT flight_num, departure_datetime, airline_name,"
+    " arrival_datetime, "
+    + "arr_airport.airport_name, arr_airport.city,"
+    " dep_airport.airport_name, dep_airport.city, base_price "
+    + "FROM Flight INNER JOIN Airport as arr_airport ON"
+    " Flight.arrival_airport_code = arr_airport.airport_code "
+    + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
+    " dep_airport.airport_code "
+    + "WHERE departure_datetime < CURRENT_TIMESTAMP and email = %s"
     cursor.execute(query, (customer_email))
     data_array = cursor.fetchall()
-
+    flights = []
     for data in data_array:
-        flight = {
+            flight = {
             "flight_num": data["flight_num"],
             "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
             "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
@@ -641,89 +686,44 @@ def my_flights():
             "arr_city": data["city"],
             "dep_airport_name": data["dep_airport.airport_name"],
             "dep_city": data["dep_airport.city"],
-            "price": data["base_price"],
-            "purchased": False
-        }
-        
-        query3 = (
-            "SELECT DISTINCT flight_num FROM Ticket WHERE email = %s"
-        )
-        cursor.execute(query3, (customer_email))
-        data3 = cursor.fetchall()
-        for elem in flight:
-                if (elem in data3['flight_num']):
-                   elem['purchased'] = True
-        cursor.close()
-        print(flight)
-        return jsonify(flight)
-    
-# queries database to find all of customer's previous flights
-@app.route('/prev_flights', methods=['GET', 'POST'])
-def prev_flights():
-  customer_email = request.form["customer_email"]
-  cursor = conn.cursor()
-  query = "SELECT flight_num, departure_datetime, airline_name,"
-  " arrival_datetime, "
-  + "arr_airport.airport_name, arr_airport.city,"
-  " dep_airport.airport_name, dep_airport.city, base_price "
-  + "FROM Flight INNER JOIN Airport as arr_airport ON"
-  " Flight.arrival_airport_code = arr_airport.airport_code "
-  + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
-  " dep_airport.airport_code "
-  + "WHERE departure_datetime < CURRENT_TIMESTAMP and email = %s"
-  cursor.execute(query, (customer_email))
-  data_array = cursor.fetchall()
-  flights = []
-  for data in data_array:
-	    flight = {
-        "flight_num": data["flight_num"],
-        "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
-        "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
-        "airline_name": data["airline_name"],
-        "arrival_date": str(data["arrival_datetime"].date()).replace("00:00:00 GMT", ""),
-        "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
-        "arr_airport_name": data["airport_name"],
-        "arr_city": data["city"],
-        "dep_airport_name": data["dep_airport.airport_name"],
-        "dep_city": data["dep_airport.city"],
-        "price": data["base_price"]}
-  flights.append(flight)
-  cursor.close()
-  return jsonify(flights)
+            "price": data["base_price"]}
+            flights.append(flight)
+    cursor.close()
+    return jsonify(flights)
 
 # queries database to find all of customer's future flights
 @app.route('/future_flights', methods=['GET', 'POST'])
 def future_flights():
-  customer_email = request.form["customer_email"]
-  cursor = conn.cursor()
-  query = "SELECT flight_num, departure_datetime, airline_name,"
-  " arrival_datetime, "
-  + "arr_airport.airport_name, arr_airport.city,"
-  " dep_airport.airport_name, dep_airport.city, base_price "
-  + "FROM Flight INNER JOIN Airport as arr_airport ON"
-  " Flight.arrival_airport_code = arr_airport.airport_code "
-  + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
-  " dep_airport.airport_code "
-  + "WHERE departure_datetime > CURRENT_TIMESTAMP and email = %s"
-  cursor.execute(query, (customer_email))
-  data_array = cursor.fetchall()
-  flights = []
-  for data in data_array:
-	    flight = {
-        "flight_num": data["flight_num"],
-        "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
-        "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
-        "airline_name": data["airline_name"],
-        "arrival_date": str(data["arrival_datetime"].date()).replace("00:00:00 GMT", ""),
-        "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
-        "arr_airport_name": data["airport_name"],
-        "arr_city": data["city"],
-        "dep_airport_name": data["dep_airport.airport_name"],
-        "dep_city": data["dep_airport.city"],
-        "price": data["base_price"]}
-        flights.append(flight)
-  cursor.close()
-  return jsonify(flights)
+    customer_email = request.form["customer_email"]
+    cursor = conn.cursor()
+    query = "SELECT flight_num, departure_datetime, airline_name,"
+    " arrival_datetime, "
+    + "arr_airport.airport_name, arr_airport.city,"
+    " dep_airport.airport_name, dep_airport.city, base_price "
+    + "FROM Flight INNER JOIN Airport as arr_airport ON"
+    " Flight.arrival_airport_code = arr_airport.airport_code "
+    + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
+    " dep_airport.airport_code "
+    + "WHERE departure_datetime > CURRENT_TIMESTAMP and email = %s"
+    cursor.execute(query, (customer_email))
+    data_array = cursor.fetchall()
+    flights = []
+    for data in data_array:
+            flight = {
+            "flight_num": data["flight_num"],
+            "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
+            "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
+            "airline_name": data["airline_name"],
+            "arrival_date": str(data["arrival_datetime"].date()).replace("00:00:00 GMT", ""),
+            "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
+            "arr_airport_name": data["airport_name"],
+            "arr_city": data["city"],
+            "dep_airport_name": data["dep_airport.airport_name"],
+            "dep_city": data["dep_airport.city"],
+            "price": data["base_price"]}
+            flights.append(flight)
+    cursor.close()
+    return jsonify(flights)
 
 @app.route("/search_flight_customer", methods=["GET", "POST"])
 def search_flight_customer():
@@ -764,7 +764,7 @@ def search_flight_customer():
     cursor.execute(query, queries)
     data_array = cursor.fetchall()
     for data in data_array:
-	    flight = {
+        flight = {
             "flight_num": data["flight_num"],
             "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
             "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
@@ -807,7 +807,7 @@ def search_flight_customer():
         cursor.execute(return_query, ret_queries)
         ret_data = cursor.fetchall()
         for data in ret_data:
-	        flight = {
+            flight = {
             "flight_num": data["flight_num"],
             "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
             "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
@@ -819,8 +819,8 @@ def search_flight_customer():
             "dep_airport_name": data["dep_airport.airport_name"],
             "dep_city": data["dep_airport.city"],
             "price": data["base_price"] }
-	    flights.append(flight)
-		# print(return_query, ret_data)
+        flights.append(flight)
+        # print(return_query, ret_data)
     cursor.close()
     print(flights)
     return jsonify(flights)
@@ -892,17 +892,17 @@ def display_cancel_trip():
     dep_timestamp = request.form['dep_timestamp']
     ticket_id = request.form['ticket_id']
 
-   	# only shows flights more than 24 hours in the future so a user cannot cancel a flight that occurs in under 24 hours
+    # only shows flights more than 24 hours in the future so a user cannot cancel a flight that occurs in under 24 hours
     query = 'SELECT ticket_id, airline_name, flight_num, departure_datetime, arrival_datetime, ' + \
-			'status, dep_airport, dep_city, arr_airport, arr_city FROM flight NATURAL JOIN ' + \
-			'(SELECT airprt_name as arr_airport, city as arr_city FROM airport) as arrival NATURAL JOIN ' + \
-			'(SELECT airport_name as dep_airport, city as dep_city FROM airport) as departure NATURAL JOIN ' + \
-			'(purchase natural join ticket natural join customer) WHERE email = %s and TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) >= (24*3600)'
+            'status, dep_airport, dep_city, arr_airport, arr_city FROM flight NATURAL JOIN ' + \
+            '(SELECT airprt_name as arr_airport, city as arr_city FROM airport) as arrival NATURAL JOIN ' + \
+            '(SELECT airport_name as dep_airport, city as dep_city FROM airport) as departure NATURAL JOIN ' + \
+            '(purchase natural join ticket natural join customer) WHERE email = %s and TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) >= (24*3600)'
     cursor.execute(query, (customer_email))
     data1 = cursor.fetchall() 
     if not data1:
-      error = 'Ticket does not belong to the customer or the flight takes place in less than 24 hours'
-      return jsonify({'error': error})
+        error = 'Ticket does not belong to the customer or the flight takes place in less than 24 hours'
+        return jsonify({'error': error})
 
     # remove the ticket from the database
     query = 'DELETE FROM Ticket WHERE ticket_id = %s AND flight_num = %s AND airline_name = %s AND dep_timestamp = %s'

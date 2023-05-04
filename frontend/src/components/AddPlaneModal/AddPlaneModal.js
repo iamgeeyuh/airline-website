@@ -21,9 +21,10 @@ const AddPlaneModal = (props) => {
       <h2>Plane added!</h2>
       {props.planes.map((plane) => (
         <div>
-          <p>{plane.airplane_id}</p>
-          <p>{plane.manufacturer}</p>
-          <p>{plane.manufacturing_date}</p>
+          <h4>ID: {plane.airplane_id}</h4>
+          <p>
+            Manufactured by {plane.manufacturer} on {plane.manufacturing_date}
+          </p>
         </div>
       ))}
       <button onClick={props.modalHandler}>Ok</button>

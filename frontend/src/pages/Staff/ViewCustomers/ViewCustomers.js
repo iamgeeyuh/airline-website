@@ -7,7 +7,7 @@ const ViewCustomers = () => {
   const ctx = useContext(AuthContext);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
   const [email, setEmail] = useState("");
-  const [valid, setValid] = useState(true);
+  const [topCustomer, setTopCustomer] = useState("");
   const [complete, setComplete] = useState(true);
   const [flights, setFlights] = useState([]);
   const [showFlights, setShowFlights] = useState(false);
@@ -27,12 +27,34 @@ const ViewCustomers = () => {
     formData.append("email", email);
     if (email === "") {
       setComplete(false);
-      setValid(true);
       return;
     }
+
+    fetch("http://localhost:5000/view_customer", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error loading flights");
+        }
+      })
+      .then((data) => {
+        setFlights(data);
+        setShowFlights(true);
+        setComplete(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    setEmail("");
   };
 
-  const topCustomer = () => {
+  const loadTopCustomer = () => {
     const formData = new URLSearchParams();
     formData.append("airline_name", ctx.isLoggedIn.airline);
 
@@ -45,11 +67,11 @@ const ViewCustomers = () => {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error("Error logging in");
+          throw new Error("Error loading top customer");
         }
       })
       .then((data) => {
-        
+        setTopCustomer(data.fname + " " + data.lname);
       })
       .catch((error) => {
         console.log(error);
@@ -57,7 +79,7 @@ const ViewCustomers = () => {
   };
 
   useEffect(() => {
-    topCustomer();
+    loadTopCustomer();
   }, []);
 
   return (
@@ -67,7 +89,7 @@ const ViewCustomers = () => {
           <div className={styles.viewCustomers}>
             <div className={styles.topCustomer}>
               <h2>Top Customer: </h2>
-              <p>John Doe</p>
+              <p>{topCustomer}</p>
             </div>
 
             <form>
@@ -83,12 +105,13 @@ const ViewCustomers = () => {
                 Submit
               </button>
               <div className={styles.error}>
-                {!valid && <p>Customer does not exist.</p>}
                 {!complete && <p>Missing fields.</p>}
               </div>
             </form>
           </div>
-          <div>{showFlights && <FoundFlight flights={flights} />}</div>
+          <div>
+            {showFlights && <FoundFlight flights={flights} page="staff" />}
+          </div>
         </>
       )}
     </div>

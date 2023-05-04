@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import CreateFlightModal from "../../components/CreateFlightModal/CreateFlightModal";
 import styles from "./StaffForm.module.css";
 import AuthContext from "../../context/auth-context";
 
@@ -14,6 +15,11 @@ const CreateFlight = () => {
   const [price, setPrice] = useState("");
   const [valid, setValid] = useState(true);
   const [complete, setComplete] = useState(true);
+  const [modal, setModal] = useState(false);
+
+  const modalHandler = () => {
+    setModal(false);
+  };
 
   const flightNumHandler = (event) => {
     setFlightNum(event.target.value);
@@ -91,11 +97,21 @@ const CreateFlight = () => {
         }
       })
       .then((data) => {
-        console.log(data)
+        setModal(data.length === 0);
+        setValid(data.length === 0);
+        setComplete(true);
       })
       .catch((error) => {
         console.log(error);
       });
+
+    setFlightNum("");
+    setAirplaneID("");
+    setDepTime("");
+    setDepCode("");
+    setArrTime("");
+    setArrCode("");
+    setPrice("");
   };
 
   return (
@@ -168,6 +184,8 @@ const CreateFlight = () => {
           </button>
         </form>
       )}
+      {modal && <CreateFlightModal modalHandler={modalHandler} />}
+      {modal && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

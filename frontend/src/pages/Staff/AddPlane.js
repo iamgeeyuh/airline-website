@@ -71,7 +71,6 @@ const AddPlane = () => {
         }
       })
       .then((data) => {
-        console.log(data)
         setModal(data.length === 0);
         setValid(data.length === 0);
         setPlanes(data);
@@ -80,6 +79,10 @@ const AddPlane = () => {
       .catch((error) => {
         console.log(error);
       });
+    setAirplaneID("");
+    setSeats("");
+    setManufacturer("");
+    setManufacturingDate("");
   };
 
   return (
@@ -90,11 +93,15 @@ const AddPlane = () => {
           <div>
             <div>
               <label>Airplane ID</label>
-              <input type="text" onChange={airplaneIDHandler} />
+              <input
+                type="text"
+                value={airplaneID}
+                onChange={airplaneIDHandler}
+              />
             </div>
             <div>
               <label>Seats</label>
-              <input type="number" onChange={seatsHandler} />
+              <input type="number" value={seats} onChange={seatsHandler} />
             </div>
           </div>
           <div>
@@ -103,12 +110,17 @@ const AddPlane = () => {
               <input
                 type="text"
                 placeholder="Boeing"
+                value={manufacturer}
                 onChange={manufacturerHandler}
               />
             </div>
             <div>
               <label>Manufacturing Date</label>
-              <input type="date" onChange={manufacturingDateHandler} />
+              <input
+                type="date"
+                value={manufacturingDate}
+                onChange={manufacturingDateHandler}
+              />
             </div>
           </div>
           {!valid && <p>Plane already exists.</p>}

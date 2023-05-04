@@ -87,7 +87,6 @@ const ChangeFlightStatus = () => {
               <select onChange={newStatusHandler}>
                 <option>on-time</option>
                 <option>delayed</option>
-                <option>canceled</option>
               </select>
             </div>
           </div>

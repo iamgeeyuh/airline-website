@@ -7,11 +7,9 @@ const StaffViewFlights = () => {
   const ctx = useContext(AuthContext);
 
   const [flights, setFlights] = useState([]);
-  const [showFlights, setShowFlights] = useState(false);
 
   const flightsHandler = (flightsLst) => {
     setFlights(flightsLst);
-    setShowFlights(true);
   };
 
   const futureFlights = () => {
@@ -44,8 +42,8 @@ const StaffViewFlights = () => {
 
   return (
     <div>
-      <StaffFlightSearch />
-      {showFlights && <FoundFlight flights={flights} page="staff"/>}
+      <StaffFlightSearch flightsHandler={flightsHandler}/>
+      <FoundFlight flights={flights} page="staff"/>
     </div>
   );
 };

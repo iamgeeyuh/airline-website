@@ -1,9 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Ratings from "../Ratings";
 import styles from "./RatingsModal.module.css";
 
 const RatingsModal = (props) => {
   const modalRef = useRef(null);
+  const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
     const clickOutsideHandler = (event) => {
@@ -24,7 +25,7 @@ const RatingsModal = (props) => {
     formData.append("dep_date", props.depDate);
     formData.append("dep_time", props.depTime);
 
-    fetch("http://localhost:5000/view_flights", {
+    fetch("http://localhost:5000/view_ratings", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
@@ -33,10 +34,12 @@ const RatingsModal = (props) => {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error("Error logging in");
+          throw new Error("Error viewing ratings");
         }
       })
-      .then((data) => {})
+      .then((data) => {
+        setRatings(data);
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -50,24 +53,17 @@ const RatingsModal = (props) => {
     <div className={styles.modal} ref={modalRef}>
       <div>
         <h2>Ratings</h2>
-        <Ratings name="Jia Huang" review="Amazing flight!" rating="4" />
-        <Ratings name="Isha Jagani" rating="5" />
-        <Ratings
-          name="Shenyi Huang"
-          review="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        />
-        <Ratings
-          name="Shenyi Huang"
-          review="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        />
-        <Ratings
-          name="Shenyi Huang"
-          review="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        />
-        <Ratings
-          name="Shenyi Huang"
-          review="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        />
+        {ratings.length == 0 ? (
+          <p>No reviews</p>
+        ) : (
+          ratings.map((rating) => (
+            <Ratings
+              name={rating.name}
+              review={rating.review}
+              rating={rating.rating}
+            />
+          ))
+        )}
       </div>
       <div>
         <button onClick={props.modalHandler}>Ok</button>

@@ -4,8 +4,11 @@
   text-align: center;
   display: flex;
   justify-content: space-around;
-  height: 10rem;
+  height: 15rem;
   width: 80%;
   background-color: var(--main-purple);
   margin: 0 auto;
+  overflow-x: scroll;
+  margin-bottom: 100px;
 }
+

@@ -9,5 +9,16 @@
   padding-bottom: 20px;
   max-width: 500px;
   padding: 40px;
+  overflow-y: scroll;
+  max-height: 90vh;
 }
 
+.modal div {
+  border: solid;
+  border-color: var(--main-purple);
+  border-width: 1px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}

@@ -2,21 +2,13 @@ import { useState, useContext } from "react";
 import styles from "./StaffFlightSearch.module.css";
 import AuthContext from "../../context/auth-context";
 
-const StaffFlightSearch = () => {
+const StaffFlightSearch = (props) => {
   const ctx = useContext(AuthContext);
-
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0");
-  const currentMonthString = `${currentYear}-${currentMonth}`;
-
   const [srcCity, setSrcCity] = useState("");
   const [srcAirport, setSrcAirport] = useState("");
   const [dstCity, setDstCity] = useState("");
   const [dstAirport, setDstAirport] = useState("");
-
-  const [range, setRange] = useState(currentMonthString);
-  const [valid, setValid] = useState(true);
+  const [range, setRange] = useState("");
   const [complete, setComplete] = useState(true);
 
   const srcCityHandler = (event) => {
@@ -55,11 +47,10 @@ const StaffFlightSearch = () => {
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
       setComplete(false);
-      setValid(true);
       return;
     }
 
-    fetch("http://localhost:5000/view_flights", {
+    fetch("http://localhost:5000/staff_view_flights", {
       method: "GET",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
@@ -72,8 +63,7 @@ const StaffFlightSearch = () => {
         }
       })
       .then((data) => {
-        console.log(data)
-        //setValid(data.user);
+        props.flightsHandler(data);
         setComplete(true);
       })
       .catch((error) => {
@@ -121,7 +111,6 @@ const StaffFlightSearch = () => {
           </div>
         </div>
       </div>
-      {!valid && <p>Airport already exists.</p>}
       {!complete && <p>Missing fields.</p>}
       <button onClick={submitHandler}>Search</button>
     </form>

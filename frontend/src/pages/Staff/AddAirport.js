@@ -83,6 +83,10 @@ const AddAirport = () => {
       .catch((error) => {
         console.log(error);
       });
+    setAirportCode("");
+    setAirportName("");
+    setCity("");
+    setCountry("");
   };
 
   return (
@@ -93,11 +97,19 @@ const AddAirport = () => {
           <div>
             <div>
               <label>Airport Code</label>
-              <input type="text" onChange={airportCodeHandler} />
+              <input
+                type="text"
+                value={airportCode}
+                onChange={airportCodeHandler}
+              />
             </div>
             <div>
               <label>Airport Name</label>
-              <input type="text" onChange={airportNameHandler} />
+              <input
+                type="text"
+                value={airportName}
+                onChange={airportNameHandler}
+              />
             </div>
             <div>
               <label>Airport Type</label>
@@ -114,12 +126,18 @@ const AddAirport = () => {
               <input
                 type="text"
                 placeholder="New York City"
+                value={city}
                 onChange={cityHandler}
               />
             </div>
             <div>
               <label>Country</label>
-              <input type="text" placeholder="USA" onChange={countryHandler} />
+              <input
+                type="text"
+                placeholder="USA"
+                onChange={countryHandler}
+                value={country}
+              />
             </div>
           </div>
           {!valid && <p>Airport already exists.</p>}
@@ -129,7 +147,12 @@ const AddAirport = () => {
           </button>
         </form>
       )}
-      {modal && <SuccessModal modalHandler={modalHandler} message="Airport has been added!" />}
+      {modal && (
+        <SuccessModal
+          modalHandler={modalHandler}
+          message="Airport has been added!"
+        />
+      )}
       {modal && <div className={styles.dimmedBackground}></div>}
     </div>
   );

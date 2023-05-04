@@ -94,13 +94,19 @@ const Flight = (props) => {
           modalHandler={modalRatingsHandler}
           depTime={props.depTime}
           depDate={props.depDate}
-          flightNum={props.key}
+          flightNum={props.flightNum}
           airline={props.airline}
         />
       )}
       {modalRatings && <div className={styles.dimmedBackground}></div>}
       {modalPassenger && (
-        <PassengersModal modalHandler={modalPassengersHandler} />
+        <PassengersModal
+          modalHandler={modalPassengersHandler}
+          flightNum={props.flightNum}
+          depDate={props.depDate}
+          depTime={props.depTime}
+          airline={props.airline}
+        />
       )}
       {modalPassenger && <div className={styles.dimmedBackground}></div>}
       {modalPurchase && <PurchaseModal modalHandler={modalPurchaseHandler} />}

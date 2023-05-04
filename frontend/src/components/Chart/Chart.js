@@ -9,14 +9,18 @@ const Chart = (props) => {
 
   return (
     <div className={styles.chart}>
-      {props.dataPoints.map((dataPoint) => (
-        <BarChart
-          key={dataPoint.label}
-          value={dataPoint.tickets}
-          maxValue={totalMaximum}
-          label={dataPoint.label}
-        />
-      ))}
+      {props.dataPoints.length === 0 ? (
+        <p style={{ margin: "auto" }}>No data</p>
+      ) : (
+        props.dataPoints.map((dataPoint) => (
+          <BarChart
+            key={dataPoint.label}
+            value={dataPoint.tickets}
+            maxValue={totalMaximum}
+            label={dataPoint.label}
+          />
+        ))
+      )}
     </div>
   );
 };

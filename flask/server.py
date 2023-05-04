@@ -687,7 +687,7 @@ def prev_flights():
         "dep_airport_name": data["dep_airport.airport_name"],
         "dep_city": data["dep_airport.city"],
         "price": data["base_price"]}
-        flights.append(flight)
+  flights.append(flight)
   cursor.close()
   return jsonify(flights)
 

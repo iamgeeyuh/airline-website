@@ -382,16 +382,16 @@ def create_flight():
     #cursor = conn.cursor() 
     query1 = (
             "SELECT flight_num, departure_datetime, airline_name,"
-            +" arrival_datetime, "
-            + "arr_airport.airport_name, arr_airport.city,"
-            +" dep_airport.airport_name, dep_airport.city, base_price "
-            + "FROM Flight INNER JOIN Airport as arr_airport ON"
-            +" Flight.arrival_airport_code = arr_airport.airport_code "
-            + "INNER JOIN Airport as dep_airport ON"
-            +" Flight.departure_airport_code = dep_airport.airport_code "
-            + "WHERE departure_datetime > CURRENT_TIMESTAMP AND "
-            + "TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) <= (30 * 60)"
-            + "AND airline_name = %s"
+            " arrival_datetime, "
+            "arr_airport.airport_name, arr_airport.city,"
+            " dep_airport.airport_name, dep_airport.city, base_price "
+             "FROM Flight INNER JOIN Airport as arr_airport ON"
+            " Flight.arrival_airport_code = arr_airport.airport_code "
+            "INNER JOIN Airport as dep_airport ON"
+            " Flight.departure_airport_code = dep_airport.airport_code "
+            "WHERE departure_datetime > CURRENT_TIMESTAMP AND "
+            "TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) <= (30 * 60)"
+            "AND airline_name = %s"
     )
 
     cursor.execute(query1, (airline_name))

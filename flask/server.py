@@ -369,29 +369,7 @@ def view_flights():
 # return all flights that will depart within 30 days
 @app.route("/create_flight", methods=["GET", "POST"])
 def create_flight():
-    #airline_name = request.form["airline_name"]
-    if request.method == "GET":
-        airline_name = request.args.get("airline_name")
-        flight_num = request.args.get("flight_num")
-        airplane_id = request.args.get("airplane_id")
-        departure_datetime = request.args.get("departure_datetime")
-        departure_airport_code = request.args.get("departure_airport_code")
-        arrival_datetime = request.args.get("arrival_datetime")
-        arrival_airport_code = request.args.get("arrival_airport_code")
-        base_price = request.args.get("base_price")
-        status = request.args.get("status")
-    elif request.method == "POST":
-        airline_name = request.form.get("airline_name")
-        flight_num = request.form.get("flight_num")
-        airplane_id = request.form.get("airplane_id")
-        departure_datetime = request.form.get("departure_datetime")
-        departure_airport_code = request.form.get("departure_airport_code")
-        arrival_datetime = request.form.get("arrival_datetime")
-        arrival_airport_code = request.form.get("arrival_airport_code")
-        base_price = request.form.get("base_price")
-        status = request.form.get("status")
-    else:
-        return jsonify([])
+    airline_name = request.form["airline_name"]
     cursor = conn.cursor() 
     #check if the airline exists
     query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
@@ -420,14 +398,14 @@ def create_flight():
     flights = cursor.fetchall()
 
 
-    # flight_num = request.form["flight_num"]
-    # airplane_id = request.form["airplane_id"]
-    # departure_datetime = request.form["departure_datetime"]
-    # departure_airport_code = request.form["departure_airport_code"]
-    # arrival_datetime = request.form["arrival_datetime"]
-    # arrival_airport_code = request.form["arrival_airport_code"]
-    # base_price = request.form["base_price"]
-    # status = request.form["status"]
+    flight_num = request.form["flight_num"]
+    airplane_id = request.form["airplane_id"]
+    departure_datetime = request.form["departure_datetime"]
+    departure_airport_code = request.form["departure_airport_code"]
+    arrival_datetime = request.form["arrival_datetime"]
+    arrival_airport_code = request.form["arrival_airport_code"]
+    base_price = request.form["base_price"]
+    status = request.form["status"]
 
     if(departure_airport_code == arrival_airport_code):
         return jsonify([])
@@ -593,23 +571,34 @@ def view_flight_ratings():
 @app.route('/frequent_customers', methods=['GET', "POST"])
 def frequent_customers():
     cursor = conn.cursor()
-    customer_email = request.form["customer_email"]
-    airline_name = request.form["airline_name"]
-    # Get most frequent customer
-    query_frequent_customer = '''
-        SELECT Customer.email, Customer.fname, Customer.lname, COUNT(*) AS num_flights
-        FROM Ticket INNER JOIN Customer ON Customer.email = Ticket.email
-        WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND Customer.email = %s AND Ticket.airline_name = %s
-        GROUP BY Customer.email
-        ORDER BY num_flights DESC
-        LIMIT 1;
-    '''
-    cursor.execute(query_frequent_customer, (customer_email, airline_name))
-    customer_flights = cursor.fetchone()
 
+    if request.method == 'POST':
+        customer_email = request.form.get('customer_email')
+        airline_name = request.form.get('airline_name')
+
+        if customer_email is None or airline_name is None:
+            return jsonify({'error': 'customer_email and airline_name are required'})
+
+    # customer_email = request.form["customer_email"]
+    # airline_name = request.form["airline_name"]
+    # Get most frequent customer
+        query_frequent_customer = '''
+            SELECT Customer.email, Customer.fname, Customer.lname, COUNT(*) AS num_flights
+            FROM Ticket INNER JOIN Customer ON Customer.email = Ticket.email
+            WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND Customer.email = %s AND Ticket.airline_name = %s
+            GROUP BY Customer.email
+            ORDER BY num_flights DESC
+            LIMIT 1;
+        '''
+        cursor.execute(query_frequent_customer, (customer_email, airline_name))
+        customer_flights = cursor.fetchone()
+    else:
+        return jsonify({'error': 'POST method is required'})
 
     cursor.close()
-    return jsonify({"first name" : customer_flights['fname'], "last name" : customer_flights['lname']})
+    return jsonify({"first name": customer_flights['fname'], "last name": customer_flights['lname']})
+    # cursor.close()
+    # return jsonify({"first name" : customer_flights['fname'], "last name" : customer_flights['lname']})
 
 #Use case 8... sales report
 @app.route('/view_ticket_sales_report', methods=['GET', 'POST'])

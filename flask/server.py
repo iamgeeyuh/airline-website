@@ -371,8 +371,24 @@ def view_flights():
     )
 
     cursor.execute(query1, (airline_name))
-    flights = cursor.fetchall()
-    conn.commit()
+    flights = []
+    data_array = cursor.fetchall()
+    for data in data_array:
+       flight = {
+           "flight_num": data["flight_num"],
+           "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
+           "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
+           "airline_name": data["airline_name"],
+           "arrival_date": str(data["arrival_datetime"].date()).replace("00:00:00 GMT", ""),
+           "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
+           "arr_airport_name": data["airport_name"],
+           "arr_city": data["city"],
+           "dep_airport_name": data["dep_airport.airport_name"],
+           "dep_city": data["dep_airport.city"],
+           "price": data["base_price"]
+       }
+       flights.append(flight)
+
     cursor.close()
     return jsonify(flights)
 

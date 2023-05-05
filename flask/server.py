@@ -953,13 +953,13 @@ def display_cancel_trip():
     msg = 'The ticket has been canceled and is now available for purchase by other customers'
     return jsonify({'msg': msg})
 
-@app.route('/rate_comment', methods=['POST'])
+@app.route('/rate_comment', methods=['GET','POST'])
 def rate_comment():
     # get parameters from request body
-    customer_email = request.json['customer_email']
-    rating = request.json['rating']
-    comment = request.json['comment']
-    ticket_id = request.json['ticket_id']
+    customer_email = request.form['customer_email']
+    rating = request.form['rating']
+    comment = request.form['comment']
+    ticket_id = request.form['ticket_id']
     # validate user and flight details
     cursor = conn.cursor()
     

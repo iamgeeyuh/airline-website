@@ -904,7 +904,7 @@ def prev_flights():
         " Flight.departure_airport_code = dep_airport.airport_code INNER JOIN"
         " Airport AS arr_airport ON Flight.arrival_airport_code ="
         " arr_airport.airport_code WHERE Ticket.email = %s AND"
-        " Flight.departure_datetime < CURRENT_TIMESTAMP;"
+        " Flight.arrival_datetime <= CURRENT_TIMESTAMP;"
     )
     cursor.execute(query, (customer_email))
     data_array = cursor.fetchall()
@@ -1336,16 +1336,13 @@ def track_spend():
             end_date = datetime.strptime(end_date, "%Y-%m-%d")
         except ValueError:
             return jsonify(
-                {"error": "Invalid date format. Please use YYYY-MM-DD."}
+                {"error": False}
             )
 
         if end_date < start_date:
             return jsonify(
                 {
-                    "error": (
-                        "End date should be greater than or equal to start"
-                        " date."
-                    )
+                    "error": False
                 }
             )
 

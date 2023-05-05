@@ -580,7 +580,7 @@ def frequent_customers():
     query_frequent_customer = '''
         SELECT Customer.email, Customer.fname, Customer.lname, COUNT(*) AS num_flights
         FROM Ticket INNER JOIN Customer ON Customer.email = Ticket.email
-        WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND 
+        WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND Customer.email = %s AND Ticket.airline_name = %s
         GROUP BY Customer.email
         ORDER BY num_flights DESC
         LIMIT 1;

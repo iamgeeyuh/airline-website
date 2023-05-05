@@ -1260,56 +1260,45 @@ def display_cancel_trip():
 @app.route("/rate_comment", methods=["POST"])
 def rate_comment():
     # get parameters from request body
-    customer_email = request.json["customer_email"]
-    flight_num = request.json["flight_num"]
-    rating = request.json["rating"]
-    comment = request.json["comment"]
-    airline_name = request.json["airline_name"]
-    ticket_id = request.json["ticket_id"]
+    customer_email = request.form['customer_email']
+    rating = request.form['rating']
+    comment = request.form['comment']
+    ticket_id = request.form['ticket_id']
     # validate user and flight details
     cursor = conn.cursor()
-    if rating == "" and ticket_id == "":
-        query = (
-            "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email"
-            " = %s"
-        )
+    
+    if rating == "" and comment == "":
+        query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
         cursor.execute(query, (ticket_id, customer_email))
         data = cursor.fetchall()
-        return jsonify({"rating": data["rating"], "comment": data["comment"]})
-
-    query = (
-        "SELECT * FROM Ticket WHERE email = %s and flight_num = %s and"
-        " airline_name = %s and arrival_datetime > NOW()"
-    )
-    cursor.execute(query, (customer_email, flight_num, airline_name))
+        return jsonify({"rating":data['rating'], "comment": data['comment']})
+    
+    query = 'SELECT * FROM Ticket WHERE email = %s and ticket_id = %s and arrival_datetime > NOW()'
+    cursor.execute(query, (customer_email, ticket_id))
     data = cursor.fetchone()
-
+    
     if not data:
-        return jsonify({"error": "Invalid user or flight details"})
-
-    query = (
-        "SELECT * FROM Ticket INNER JOIN Reviews ON Ticket.email ="
-        " Reviews.email WHERE Ticket.email = %s and Ticket.flight_num = %s and"
-        " Ticket.airline_name = %s"
-    )
-    cursor.execute(query, (customer_email, flight_num, airline_name))
+        return jsonify({"rating":None, "comment": None})
+    
+    query = 'SELECT * FROM Ticket INNER JOIN Reviews ON Ticket.email = Reviews.email WHERE Ticket.email = %s and Ticket.ticket_id = %s'
+    cursor.execute(query, (customer_email, ticket_id))
     data = cursor.fetchone()
-
+    
     if data:
-        query = (
-            "DELETE FROM Reviews WHERE ticket_id = %s AND customer_email = %s"
-        )
+        query = "DELETE FROM Reviews WHERE ticket_id = %s AND customer_email = %s"
         cursor.execute(query, (ticket_id, customer_email))
         conn.commit()
-
+    
     # insert rating and comment
-    query = "INSERT INTO Reviews VALUES (%s, %s, %s, %s)"
+    query = 'INSERT INTO Reviews VALUES (%s, %s, %s, %s)'
     cursor.execute(query, (customer_email, ticket_id, rating, comment))
     conn.commit()
-
+    query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
+    cursor.execute(query, (ticket_id, customer_email))
+    data = cursor.fetchall()
+    conn.close()
     cursor.close()
-
-    return jsonify({"msg": "Rating and comment added successfully"})
+    return jsonify({"rating":data['rating'], "comment": data['comment']})
 
 
 @app.route("/track_spend", methods=["GET", "POST"])

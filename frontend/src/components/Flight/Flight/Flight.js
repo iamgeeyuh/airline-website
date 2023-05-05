@@ -90,8 +90,6 @@ const Flight = (props) => {
       .catch((error) => {
         console.log(error);
       });
-
-
   };
 
   return (
@@ -165,7 +163,15 @@ const Flight = (props) => {
         />
       )}
       {modalPassenger && <div className={styles.dimmedBackground}></div>}
-      {modalPurchase && <PurchaseModal modalHandler={modalPurchaseHandler} />}
+      {modalPurchase && (
+        <PurchaseModal
+          modalHandler={modalPurchaseHandler}
+          flightNum={props.flightNum}
+          airline={props.airline}
+          depDate={props.depDate}
+          depTime={props.depTime}
+        />
+      )}
       {modalPurchase && <div className={styles.dimmedBackground}></div>}
       {modalReview && (
         <ReviewModal

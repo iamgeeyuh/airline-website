@@ -1,5 +1,5 @@
 import { useRef, useEffect, useContext, useState } from "react";
-import SuccessModal from '../SuccessModal/SuccessModal'
+import SuccessModal from "../SuccessModal/SuccessModal";
 import styles from "./ReviewModal.module.css";
 import AuthContext from "../../context/auth-context";
 
@@ -8,6 +8,7 @@ const ReviewModal = (props) => {
   const modalRef = useRef(null);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+  const [modal, setModal] = useState(true);
 
   const ratingHandler = (event) => {
     setRating(event.target.value);
@@ -37,7 +38,7 @@ const ReviewModal = (props) => {
     formData.append("flight_num", props.flightNum);
     formData.append("airline_name", props.airline);
     formData.append("rating", rating);
-    formData.append("comment", comment)
+    formData.append("comment", comment);
 
     fetch("http://localhost:5000/rate_comment", {
       method: "POST",
@@ -51,6 +52,9 @@ const ReviewModal = (props) => {
           throw new Error("Error reviewing");
         }
       })
+      .then((data) => {
+        setModal(true);
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -59,6 +63,7 @@ const ReviewModal = (props) => {
   return (
     <div className={styles.modal} ref={modalRef}>
       <form>
+        <h2>Write Review</h2>
         <div>
           <div>
             <label>Rating</label>
@@ -79,6 +84,13 @@ const ReviewModal = (props) => {
           Submit
         </button>
       </form>
+      {modal && (
+        <SuccessModal
+          message="Review submitted"
+          modalHandler={props.modalHandler}
+        />
+      )}
+      {modal && <div className={styles.dimmedBackground}></div>}
     </div>
   );
 };

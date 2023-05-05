@@ -67,8 +67,11 @@ const PurchaseModal = (props) => {
     formData.append("card_type", cardType);
     formData.append("card_name", cardName);
     formData.append("card_num", cardNum);
-    formData.append("card_exp", cardExp);
-    formData.append("email", ctx.isLoggedIn.email);
+    formData.append("exp_date", cardExp);
+    formData.append("flight_num", props.flightNum);
+    formData.append("airline_name", props.airline);
+    formData.append("dep_timestamp", props.depDate + " " + props.depTime)
+    formData.append("customer_email", ctx.isLoggedIn.email);
 
     const formValues = [fname, lname, dob, cardType, cardName, cardNum,cardExp];
 

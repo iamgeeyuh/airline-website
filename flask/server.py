@@ -571,34 +571,99 @@ def add_airport():
 #6. View flight ratings:
 @app.route("/view_flight_ratings", methods=["POST"])
 def view_flight_ratings():
-    flight_number = request.form["flight_number"]
     cursor = conn.cursor()
-    query = "SELECT AVG(Reviews.rating) AS avg_rate, Reviews.comment AS comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticketid WHERE flight_number = %s"
+    flight_number = request.form["flight_number"]
+   
+    query = "SELECT Customer.fname as name, Customer.lname as lastname, AVG(Reviews.rating) AS avg_rate, Reviews.comment AS comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticketid INNER JOIN Customer ON Reviews.email = Customer.email WHERE flight_number = %s"
     cursor.execute(query, (flight_number))
     data = cursor.fetchall()
-    
+    rates = []
     if data:
-        return {"average_rating": round(data['avg_rate'], 1), "comments": data['comment']}
-    
+       rate = {"first name": data['name'], "last name": data['lastnamename'], "average_rating": round(data['avg_rate'], 1), "comments": data['comment']}
+       rates.append(rate)
     conn.commit()
     cursor.close()
 
-    return {"average_rating": None, "comments": None}
+    return {rates}
 
 #7. View frequent customers partially done query is not correct.... needs to be modified
-@app.route("/view_frequent_customers", methods=["GET","POST"])
-def view_frequent_customers():
+@app.route('/frequent_customers', methods=['GET'])
+def frequent_customers():
     cursor = conn.cursor()
-    query = "SELECT Customer.email, Customer.fname, COUNT(*) AS frequency FROM Customer INNER JOIN Ticket ON Customer.email = Ticket.email WHERE DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <= Booking.booking_date GROUP BY Customer.email ORDER BY frequency DESC LIMIT 1"
-    cursor.execute(query)
-    data = cursor.fetchone()
-    
-    if data:
-        return {"customer_id": data[0], "first_name": data[1], "frequency": data[2]}
-    
-    conn.commit()
+    customer_email = request.form["customer_email"]
+    airline_name = request.form["airline_name"]
+    # Get most frequent customer
+    query_frequent_customer = '''
+        SELECT Customer.email, Customer.fname, Customer.lname, COUNT(*) AS num_flights
+        FROM Ticket INNER JOIN Customer ON Customer.email = Ticket.email
+        WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND 
+        GROUP BY Customer.email
+        ORDER BY num_flights DESC
+        LIMIT 1;
+    '''
+    cursor.execute(query_frequent_customer, (customer_email, airline_name))
+    customer_flights = cursor.fetchone()
+
+
     cursor.close()
-    return {"customer_id": None, "first_name": None, "frequency": None}
+    return {"first name" : customer_flights['fname'], "last name" : customer_flights['lname']}
+
+#Use case 8... sales report
+@app.route('/view_ticket_sales_report', methods=['GET', 'POST'])
+def view_ticket_sales_report():
+    airline_name = request.form["airline_name"]
+    start_date = request.form["start"]
+    end_date = request.form["end"]
+
+    # cursor used to send queries
+    cursor = conn.cursor()
+
+    # query to get total ticket sold
+    query1 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM Ticket WHERE airline_name = %s'
+    
+    if start_date and end_date:
+        query1 += ' AND purchase_datetime BETWEEN %s AND %s'
+        cursor.execute(query1, (airline_name, start_date, end_date))
+    else:
+        # last month
+        query1 += ' AND YEAR(purchase_datetime) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 MONTH) AND MONTH(purchase_datetime) = MONTH(CURRENT_TIMESTAMP - INTERVAL 1 MONTH)'
+        cursor.execute(query1, (airline_name))
+        ticket_month = cursor.fetchone()
+        
+        # last year
+        query2 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM Ticket WHERE airline_name = %s AND YEAR(purchase_datetime) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 YEAR)'
+        cursor.execute(query2, (airline_name))
+        ticket_year = cursor.fetchone()
+
+    # query to get month wise ticket sold
+    query3 = 'SELECT MONTHNAME(purchase_datetime) AS month, YEAR(purchase_datetime) AS year, COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS revenue FROM Ticket WHERE airline_name = %s'
+    
+    if start_date and end_date:
+        query3 += ' AND purchase_datetime BETWEEN %s AND %s'
+        cursor.execute(query3 + ' GROUP BY month, year ORDER BY purchase_datetime DESC', (airline_name, start_date, end_date))
+    else:
+        query3 += ' GROUP BY month, year ORDER BY purchase_datetime DESC'
+        cursor.execute(query3, (airline_name))
+        
+    monthwise_tickets = cursor.fetchall()
+    
+    cursor.close()
+    
+    # prepare response
+    response = {}
+    
+    if start_date and end_date:
+        response['start_date'] = start_date
+        response['end_date'] = end_date
+    else:
+        response['last_month_tickets'] = ticket_month['num_tickets']
+        response['last_month_revenue'] = ticket_month['total_revenue']
+        response['last_year_tickets'] = ticket_year['num_tickets']
+        response['last_year_revenue'] = ticket_year['total_revenue']
+        
+    response['monthwise_tickets'] = monthwise_tickets
+    
+    return jsonify(response)
 
 #10 logout
 @app.route("/logout")

@@ -382,16 +382,16 @@ def create_flight():
     #cursor = conn.cursor() 
     query1 = (
             "SELECT flight_num, departure_datetime, airline_name,"
-            " arrival_datetime, "
-            "arr_airport.airport_name, arr_airport.city,"
-            " dep_airport.airport_name, dep_airport.city, base_price "
-             "FROM Flight INNER JOIN Airport as arr_airport ON"
-            " Flight.arrival_airport_code = arr_airport.airport_code "
-            "INNER JOIN Airport as dep_airport ON"
-            " Flight.departure_airport_code = dep_airport.airport_code "
-            "WHERE departure_datetime > CURRENT_TIMESTAMP AND "
-            "TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) <= (30 * 60)"
-            "AND airline_name = %s"
+            +" arrival_datetime, "
+            + "arr_airport.airport_name, arr_airport.city,"
+            +" dep_airport.airport_name, dep_airport.city, base_price "
+            + "FROM Flight INNER JOIN Airport as arr_airport ON"
+            +" Flight.arrival_airport_code = arr_airport.airport_code "
+            + "INNER JOIN Airport as dep_airport ON"
+            +" Flight.departure_airport_code = dep_airport.airport_code "
+            + "WHERE departure_datetime > CURRENT_TIMESTAMP AND "
+            + "TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) <= (30 * 60)"
+            + "AND airline_name = %s"
     )
 
     cursor.execute(query1, (airline_name))
@@ -433,7 +433,7 @@ def create_flight():
     if not data4:
         return jsonify(flights)
     
-    query5 = "SELECT flight_num, departure_datetime, departure_airport_code, arrival_datetime, arrival_airport_code FROM Flight WHERE flight_num = %s, departure_datetime = %s, departure_airport_code = %s, arrival_datetime = %s, arrival_airport_code = %s "
+    query5 = "SELECT flight_num, departure_datetime, departure_airport_code, arrival_datetime, arrival_airport_code FROM Flight WHERE flight_num = %s AND departure_datetime = %s AND departure_airport_code = %s AND arrival_datetime = %s AND arrival_airport_code = %s "
     cursor.execute(query5, (flight_num, departure_datetime, departure_airport_code, arrival_datetime, arrival_airport_code))
     data5 = cursor.fetchone()
     if not data5:

@@ -998,13 +998,19 @@ def rate_comment():
     rating = request.json['rating']
     comment = request.json['comment']
     airline_name = request.json['airline_name']
-    
+    ticket_id = request.json['ticket_id']
     # validate user and flight details
     cursor = conn.cursor()
+    if rating == "" and ticket_id == "":
+        query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
+        cursor.execute(query, (ticket_id, customer_email))
+        data = cursor.fetchall()
+        return jsonify({"rating":data['rating'], "comment": data['comment']})
+    
     query = 'SELECT * FROM Ticket WHERE email = %s and flight_num = %s and airline_name = %s and arrival_datetime > NOW()'
     cursor.execute(query, (customer_email, flight_num, airline_name))
     data = cursor.fetchone()
-    ticket_id = data['ticket_id']
+    
     if not data:
         return jsonify({'error': 'Invalid user or flight details'})
     
@@ -1015,7 +1021,9 @@ def rate_comment():
 
     
     if data:
-        return jsonify({'error': 'You have already rated this flight'})
+        query = "DELETE FROM Reviews WHERE ticket_id = %s AND customer_email = %s"
+        cursor.execute(query, (ticket_id, customer_email))
+        conn.commit()
     
     # insert rating and comment
     query = 'INSERT INTO Reviews VALUES (%s, %s, %s, %s)'

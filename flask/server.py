@@ -669,7 +669,7 @@ def prev_flights():
     " Flight.arrival_airport_code = arr_airport.airport_code "
     + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
     " dep_airport.airport_code INNER JOIN Ticket ON Flight.flight_num = Ticket.flight_num"
-    + "WHERE departure_datetime < CURRENT_TIMESTAMP and email = %s and"
+    + "WHERE departure_datetime < CURRENT_TIMESTAMP and email = %s"
     cursor.execute(query, (customer_email))
     data_array = cursor.fetchall()
     flights = []
@@ -704,7 +704,7 @@ def future_flights():
     " Flight.arrival_airport_code = arr_airport.airport_code "
     + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
     " dep_airport.airport_code INNER JOIN Ticket ON Flight.flight_num = Ticket.flight_num"
-    + "WHERE departure_datetime > CURRENT_TIMESTAMP and email = %s and"
+    + "WHERE departure_datetime > CURRENT_TIMESTAMP and email = %s"
     cursor.execute(query, (customer_email))
     data_array = cursor.fetchall()
     flights = []

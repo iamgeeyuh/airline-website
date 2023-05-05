@@ -56,7 +56,7 @@ const StaffFlightSearch = (props) => {
       body: formData.toString(),
     })
       .then((response) => {
-        if (response.ok) {
+        if (response.ok) { 
           return response.json();
         } else {
           throw new Error("Error searching for flights");

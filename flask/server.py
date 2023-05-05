@@ -967,7 +967,7 @@ def display_cancel_trip():
     data1 = cursor.fetchall() 
     if not data1:
         error = 'Ticket does not belong to the customer or the flight takes place in less than 24 hours'
-        return jsonify({'error': error})
+        return jsonify({'msg': error})
 
     # remove the ticket from the database
     query = 'DELETE FROM Ticket WHERE ticket_id = %s AND flight_num = %s AND airline_name = %s AND dep_timestamp = %s'

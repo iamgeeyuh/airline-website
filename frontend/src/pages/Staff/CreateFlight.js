@@ -96,9 +96,9 @@ const CreateFlight = () => {
           throw new Error("Error creating flight");
         }
       })
-      .then((data) => {
-        setModal(data.length === 0);
-        setValid(data.length === 0);
+      .then((data) => { 
+        setModal(data.length !== 0);
+        setValid(data.length !== 0);
         setComplete(true);
       })
       .catch((error) => {

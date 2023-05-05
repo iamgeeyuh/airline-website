@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import FoundFlight from "../../components/Flight/FoundFlight/FoundFlight";
 import AuthContext from "../../context/auth-context";
 
@@ -6,12 +6,6 @@ const CustomerViewFlights = () => {
   const ctx = useContext(AuthContext);
 
   const [flights, setFlights] = useState([]);
-  const [showFlights, setShowFlights] = useState(false);
-
-  const flightsHandler = (flightsLst) => {
-    setFlights(flightsLst);
-    setShowFlights(true);
-  };
 
   const futureFlights = () => {
     const formData = new URLSearchParams();
@@ -30,16 +24,22 @@ const CustomerViewFlights = () => {
         }
       })
       .then((data) => {
-        console.log(data);
+        setFlights(data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  futureFlights();
+  useEffect(() => {
+    futureFlights();
+  }, []);
 
-  return <div></div>;
+  return (
+    <div>
+      <FoundFlight flights={flights} page="cancel" />
+    </div>
+  );
 };
 
 export default CustomerViewFlights;

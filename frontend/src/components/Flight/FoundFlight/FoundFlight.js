@@ -24,7 +24,7 @@ const FoundFlight = (props) => {
                 arrDate={flight.arrival_date}
                 arrTime={flight.arrival_time}
                 price={flight.price}
-                page={props.page}
+                page={props.page} 
               />
             </div>
           ))}

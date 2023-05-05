@@ -596,9 +596,9 @@ def frequent_customers():
             cursor.close()
             return jsonify({'first name': customer_flights['fname'], 'last name': customer_flights['lname']})
         else:
-            return jsonify({'error': 'No frequent customers found.'})
+            return jsonify({'first name': None, 'last name': None})
     else:
-        return jsonify({'error': 'POST method is required.'})
+        return jsonify({'first name': None, 'last name': None})
     
 
     

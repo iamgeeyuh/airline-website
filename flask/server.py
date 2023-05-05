@@ -484,46 +484,6 @@ def change_status():
 # return all airplanes owned by the airline
 @app.route("/add_airplane", methods=["GET", "POST"])
 def add_airplane():
-    # airline_name = request.form["airline_name"]
-    # cursor = conn.cursor()
-    # #check if airline exists
-    # query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
-    # cursor.execute(query, (airline_name))
-    # data = cursor.fetchone()
-    # if not data:
-    #     return jsonify([])
-    
-    # #find all airplanes
-    # query = "SELECT * FROM Airplane WHERE airline_name = %s"
-    # cursor.execute(query, (airline_name))
-    # airplanes = cursor.fetchall()
-    
-    # airplane_id = request.form["airplane_id"]
-    # manufacturer = request.form["manufacturer"]
-    # manufacturing_date = request.form["manufacturing_date"]
-    # seats = request.form["seats"]
-    # current_year = int(datetime.datetime.now().year)
-
-    # #check if the airplane exists. If it exists, do not insert again
-    
-    # query1 = "SELECT airline_name FROM Airplane WHERE airplane_id = %s"
-    # cursor.execute(query1, (airplane_id))
-    # data1 = cursor.fetchone()
-    # if data1:
-    #     return jsonify(airplanes)
-    
-    # query2 = "INSERT INTO Airplane VALUES(%s, %s, %s, %s, %s, %s)"
-    # cursor.execute(query2, (airplane_id, airline_name, seats, manufacturing_date, manufacturer, str(current_year-int(manufacturing_date[0:4]))))
-    # data2 = cursor.fetchone()
-    # if not data2:
-    #     return jsonify([])
-    # query3 = "SELECT * FROM Airplane WHERE airline_name = %s"
-    # cursor.execute(query3, (airline_name))
-    # airplanes = cursor.fetchall()
-    # conn.commit()
-    # cursor.close()
-
-    # return jsonify(airplanes)
     airline_name = request.form["airline_name"]
     cursor = conn.cursor()
     
@@ -627,7 +587,7 @@ def frequent_customers():
 
 
     cursor.close()
-    return {"first name" : customer_flights['fname'], "last name" : customer_flights['lname']}
+    return jsonify({"first name" : customer_flights['fname'], "last name" : customer_flights['lname']})
 
 #Use case 8... sales report
 @app.route('/view_ticket_sales_report', methods=['GET', 'POST'])

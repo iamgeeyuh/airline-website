@@ -12,3 +12,7 @@
   overflow-y: scroll;
   max-height: 90vh;
 }
+
+.modal select{
+  margin-left: 10px;
+}

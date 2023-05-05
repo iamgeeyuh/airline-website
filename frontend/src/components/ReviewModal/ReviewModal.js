@@ -1,4 +1,5 @@
 import { useRef, useEffect, useContext, useState } from "react";
+import SuccessModal from '../SuccessModal/SuccessModal'
 import styles from "./ReviewModal.module.css";
 import AuthContext from "../../context/auth-context";
 
@@ -38,7 +39,7 @@ const ReviewModal = (props) => {
     formData.append("rating", rating);
     formData.append("comment", comment)
 
-    fetch("http://localhost:5000/rating_comment", {
+    fetch("http://localhost:5000/rate_comment", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),

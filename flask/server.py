@@ -1004,13 +1004,15 @@ def rate_comment():
     query = 'SELECT * FROM Ticket WHERE email = %s and flight_num = %s and airline_name = %s and arrival_datetime > NOW()'
     cursor.execute(query, (customer_email, flight_num, airline_name))
     data = cursor.fetchone()
-    
+    ticket_id = data['ticket_id']
     if not data:
         return jsonify({'error': 'Invalid user or flight details'})
     
     query = 'SELECT * FROM Ticket INNER JOIN Reviews ON Ticket.email = Reviews.email WHERE Ticket.email = %s and Ticket.flight_num = %s and Ticket.airline_name = %s'
     cursor.execute(query, (customer_email, flight_num, airline_name))
     data = cursor.fetchone()
+
+
     
     if data:
         return jsonify({'error': 'You have already rated this flight'})

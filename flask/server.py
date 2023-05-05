@@ -975,7 +975,7 @@ def rate_comment():
     data = cursor.fetchone()
     
     if not data:
-        return jsonify({'error': 'Invalid user or flight details'})
+        return jsonify({"rating":None, "comment": None})
     
     query = 'SELECT * FROM Ticket INNER JOIN Reviews ON Ticket.email = Reviews.email WHERE Ticket.email = %s and Ticket.flight_num = %s and Ticket.airline_name = %s'
     cursor.execute(query, (customer_email, flight_num, airline_name))
@@ -992,10 +992,12 @@ def rate_comment():
     query = 'INSERT INTO Reviews VALUES (%s, %s, %s, %s)'
     cursor.execute(query, (customer_email, ticket_id, rating, comment))
     conn.commit()
-    
+    query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
+    cursor.execute(query, (ticket_id, customer_email))
+    data = cursor.fetchall()
     cursor.close()
+    return jsonify({"rating":data['rating'], "comment": data['comment']})
     
-    return jsonify({'msg': 'Rating and comment added successfully'})
 
 @app.route('/track_spend', methods=['GET', 'POST'])
 def track_spend():

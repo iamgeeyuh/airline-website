@@ -58,7 +58,7 @@ CREATE TABLE Flight(
     foreign key (departure_airport_code) references Airport(airport_code),
     foreign key (airplane_id) references Airplane(airplane_id)
 );
-
+ 
 CREATE TABLE Ticket(
     ticket_id int,
     airline_name varchar(20),

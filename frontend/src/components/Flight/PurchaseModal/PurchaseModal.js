@@ -70,7 +70,7 @@ const PurchaseModal = (props) => {
     formData.append("card_exp", cardExp);
     formData.append("email", ctx.isLoggedIn.email);
 
-    const formValues = [fname, lname, dob, cardType, cardName, cardNum.cardExp];
+    const formValues = [fname, lname, dob, cardType, cardName, cardNum,cardExp];
 
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {

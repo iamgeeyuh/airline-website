@@ -16,7 +16,7 @@ const Flight = (props) => {
   const [modalReview, setModalReview] = useState(false);
   const [modalViewReview, setModalViewReview] = useState(false);
   const [modalCancel, setModalCancel] = useState(false);
-  const [cancelMessage, setCancelMessage] = useState("");
+  const [cancelMessage, setCancelMessage] = useState(false);
 
   const modalCancelHandler = () => {
     setModalCancel(false);
@@ -42,8 +42,9 @@ const Flight = (props) => {
     setModalPurchase(false);
   };
 
-  const checkCancel = () => {
+  const checkCancel = (success) => {
     setModalCancel(true);
+    setCancelMessage(success);
   };
 
   const checkReviews = () => {
@@ -67,7 +68,10 @@ const Flight = (props) => {
 
     formData.append("flight_num", props.flightNum);
     formData.append("airline_name", props.airline);
+    formData.append("dep_timestamp", props.depDate + " " + props.depTime);
+    formData.append("ticket_id", props.ticket_id);
     formData.append("email", ctx.isLoggedIn.email);
+
     fetch("http://localhost:5000/display_cancel_trip", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -81,12 +85,13 @@ const Flight = (props) => {
         }
       })
       .then((data) => {
-        setCancelMessage(data.msg);
-        checkCancel();
+        checkCancel(data.success);
       })
       .catch((error) => {
         console.log(error);
       });
+
+
   };
 
   return (
@@ -170,15 +175,11 @@ const Flight = (props) => {
         />
       )}
       {modalReview && <div className={styles.dimmedBackground}></div>}
-      {modalViewReview && (
-        <ViewReviewModal
-
-        />
-      )}
+      {modalViewReview && <ViewReviewModal />}
       {modalViewReview && <div className={styles.dimmedBackground}></div>}
       {modalCancel && (
         <SuccessModal
-          message={cancelMessage}
+          message={cancelMessage ? "Flight canceled" : "Error canceling flight"}
           modalHandler={modalCancelHandler}
         />
       )}

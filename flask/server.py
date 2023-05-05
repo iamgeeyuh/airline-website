@@ -1210,52 +1210,23 @@ def purchase_ticket():
 @app.route("/display_cancel_trip", methods=["GET", "POST"])
 def display_cancel_trip():
     cursor = conn.cursor()
-    customer_email = request.form["customer_email"]
+    customer_email = request.form["email"]
     flight_num = request.form["flight_num"]
     airline_name = request.form["airline_name"]
     dep_timestamp = request.form["dep_timestamp"]
+    ticket_id = request.form["ticket_id"]
 
     # only shows flights more than 24 hours in the future so a user cannot cancel a flight that occurs in under 24 hours
     query = (
-        "SELECT ticket_id, airline_name, flight_num, departure_datetime,"
-        " arrival_datetime, "
-        + "status, dep_airport, dep_city, arr_airport, arr_city FROM flight"
-        " NATURAL JOIN "
-        + "(SELECT airprt_name as arr_airport, city as arr_city FROM airport)"
-        " as arrival NATURAL JOIN "
-        + "(SELECT airport_name as dep_airport, city as dep_city FROM airport)"
-        " as departure NATURAL JOIN "
-        + "(purchase natural join ticket natural join customer) WHERE email ="
-        " %s and TIMESTAMPDIFF(SECOND, departure_datetime, NOW()) >="
-        " (24*3600)"
+        "DELETE FROM Ticket WHERE ticket_id = %s AND flight_num = %s AND departure_datetime = %s AND airline_name = %s AND email = %s"
     )
-    cursor.execute(query, (customer_email))
-    data1 = cursor.fetchall()
-    if not data1:
-        error = (
-            "Ticket does not belong to the customer or the flight takes place"
-            " in less than 24 hours"
-        )
-        return jsonify({"msg": error})
-
-    # remove the ticket from the database
-    query = (
-        "DELETE FROM Ticket WHERE flight_num = %s AND airline_name = %s AND"
-        " dep_timestamp = %s"
-    )
-    cursor.execute(query, (flight_num, airline_name, dep_timestamp))
-    conn.commit()
-    query = (
-        "select * from Ticket where flight_num = %s and airline_name = %s and"
-        " dep_timestamp = %s"
-    )
-    cursor.execute(query, (flight_num, airline_name, dep_timestamp))
-    data = cursor.fetchone()
-    msg = (
-        "The ticket has been canceled and is now available for purchase by"
-        " other customers"
-    )
-    return jsonify({"msg": msg})
+    cursor.execute(query, (ticket_id, flight_num, dep_timestamp, airline_name, customer_email))
+    
+    if cursor.rowcount > 0:
+        conn.commit()
+        return jsonify({'success': True})   
+    else:
+        return jsonify({'success': False})
 
 
 @app.route("/rate_comment", methods=["POST"])

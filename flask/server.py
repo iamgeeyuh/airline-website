@@ -571,14 +571,7 @@ def view_flight_ratings():
 @app.route('/frequent_customers', methods=['GET', "POST"])
 def frequent_customers():
     cursor = conn.cursor()
-
-    if request.method == 'POST':
-        customer_email = request.form.get('customer_email')
-        airline_name = request.form.get('airline_name')
-
-        if customer_email is None or airline_name is None:
-            return jsonify({'error': 'customer_email and airline_name are required'})
-
+    
     customer_email = request.form["customer_email"]
     airline_name = request.form["airline_name"]
     # Get most frequent customer

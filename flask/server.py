@@ -369,7 +369,29 @@ def view_flights():
 # return all flights that will depart within 30 days
 @app.route("/create_flight", methods=["GET", "POST"])
 def create_flight():
-    airline_name = request.form["airline_name"]
+    #airline_name = request.form["airline_name"]
+    if request.method == "GET":
+        airline_name = request.args.get("airline_name")
+        flight_num = request.args.get("flight_num")
+        airplane_id = request.args.get("airplane_id")
+        departure_datetime = request.args.get("departure_datetime")
+        departure_airport_code = request.args.get("departure_airport_code")
+        arrival_datetime = request.args.get("arrival_datetime")
+        arrival_airport_code = request.args.get("arrival_airport_code")
+        base_price = request.args.get("base_price")
+        status = request.args.get("status")
+    elif request.method == "POST":
+        airline_name = request.form.get("airline_name")
+        flight_num = request.form.get("flight_num")
+        airplane_id = request.form.get("airplane_id")
+        departure_datetime = request.form.get("departure_datetime")
+        departure_airport_code = request.form.get("departure_airport_code")
+        arrival_datetime = request.form.get("arrival_datetime")
+        arrival_airport_code = request.form.get("arrival_airport_code")
+        base_price = request.form.get("base_price")
+        status = request.form.get("status")
+    else:
+        return jsonify([])
     cursor = conn.cursor() 
     #check if the airline exists
     query = "SELECT airline_name FROM Airline WHERE airline_name = %s"
@@ -398,14 +420,14 @@ def create_flight():
     flights = cursor.fetchall()
 
 
-    flight_num = request.form["flight_num"]
-    airplane_id = request.form["airplane_id"]
-    departure_datetime = request.form["departure_datetime"]
-    departure_airport_code = request.form["departure_airport_code"]
-    arrival_datetime = request.form["arrival_datetime"]
-    arrival_airport_code = request.form["arrival_airport_code"]
-    base_price = request.form["base_price"]
-    status = request.form["status"]
+    # flight_num = request.form["flight_num"]
+    # airplane_id = request.form["airplane_id"]
+    # departure_datetime = request.form["departure_datetime"]
+    # departure_airport_code = request.form["departure_airport_code"]
+    # arrival_datetime = request.form["arrival_datetime"]
+    # arrival_airport_code = request.form["arrival_airport_code"]
+    # base_price = request.form["base_price"]
+    # status = request.form["status"]
 
     if(departure_airport_code == arrival_airport_code):
         return jsonify([])

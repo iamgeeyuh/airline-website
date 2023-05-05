@@ -579,26 +579,23 @@ def frequent_customers():
         if customer_email is None or airline_name is None:
             return jsonify({'error': 'customer_email and airline_name are required'})
 
-    # customer_email = request.form["customer_email"]
-    # airline_name = request.form["airline_name"]
+    customer_email = request.form["customer_email"]
+    airline_name = request.form["airline_name"]
     # Get most frequent customer
-        query_frequent_customer = '''
-            SELECT Customer.email, Customer.fname, Customer.lname, COUNT(*) AS num_flights
-            FROM Ticket INNER JOIN Customer ON Customer.email = Ticket.email
-            WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND Customer.email = %s AND Ticket.airline_name = %s
-            GROUP BY Customer.email
-            ORDER BY num_flights DESC
-            LIMIT 1;
-        '''
-        cursor.execute(query_frequent_customer, (customer_email, airline_name))
-        customer_flights = cursor.fetchone()
-    else:
-        return jsonify({'error': 'POST method is required'})
+    query_frequent_customer = '''
+        SELECT Customer.email, Customer.fname, Customer.lname, COUNT(*) AS num_flights
+        FROM Ticket INNER JOIN Customer ON Customer.email = Ticket.email
+        WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND Customer.email = %s AND Ticket.airline_name = %s
+        GROUP BY Customer.email
+        ORDER BY num_flights DESC
+        LIMIT 1;
+    '''
+    cursor.execute(query_frequent_customer, (customer_email, airline_name))
+    customer_flights = cursor.fetchone()
+
 
     cursor.close()
-    return jsonify({"first name": customer_flights['fname'], "last name": customer_flights['lname']})
-    # cursor.close()
-    # return jsonify({"first name" : customer_flights['fname'], "last name" : customer_flights['lname']})
+    return jsonify({"first name" : customer_flights['fname'], "last name" : customer_flights['lname']})
 
 #Use case 8... sales report
 @app.route('/view_ticket_sales_report', methods=['GET', 'POST'])

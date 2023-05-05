@@ -17,7 +17,7 @@ const CustomerViewFlights = () => {
     const formData = new URLSearchParams();
     formData.append("customer_email", ctx.isLoggedIn.email);
 
-    fetch("http://localhost:5000/myflights", {
+    fetch("http://localhost:5000/future_flights", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),

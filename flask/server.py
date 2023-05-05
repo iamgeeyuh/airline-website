@@ -571,34 +571,43 @@ def add_airport():
 #6. View flight ratings:
 @app.route("/view_flight_ratings", methods=["POST"])
 def view_flight_ratings():
-    flight_number = request.form["flight_number"]
     cursor = conn.cursor()
-    query = "SELECT AVG(Reviews.rating) AS avg_rate, Reviews.comment AS comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticketid WHERE flight_number = %s"
+    flight_number = request.form["flight_number"]
+   
+    query = "SELECT Customer.fname as name, Customer.lname as lastname, AVG(Reviews.rating) AS avg_rate, Reviews.comment AS comment FROM Reviews INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticketid INNER JOIN Customer ON Reviews.email = Customer.email WHERE flight_number = %s"
     cursor.execute(query, (flight_number))
     data = cursor.fetchall()
-    
+    rates = []
     if data:
-        return {"average_rating": round(data['avg_rate'], 1), "comments": data['comment']}
-    
+       rate = {"first name": data['name'], "last name": data['lastnamename'], "average_rating": round(data['avg_rate'], 1), "comments": data['comment']}
+       rates.append(rate)
     conn.commit()
     cursor.close()
 
-    return {"average_rating": None, "comments": None}
+    return {rates}
 
 #7. View frequent customers partially done query is not correct.... needs to be modified
-@app.route("/view_frequent_customers", methods=["GET","POST"])
-def view_frequent_customers():
+@app.route('/frequent_customers', methods=['GET'])
+def frequent_customers():
     cursor = conn.cursor()
-    query = "SELECT Customer.email, Customer.fname, COUNT(*) AS frequency FROM Customer INNER JOIN Ticket ON Customer.email = Ticket.email WHERE DATE_SUB(CURDATE(), INTERVAL 1 YEAR) <= Booking.booking_date GROUP BY Customer.email ORDER BY frequency DESC LIMIT 1"
-    cursor.execute(query)
-    data = cursor.fetchone()
-    
-    if data:
-        return {"customer_id": data[0], "first_name": data[1], "frequency": data[2]}
-    
-    conn.commit()
+    customer_email = request.form["customer_email"]
+    airline_name = request.form["airline_name"]
+    # Get most frequent customer
+    query_frequent_customer = '''
+        SELECT Customer.email, Customer.fname, Customer.lname, COUNT(*) AS num_flights
+        FROM Ticket INNER JOIN Customer ON Customer.email = Ticket.email
+        WHERE Ticket.purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR) AND 
+        GROUP BY Customer.email
+        ORDER BY num_flights DESC
+        LIMIT 1;
+    '''
+    cursor.execute(query_frequent_customer, (customer_email, airline_name))
+    customer_flights = cursor.fetchone()
+
+
     cursor.close()
-    return {"customer_id": None, "first_name": None, "frequency": None}
+    return {"first name" : customer_flights['fname'], "last name" : customer_flights['lname']}
+
 
 #10 logout
 @app.route("/logout")

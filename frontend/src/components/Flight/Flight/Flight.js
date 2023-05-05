@@ -3,6 +3,7 @@ import PassengersModal from "../PassengersModal/PassengersModal";
 import RatingsModal from "../Ratings/RatingsModal/RatingsModal";
 import PurchaseModal from "../PurchaseModal/PurchaseModal";
 import SuccessModal from "../../SuccessModal/SuccessModal";
+import ReviewModal from "../../ReviewModal/ReviewModal";
 import ViewReviewModal from "../../ViewReviewModal/ViewReviewModal";
 import styles from "./Flight.module.css";
 import AuthContext from "../../../context/auth-context";
@@ -13,6 +14,7 @@ const Flight = (props) => {
   const [modalPassenger, setModalPassenger] = useState(false);
   const [modalPurchase, setModalPurchase] = useState(false);
   const [modalReview, setModalReview] = useState(false);
+  const [modalViewReview, setModalViewReview] = useState(false);
   const [modalCancel, setModalCancel] = useState(false);
   const [cancelMessage, setCancelMessage] = useState("");
 
@@ -22,6 +24,10 @@ const Flight = (props) => {
 
   const modalReviewHandler = () => {
     setModalReview(false);
+  };
+
+  const modalViewReviewHandler = () => {
+    setModalViewReview(false);
   };
 
   const modalRatingsHandler = () => {
@@ -113,7 +119,7 @@ const Flight = (props) => {
               Cancel
             </button>
           )}
-          <div> 
+          <div>
             <label>From</label>
             <h2>{props.depTime}</h2>
             <h5 style={{ color: "var(--font-purple)" }}>
@@ -137,8 +143,8 @@ const Flight = (props) => {
       {modalRatings && (
         <RatingsModal
           modalHandler={modalRatingsHandler}
-          depTime={props.depTime}
           depDate={props.depDate}
+          depTime={props.depTime}
           flightNum={props.flightNum}
           airline={props.airline}
         />
@@ -147,17 +153,29 @@ const Flight = (props) => {
       {modalPassenger && (
         <PassengersModal
           modalHandler={modalPassengersHandler}
-          flightNum={props.flightNum}
           depDate={props.depDate}
           depTime={props.depTime}
+          flightNum={props.flightNum}
           airline={props.airline}
         />
       )}
       {modalPassenger && <div className={styles.dimmedBackground}></div>}
       {modalPurchase && <PurchaseModal modalHandler={modalPurchaseHandler} />}
       {modalPurchase && <div className={styles.dimmedBackground}></div>}
-      {modalReview && <ViewReviewModal modalHandler={modalReviewHandler} />}
+      {modalReview && (
+        <ReviewModal
+          modalHandler={modalReviewHandler}
+          flightNum={props.flightNum}
+          airline={props.airline}
+        />
+      )}
       {modalReview && <div className={styles.dimmedBackground}></div>}
+      {modalViewReview && (
+        <ViewReviewModal
+
+        />
+      )}
+      {modalViewReview && <div className={styles.dimmedBackground}></div>}
       {modalCancel && (
         <SuccessModal
           message={cancelMessage}

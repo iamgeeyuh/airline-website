@@ -26,15 +26,15 @@ insert into Staff_Email values('karen123', 'karen123@gmail.com');
 insert into Staff_Phone values('karen123', '1234445555');
 
 -- f. Insert several flights with on-time, and delayed statuses. 
-insert into Flight values(587, '2023-05-04 08:00:00',  'Jet Blue', '2023-05-04 15:00:00', 0, 1, 2333, 3000.00, 'on-time');
-insert into Flight values(777, '2023-05-05 08:00:00', 'Jet Blue', '2023-05-05 15:00:00', 1, 0, 1222, 5000.00, 'delayed');
-insert into Flight values(777, '2022-05-05 08:00:00', 'Jet Blue', '2022-05-05 15:00:00', 1, 0, 1222, 5000.00, 'delayed');
-insert into Flight values(587, '2022-05-04 08:00:00',  'Jet Blue', '2022-05-04 15:00:00', 0, 1, 2333, 3000.00, 'on-time');
+insert into Flight values(587, '2023-05-10 08:00:00',  'Jet Blue', '2023-05-10 15:00:00', 0, 1, 2333, 3000.00, 'on-time');
+insert into Flight values(777, '2023-05-11 08:00:00', 'Jet Blue', '2023-05-11 15:00:00', 1, 0, 1222, 5000.00, 'delayed');
+insert into Flight values(777, '2022-05-10 08:00:00', 'Jet Blue', '2022-05-10 15:00:00', 1, 0, 1222, 5000.00, 'delayed');
+insert into Flight values(587, '2022-05-11 08:00:00',  'Jet Blue', '2022-05-11 15:00:00', 0, 1, 2333, 3000.00, 'on-time');
 
 -- g. Insert some tickets for corresponding flights and insert some purchase records (customers bought some tickets). 
 
-insert into Ticket values(1, 'Jet Blue', 587, '2023-05-04 08:00:00', 5000.00, 'credit', 'Shenyi Huang', '0000000000000000', '2029-02-02', '2023-01-01 15:00:00', 'sh6210@nyu.edu');
-insert into Ticket values(2, 'Jet Blue', 777, '2022-05-05 08:00:00', 5000.00, 'debit', 'Isha Jagani', '0000000000000001', '2029-03-02', '2023-01-02 15:00:00', 'imj2430@nyu.edu');
-insert into Ticket values(3, 'Jet Blue', 587, '2023-05-04 08:00:00', 3000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
-insert into Ticket values(4, 'Jet Blue', 587, '2022-05-04 08:00:00', 3000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
-insert into Ticket values(5, 'Jet Blue', 777, '2022-05-05 08:00:00', 5000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
+insert into Ticket values(1, 'Jet Blue', 587, '2023-05-10 08:00:00', 3000.00, 'credit', 'Shenyi Huang', '0000000000000000', '2029-02-02', '2023-01-01 15:00:00', 'sh6210@nyu.edu');
+insert into Ticket values(2, 'Jet Blue', 777, '2023-05-11 08:00:00', 5000.00, 'debit', 'Isha Jagani', '0000000000000001', '2029-03-02', '2023-01-02 15:00:00', 'imj2430@nyu.edu');
+insert into Ticket values(3, 'Jet Blue', 587, '2023-05-10 08:00:00', 3000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
+insert into Ticket values(4, 'Jet Blue', 587, '2022-05-11 08:00:00', 3000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
+insert into Ticket values(5, 'Jet Blue', 777, '2022-05-10 08:00:00', 5000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');

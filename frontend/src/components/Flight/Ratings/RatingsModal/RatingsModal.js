@@ -5,6 +5,7 @@ import styles from "./RatingsModal.module.css";
 const RatingsModal = (props) => {
   const modalRef = useRef(null);
   const [ratings, setRatings] = useState([]);
+  const [avg, setAvg] = useState(0);
 
   useEffect(() => {
     const clickOutsideHandler = (event) => {
@@ -22,10 +23,9 @@ const RatingsModal = (props) => {
     const formData = new URLSearchParams();
     formData.append("airline_name", props.airline);
     formData.append("flight_num", props.flightNum);
-    formData.append("dep_date", props.depDate);
-    formData.append("dep_time", props.depTime);
+    formData.append("dep_datetime", props.depDate + " " + props.depTime);
 
-    fetch("http://localhost:5000/view_ratings", {
+    fetch("http://localhost:5000//view_flight_ratings", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
@@ -38,7 +38,9 @@ const RatingsModal = (props) => {
         }
       })
       .then((data) => {
-        setRatings(data);
+        setRatings(data.rates);
+        setAvg(data.avg_rating);
+        console.log(data);
       })
       .catch((error) => {
         console.log(error);
@@ -53,6 +55,7 @@ const RatingsModal = (props) => {
     <div className={styles.modal} ref={modalRef}>
       <div>
         <h2>Ratings</h2>
+        {avg !== 0 && <p>Avg Rating: {avg} stars</p>}
         {ratings.length == 0 ? (
           <p>No reviews</p>
         ) : (

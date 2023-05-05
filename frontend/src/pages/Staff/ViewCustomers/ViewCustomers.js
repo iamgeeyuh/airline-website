@@ -25,12 +25,14 @@ const ViewCustomers = () => {
     const formData = new URLSearchParams();
 
     formData.append("email", email);
+    formData.append("airline_name", ctx.isLoggedIn.airline);
+
     if (email === "") {
       setComplete(false);
       return;
     }
 
-    fetch("http://localhost:5000/view_customer", {
+    fetch("http://localhost:5000/view_customers", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
@@ -58,7 +60,7 @@ const ViewCustomers = () => {
     const formData = new URLSearchParams();
     formData.append("airline_name", ctx.isLoggedIn.airline);
 
-    fetch("http://localhost:5000/view_frequent_customers", {
+    fetch("http://localhost:5000/frequent_customers", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),

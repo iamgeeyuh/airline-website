@@ -96,10 +96,12 @@ const CreateFlight = () => {
           throw new Error("Error creating flight");
         }
       })
-      .then((data) => { 
-        setModal(data.length !== 0);
-        setValid(data.length !== 0);
+      .then((data) => {
+        console.log(data.valid);
+        setModal(data.valid);
+        setValid(data.valid);
         setComplete(true);
+        return;
       })
       .catch((error) => {
         console.log(error);

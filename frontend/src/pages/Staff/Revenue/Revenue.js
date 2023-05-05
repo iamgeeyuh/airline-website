@@ -9,6 +9,22 @@ const Revenue = () => {
   const [lastYear, setLastYear] = useState("0");
   const [lastMonth, setLastMonth] = useState("0");
 
+  const yearHandler = (value) => {
+    if (value != null) {
+      setLastYear(value);
+    } else {
+      setLastYear("0");
+    }
+  };
+
+  const monthHandler = (value) => {
+    if (value != null) {
+      setLastMonth(value);
+    } else {
+      setLastMonth("0");
+    }
+  };
+
   useEffect(() => {
     setIsLoggedIn(ctx.isLoggedIn);
   }, [ctx.isLoggedIn]);
@@ -30,14 +46,13 @@ const Revenue = () => {
         }
       })
       .then((data) => {
-        setLastMonth(data.month);
-        setLastYear(data.year);
+        monthHandler(data.month);
+        yearHandler(data.year);
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
 
   useEffect(() => loadRevenue(), []);
 

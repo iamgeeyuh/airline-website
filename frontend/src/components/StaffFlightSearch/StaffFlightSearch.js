@@ -8,8 +8,17 @@ const StaffFlightSearch = (props) => {
   const [srcAirport, setSrcAirport] = useState("");
   const [dstCity, setDstCity] = useState("");
   const [dstAirport, setDstAirport] = useState("");
-  const [range, setRange] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
   const [complete, setComplete] = useState(true);
+
+  const startHandler = (event) => {
+    setStart(event.target.value);
+  };
+
+  const endHandler = (event) => {
+    setEnd(event.target.value);
+  };
 
   const srcCityHandler = (event) => {
     setSrcCity(event.target.value);
@@ -27,10 +36,6 @@ const StaffFlightSearch = (props) => {
     setDstAirport(event.target.value);
   };
 
-  const rangeHandler = (event) => {
-    setRange(event.target.value);
-  };
-
   const submitHandler = (event) => {
     event.preventDefault();
     const formData = new URLSearchParams();
@@ -39,10 +44,11 @@ const StaffFlightSearch = (props) => {
     formData.append("src_airport", srcAirport);
     formData.append("dst_city", dstCity);
     formData.append("dst_airport", dstAirport);
-    formData.append("range", range);
+    formData.append("start", start);
+    formData.append("end", end);
     formData.append("airline_name", ctx.isLoggedIn.airline);
 
-    const formValues = [srcCity, srcAirport, dstCity, dstAirport];
+    const formValues = [srcCity, srcAirport, dstCity, dstAirport, start, end];
 
     const isEmpty = formValues.some((value) => value.trim() === "");
     if (isEmpty) {
@@ -51,12 +57,12 @@ const StaffFlightSearch = (props) => {
     }
 
     fetch("http://localhost:5000/staff_view_flights", {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
     })
       .then((response) => {
-        if (response.ok) { 
+        if (response.ok) {
           return response.json();
         } else {
           throw new Error("Error searching for flights");
@@ -78,6 +84,7 @@ const StaffFlightSearch = (props) => {
         <div>
           <label>From</label>
           <div>
+            <input type="date" value={start} onChange={startHandler} />
             <input
               type="text"
               placeholder="New York City"
@@ -90,6 +97,7 @@ const StaffFlightSearch = (props) => {
         <div>
           <label>To</label>
           <div>
+            <input type="date" value={end} onChange={endHandler} />
             <input
               type="text"
               placeholder="Chicago"
@@ -102,12 +110,6 @@ const StaffFlightSearch = (props) => {
               value={dstAirport}
               onChange={dstAirportHandler}
             />
-          </div>
-        </div>
-        <div>
-          <label>Range</label>
-          <div>
-            <input type="month" value={range} onChange={rangeHandler} />
           </div>
         </div>
       </div>

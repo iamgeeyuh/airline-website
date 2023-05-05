@@ -21,8 +21,7 @@ const PassengersModal = (props) => {
     const formData = new URLSearchParams();
     formData.append("airline_name", props.airline);
     formData.append("flight_num", props.flightNum);
-    formData.append("dep_date", props.depDate);
-    formData.append("dep_time", props.depTime);
+    formData.append("dep_datetime", props.depDate + " " + props.depTime);
 
     fetch("http://localhost:5000/view_passengers", {
       method: "POST",
@@ -33,7 +32,7 @@ const PassengersModal = (props) => {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error("Error viewing ratings");
+          throw new Error("Error viewing passengers");
         }
       })
       .then((data) => {
@@ -56,8 +55,8 @@ const PassengersModal = (props) => {
           <p>No passengers</p>
         ) : (
           passengers.map((passenger) => (
-            <div>
-              <p>{passenger.name}</p>
+            <div key={passenger.email}>
+              <p>{passenger.fname} {passenger.lname}</p>
               <p>{passenger.email}</p>
             </div>
           ))

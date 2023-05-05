@@ -27,7 +27,7 @@ const StaffViewFlights = () => {
         } else {
           throw new Error("Error logging in");
         }
-      })
+      }) 
       .then((data) => {
         flightsHandler(data);
       })

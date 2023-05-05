@@ -571,7 +571,7 @@ def view_flight_ratings():
     return {rates}
 
 #7. View frequent customers partially done query is not correct.... needs to be modified
-@app.route('/frequent_customers', methods=['GET'])
+@app.route('/frequent_customers', methods=['GET', "POST"])
 def frequent_customers():
     cursor = conn.cursor()
     customer_email = request.form["customer_email"]

@@ -248,16 +248,6 @@ def search_flight():
         }
         flights.append(flight)
     if isOneWay == "true":
-        print(flights)
-        query3 = (
-            "SELECT DISTINCT flight_num FROM Ticket"
-        )
-        cursor.execute(query3)
-        data3 = cursor.fetchall()
-        for flight in flights:
-          for elem in flight:
-                if (elem in data3['flight_num']):
-                   flight['purchased'] = True
         cursor.close()
         print(flights)
         return jsonify(flights)
@@ -311,15 +301,6 @@ def search_flight():
                 "ticket_id": data["Ticket.ticket_id"]
             }
             flights.append(flight)
-        query3 = (
-            "SELECT DISTINCT flight_num FROM Ticket"
-        )
-        cursor.execute(query3)
-        data3 = cursor.fetchall()
-        for flight in flights:
-          for elem in flight:
-                if (elem in data3['flight_num']):
-                   flight['purchased'] = True
         cursor.close()
         print(flights)
         return jsonify(flights)
@@ -748,41 +729,56 @@ def future_flights():
 @app.route("/search_flight_customer", methods=["GET", "POST"])
 def search_flight_customer():
 
+    print(request.form)
+    customer_email = request.form["customer_email"]
+    dep_city = request.form["src_city"]
+    dep_airport_name = request.form["src_airport"]
+    arr_city = request.form["dst_city"]
+    arr_airport_name = request.form["dst_airport"]
+    # departure_date = request.form["dep_date"].replace("T", " ") + ":00"
+    departure_date = request.form["dep_date"]
+    
+
+    isOneWay = request.form["isOneWay"]
+    return_date = request.form["return_date"]
+
     cursor = conn.cursor()
-    params = request.form
-    flights = []
+
     query = (
         "SELECT flight_num, departure_datetime, airline_name,"
-        " arrival_datetime, ticket_id,"
+        " arrival_datetime, ticket_id, "
         + "arr_airport.airport_name, arr_airport.city,"
         " dep_airport.airport_name, dep_airport.city, base_price "
         + "FROM Flight INNER JOIN Airport as arr_airport ON"
         " Flight.arrival_airport_code = arr_airport.airport_code "
         + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
-        " dep_airport.airport_code INNER JOIN Ticket ON Flight.flight_num = Ticket.flight_num "
-        + "WHERE departure_datetime > CURRENT_TIMESTAMP and"
+        " dep_airport.airport_code INNER JOIN Ticket ON Flight.flight_num = Ticket.flight_num"
+        + "WHERE departure_datetime > CURRENT_TIMESTAMP AND Ticket.email = %s"
     )
-    queries = ()
-    if params['source city']:
-        query += ' dep_airport.city = %s and'
-        queries += (params['source city'],)
-    if params['destination city']:
-        query += ' arr_airport.city = %s and'
-        queries += (params['destination city'],)
-    if params['source airport']:
-        query += ' dep_airport.airport_name = %s and'
-        queries += (params['source airport'],)
-    if params['destination airport']:
-        query += ' arr_airport.airport_name = %s and'
-        queries += (params['destination airport'],)
-    if params['departure date']:
-        query += ' DATE(departure_datetime) = %s and'
-        queries += (params['departure date'],)
-    if query[-4:] == ' and':
-        query = query[:-4]  # cut the trailing ' and'\
 
-    cursor.execute(query, queries)
+
+    params = ()
+    if dep_city != "":
+        query += " and dep_airport.city = %s"
+        params += (dep_city,)
+    if dep_airport_name != "":
+        query += " and dep_airport.airport_name = %s"
+        params += (dep_airport_name,)
+    if arr_city != "":
+        query += " and arr_airport.city = %s"
+        params += (arr_city,)
+    if arr_airport_name != "":
+        query += " and arr_airport.airport_name = %s"
+        params += (arr_airport_name,)
+    if departure_date != "":
+        query += " and departure_datetime = %s"
+        params += (departure_date,)
+
+    # print(query)
+    cursor.execute(query, (customer_email, params))
     data_array = cursor.fetchall()
+
+    flights = []  # a 2D array that stores flights and their info
     for data in data_array:
         flight = {
             "flight_num": data["flight_num"],
@@ -796,56 +792,66 @@ def search_flight_customer():
             "dep_airport_name": data["dep_airport.airport_name"],
             "dep_city": data["dep_airport.city"],
             "price": data["base_price"],
-            "ticket_id": data["Ticket.ticket_id"] }
+            "ticket_id": data["Ticket.ticket_id"]
+        }
         flights.append(flight)
+    if isOneWay == "true":
+        print(flights)
+        cursor.close()
+        return jsonify(flights)
+    else:
+        return_date = request.form["return_date"]
+        query2 = (
+            "SELECT flight_num, departure_datetime, airline_name,"
+            " arrival_datetime, ticket_id, "
+            + "arr_airport.airport_name, arr_airport.city,"
+            " dep_airport.airport_name, dep_airport.city, base_price "
+            + "FROM Flight INNER JOIN Airport as arr_airport ON"
+            " Flight.arrival_airport_code = arr_airport.airport_code "
+            + "INNER JOIN Airport as dep_airport ON"
+            " Flight.departure_airport_code = dep_airport.airport_code INNER JOIN Ticket ON Flight.flight_num = Ticket.flight_num "
+            + "WHERE departure_datetime > CURRENT_TIMESTAMP AND Ticket.email = %s"
+        )
+        params2 = ()
 
-    ret_data = None
-    if params['return date']:  # I assume a return date means the user wants to come back to the airport from which they departed
-        return_query = ("SELECT flight_num, departure_datetime, airline_name,"
-        " arrival_datetime, ticket_id, "
-        + "arr_airport.airport_name, arr_airport.city,"
-        " dep_airport.airport_name, dep_airport.city, base_price "
-        + "FROM Flight INNER JOIN Airport as arr_airport ON"
-        " Flight.arrival_airport_code = arr_airport.airport_code "
-        + "INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
-        " dep_airport.airport_code INNER JOIN Ticket ON Flight.flight_num = Ticket.flight_num"
-        + "WHERE departure_datetime > CURRENT_TIMESTAMP and")
-        ret_queries = ()
-        if params['source city']:
-            return_query += ' arr_airport.city = %s and'
-            ret_queries += (params['source city'],)
-        if params['destination city']:
-            return_query += ' dep_airport.city = %s and'
-            ret_queries += (params['destination city'],)
-        if params['source airport']:
-            return_query += 'arr_airport.airport_name = %s and'
-            ret_queries += (params['source airport'],)
-        if params['destination airport']:
-            return_query += ' dep_airport.airport_name = %s and'
-            ret_queries += (params['destination airport'],)
-        return_query += ' DATE(departure_datetime) = %s'
-        ret_queries += (params['return date'],)
-        cursor.execute(return_query, ret_queries)
-        ret_data = cursor.fetchall()
-        for data in ret_data:
+        if dep_city != "":
+            query2 += " and arr_airport.city = %s"
+            params2 += (dep_city,)
+        if dep_airport_name != "":
+            query2 += " and arr_airport.airport_name = %s"
+            params2 += (dep_airport_name,)
+        if arr_city != "":
+            query2 += " and dep_airport.city = %s"
+            params2 += (arr_city,)
+        if arr_airport_name != "":
+            query2 += " and dep_airport.airport_name = %s"
+            params2 += (arr_airport_name,)
+        if departure_date != "":
+            query2 += " and departure_datetime = %s"
+            params2 += (return_date,)
+
+        cursor.execute(query2,(customer_email, params2))
+
+        data_array2 = cursor.fetchall()
+        for data in data_array2:
             flight = {
-            "flight_num": data["flight_num"],
-            "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
-            "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
-            "airline_name": data["airline_name"],
-            "arrival_date": str(data["arrival_datetime"].date()).replace("00:00:00 GMT", ""),
-            "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
-            "arr_airport_name": data["airport_name"],
-            "arr_city": data["city"],
-            "dep_airport_name": data["dep_airport.airport_name"],
-            "dep_city": data["dep_airport.city"],
-            "price": data["base_price"],
-            "ticket_id": data["Ticket.ticket_id"] }
-        flights.append(flight)
-        # print(return_query, ret_data)
-    cursor.close()
-    print(flights)
-    return jsonify(flights)
+                "flight_num": data["flight_num"],
+                "departure_date": str(data["departure_datetime"].date()).replace("00:00:00 GMT", ""),
+                "departure_time": data["departure_datetime"].time().strftime('%H:%M:%S'),
+                "airline_name": data["airline_name"],
+                "arrival_date": str(data["arrival_datetime"].date()).replace("00:00:00 GMT", ""),
+                "arrival_time": data["arrival_datetime"].time().strftime('%H:%M:%S'),
+                "arr_airport_name": data["airport_name"],
+                "arr_city": data["city"],
+                "dep_airport_name": data["dep_airport.airport_name"],
+                "dep_city": data["dep_airport.city"],
+                "price": data["base_price"],
+                "ticket_id": data["Ticket.ticket_id"]
+            }
+            flights.append(flight)
+        cursor.close()
+        print(flights)
+        return jsonify(flights)
 
 
 @app.route('/purchase_ticket', methods=['GET', 'POST'])
@@ -907,9 +913,10 @@ def purchase_ticket():
         random_num = random.randint(100000, 999999)
         unique_id = str(uuid.uuid4().hex)
         ticket_id  = f"{random_num}-{unique_id}"
+    purchase_time = "SELECT CURRENT_TIMESTAMP"
     # Insert purchase into database
     ins = 'INSERT INTO Ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-    cursor.execute(ins, (ticket_id, airline_name, flight_num, dep_timestamp, sold_price, card_type, card_name, card_num, exp_date, CURRENT_TIMESTAMP, customer_email))
+    cursor.execute(ins, (ticket_id, airline_name, flight_num, dep_timestamp, sold_price, card_type, card_name, card_num, exp_date, purchase_time, customer_email))
 
     conn.commit()
     cursor.close()

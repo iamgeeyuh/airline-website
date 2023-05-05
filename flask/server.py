@@ -13,7 +13,8 @@ from flask import (
 from flask_cors import CORS
 import hashlib
 import datetime
-
+import random
+import uuid
 
 app = Flask(__name__)
 CORS(app)
@@ -904,12 +905,12 @@ def purchase_ticket():
     card_num = request.form['card_num']
     card_name = request.form['card_name']
     sold_price = request.form['price']
-    ticket_id = request.form['ticket_id']
+    # ticket_id = request.form['ticket_id']
     exp_date = request.form['exp_date']
 
     # Check if ticket has already been purchased
-    query = 'SELECT * FROM Ticket WHERE ticket_id = %s AND flight_num = %s AND airline_name = %s AND departure_datetime = %s AND email = %s'
-    cursor.execute(query, (ticket_id, flight_num, airline_name, dep_timestamp, customer_email))
+    query = 'SELECT * FROM Ticket WHERE flight_num = %s AND airline_name = %s AND departure_datetime = %s AND email = %s'
+    cursor.execute(query, (flight_num, airline_name, dep_timestamp, customer_email))
     data = cursor.fetchone()
 
     if data:
@@ -939,6 +940,17 @@ def purchase_ticket():
     else:
         price = base_price
 
+    # Generate ticket id
+    random_num = random.randint(100000, 999999)
+    unique_id = str(uuid.uuid4().hex)
+    ticket_id  = f"{random_num}-{unique_id}"
+    query = 'SELECT ticket_id FROM Ticket WHERE flight_num = %s AND email = %s'
+    cursor.execute(query, (flight_num, customer_email))
+    data = cursor.fetchall()
+    while(ticket_id in data['ticket_id']):
+        random_num = random.randint(100000, 999999)
+        unique_id = str(uuid.uuid4().hex)
+        ticket_id  = f"{random_num}-{unique_id}"
     # Insert purchase into database
     ins = 'INSERT INTO Ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
     cursor.execute(ins, (ticket_id, airline_name, flight_num, dep_timestamp, sold_price, card_type, card_name, card_num, exp_date, CURRENT_TIMESTAMP, customer_email))
@@ -955,7 +967,6 @@ def display_cancel_trip():
     flight_num = request.form['flight_num']
     airline_name = request.form['airline_name']
     dep_timestamp = request.form['dep_timestamp']
-    ticket_id = request.form['ticket_id']
 
     # only shows flights more than 24 hours in the future so a user cannot cancel a flight that occurs in under 24 hours
     query = 'SELECT ticket_id, airline_name, flight_num, departure_datetime, arrival_datetime, ' + \
@@ -970,11 +981,11 @@ def display_cancel_trip():
         return jsonify({'error': error})
 
     # remove the ticket from the database
-    query = 'DELETE FROM Ticket WHERE ticket_id = %s AND flight_num = %s AND airline_name = %s AND dep_timestamp = %s'
-    cursor.execute(query, (ticket_id, flight_num, airline_name, dep_timestamp))
+    query = 'DELETE FROM Ticket WHERE flight_num = %s AND airline_name = %s AND dep_timestamp = %s'
+    cursor.execute(query, (flight_num, airline_name, dep_timestamp))
     conn.commit()
-    query = 'select * from purchase where ticket_id = %s and flight_num = %s and airline_name = %s and dep_timestamp = %s'
-    cursor.execute(query, (ticket_id, flight_num, airline_name, dep_timestamp))
+    query = 'select * from Ticket where flight_num = %s and airline_name = %s and dep_timestamp = %s'
+    cursor.execute(query, (flight_num, airline_name, dep_timestamp))
     data = cursor.fetchone()
     msg = 'The ticket has been canceled and is now available for purchase by other customers'
     return jsonify({'msg': msg})

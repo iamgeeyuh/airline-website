@@ -619,31 +619,31 @@ def view_ticket_sales_report():
     cursor = conn.cursor()
 
     # query to get total ticket sold
-    query1 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM purchase WHERE airline_name = %s'
+    query1 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM Ticket WHERE airline_name = %s'
     
     if start_date and end_date:
-        query1 += ' AND purchase_timestamp BETWEEN %s AND %s'
+        query1 += ' AND purchase_datetime BETWEEN %s AND %s'
         cursor.execute(query1, (airline_name, start_date, end_date))
     else:
         # last month
-        query1 += ' AND YEAR(purchase_timestamp) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 MONTH) AND MONTH(purchase_timestamp) = MONTH(CURRENT_TIMESTAMP - INTERVAL 1 MONTH)'
-        cursor.execute(query1, (airline_name,))
+        query1 += ' AND YEAR(purchase_datetime) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 MONTH) AND MONTH(purchase_datetime) = MONTH(CURRENT_TIMESTAMP - INTERVAL 1 MONTH)'
+        cursor.execute(query1, (airline_name))
         ticket_month = cursor.fetchone()
         
         # last year
-        query2 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM purchase WHERE airline_name = %s AND YEAR(purchase_timestamp) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 YEAR)'
-        cursor.execute(query2, (airline_name,))
+        query2 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM Ticket WHERE airline_name = %s AND YEAR(purchase_datetime) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 YEAR)'
+        cursor.execute(query2, (airline_name))
         ticket_year = cursor.fetchone()
 
     # query to get month wise ticket sold
-    query3 = 'SELECT MONTHNAME(purchase_timestamp) AS month, YEAR(purchase_timestamp) AS year, COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS revenue FROM purchase WHERE airline_name = %s'
+    query3 = 'SELECT MONTHNAME(purchase_datetime) AS month, YEAR(purchase_datetime) AS year, COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS revenue FROM Ticket WHERE airline_name = %s'
     
     if start_date and end_date:
-        query3 += ' AND purchase_timestamp BETWEEN %s AND %s'
-        cursor.execute(query3 + ' GROUP BY month, year ORDER BY purchase_timestamp DESC', (airline_name, start_date, end_date))
+        query3 += ' AND purchase_datetime BETWEEN %s AND %s'
+        cursor.execute(query3 + ' GROUP BY month, year ORDER BY purchase_datetime DESC', (airline_name, start_date, end_date))
     else:
-        query3 += ' GROUP BY month, year ORDER BY purchase_timestamp DESC'
-        cursor.execute(query3, (airline_name,))
+        query3 += ' GROUP BY month, year ORDER BY purchase_datetime DESC'
+        cursor.execute(query3, (airline_name))
         
     monthwise_tickets = cursor.fetchall()
     

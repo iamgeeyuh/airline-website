@@ -876,7 +876,11 @@ def view_ticket_sales_report():
     tickets = cursor.fetchone()
 
     query2 = (
-        "SELECT CONCAT(MONTH(purchase_datetime), '/', YEAR(purchase_datetime)) as label, COUNT(*) as tickets FROM Ticket WHERE airline_name = %s AND purchase_datetime BETWEEN %s AND %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime) ORDER BY YEAR(purchase_datetime), MONTH(purchase_datetime);"
+        "SELECT CONCAT(MONTH(purchase_datetime), '/', YEAR(purchase_datetime))"
+        " as label, COUNT(*) as tickets FROM Ticket WHERE airline_name = %s AND"
+        " purchase_datetime BETWEEN %s AND %s GROUP BY YEAR(purchase_datetime),"
+        " MONTH(purchase_datetime) ORDER BY YEAR(purchase_datetime),"
+        " MONTH(purchase_datetime);"
     )
     cursor.execute(query2, (airline_name, start, end))
     data = cursor.fetchall()
@@ -947,15 +951,20 @@ def logout():
 def prev_flights():
     customer_email = request.form["customer_email"]
     cursor = conn.cursor()
-    query = "SELECT flight_num, departure_datetime, airline_name,"
-    " arrival_datetime, "
-    +"arr_airport.airport_name, arr_airport.city,"
-    " dep_airport.airport_name, dep_airport.city, base_price "
-    +"FROM Flight INNER JOIN Airport as arr_airport ON"
-    " Flight.arrival_airport_code = arr_airport.airport_code "
-    +"INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
-    " dep_airport.airport_code "
-    +"WHERE departure_datetime < CURRENT_TIMESTAMP and email = %s"
+    query = (
+        "SELECT Flight.flight_num, Flight.departure_datetime, dep_airport.city"
+        " AS departure_city, dep_airport.airport_name AS departure_airport,"
+        " Flight.airline_name, Flight.arrival_datetime, arr_airport.city AS"
+        " arrival_city, arr_airport.airport_name AS arrival_airport,"
+        " Ticket.sold_price, Ticket.ticket_id FROM Ticket INNER JOIN Flight ON"
+        " Ticket.airline_name = Flight.airline_name AND Ticket.flight_num ="
+        " Flight.flight_num AND Ticket.departure_datetime ="
+        " Flight.departure_datetime INNER JOIN Airport AS dep_airport ON"
+        " Flight.departure_airport_code = dep_airport.airport_code INNER JOIN"
+        " Airport AS arr_airport ON Flight.arrival_airport_code ="
+        " arr_airport.airport_code WHERE Ticket.email = %s AND"
+        " Flight.departure_datetime < CURRENT_TIMESTAMP;"
+    )
     cursor.execute(query, (customer_email))
     data_array = cursor.fetchall()
     flights = []
@@ -975,11 +984,12 @@ def prev_flights():
             "arrival_time": data["arrival_datetime"]
             .time()
             .strftime("%H:%M:%S"),
-            "arr_airport_name": data["airport_name"],
-            "arr_city": data["city"],
-            "dep_airport_name": data["dep_airport.airport_name"],
-            "dep_city": data["dep_airport.city"],
-            "price": data["base_price"],
+            "arr_airport_name": data["arrival_airport"],
+            "arr_city": data["arrival_city"],
+            "dep_airport_name": data["departure_airport"],
+            "dep_city": data["departure_city"],
+            "price": data["sold_price"],
+            "ticket_id": data["ticket_id"],
         }
         flights.append(flight)
     cursor.close()
@@ -991,15 +1001,20 @@ def prev_flights():
 def future_flights():
     customer_email = request.form["customer_email"]
     cursor = conn.cursor()
-    query = "SELECT flight_num, departure_datetime, airline_name,"
-    " arrival_datetime, "
-    +"arr_airport.airport_name, arr_airport.city,"
-    " dep_airport.airport_name, dep_airport.city, base_price "
-    +"FROM Flight INNER JOIN Airport as arr_airport ON"
-    " Flight.arrival_airport_code = arr_airport.airport_code "
-    +"INNER JOIN Airport as dep_airport ON Flight.departure_airport_code ="
-    " dep_airport.airport_code "
-    +"WHERE departure_datetime > CURRENT_TIMESTAMP and email = %s"
+    query = (
+        "SELECT Flight.flight_num, Flight.departure_datetime, dep_airport.city"
+        " AS departure_city, dep_airport.airport_name AS departure_airport,"
+        " Flight.airline_name, Flight.arrival_datetime, arr_airport.city AS"
+        " arrival_city, arr_airport.airport_name AS arrival_airport,"
+        " Ticket.sold_price, Ticket.ticket_id FROM Ticket INNER JOIN Flight ON"
+        " Ticket.airline_name = Flight.airline_name AND Ticket.flight_num ="
+        " Flight.flight_num AND Ticket.departure_datetime ="
+        " Flight.departure_datetime INNER JOIN Airport AS dep_airport ON"
+        " Flight.departure_airport_code = dep_airport.airport_code INNER JOIN"
+        " Airport AS arr_airport ON Flight.arrival_airport_code ="
+        " arr_airport.airport_code WHERE Ticket.email = %s AND"
+        " Flight.departure_datetime > CURRENT_TIMESTAMP;"
+    )
     cursor.execute(query, (customer_email))
     data_array = cursor.fetchall()
     flights = []
@@ -1019,11 +1034,12 @@ def future_flights():
             "arrival_time": data["arrival_datetime"]
             .time()
             .strftime("%H:%M:%S"),
-            "arr_airport_name": data["airport_name"],
-            "arr_city": data["city"],
-            "dep_airport_name": data["dep_airport.airport_name"],
-            "dep_city": data["dep_airport.city"],
-            "price": data["base_price"],
+            "arr_airport_name": data["arrival_airport"],
+            "arr_city": data["arrival_city"],
+            "dep_airport_name": data["departure_airport"],
+            "dep_city": data["departure_city"],
+            "price": data["sold_price"],
+            "ticket_id": data["ticket_id"],
         }
         flights.append(flight)
     cursor.close()

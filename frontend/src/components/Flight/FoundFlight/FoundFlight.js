@@ -27,6 +27,13 @@ const FoundFlight = (props) => {
                 arrTime={flight.arrival_time}
                 price={flight.price}
                 page={props.page}
+                ticket_id={
+                  props.page === "cancel" ||
+                  props.page === "review" ||
+                  props.page === "purchase"
+                    ? flight.ticket_id
+                    : null
+                }
               />
             </div>
           ))}

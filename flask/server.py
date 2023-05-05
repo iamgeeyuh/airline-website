@@ -1271,8 +1271,11 @@ def rate_comment():
         query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
         cursor.execute(query, (ticket_id, customer_email))
         data = cursor.fetchall()
-        return jsonify({"rating":data['rating'], "comment": data['comment']})
-    
+        if data:
+            return jsonify({"rating":data['rating'], "comment": data['comment']})
+        else: 
+            return jsonify({"rating": None, "comment": None})
+        
     query = 'SELECT * FROM Ticket WHERE email = %s and ticket_id = %s and arrival_datetime > NOW()'
     cursor.execute(query, (customer_email, ticket_id))
     data = cursor.fetchone()

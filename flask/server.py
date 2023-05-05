@@ -266,14 +266,6 @@ def search_flight():
         }
         flights.append(flight)
     if isOneWay == "true":
-        print(flights)
-        query3 = "SELECT DISTINCT flight_num FROM Ticket"
-        cursor.execute(query3)
-        data3 = cursor.fetchall()
-        for flight in flights:
-            for elem in flight:
-                if elem in data3["flight_num"]:
-                    flight["purchased"] = True
         cursor.close()
         print(flights)
         return jsonify(flights)
@@ -334,13 +326,6 @@ def search_flight():
                 "price": data["base_price"],
             }
             flights.append(flight)
-        query3 = "SELECT DISTINCT flight_num FROM Ticket"
-        cursor.execute(query3)
-        data3 = cursor.fetchall()
-        for flight in flights:
-            for elem in flight:
-                if elem in data3["flight_num"]:
-                    flight["purchased"] = True
         cursor.close()
         print(flights)
         return jsonify(flights)

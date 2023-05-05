@@ -8,7 +8,7 @@ const ReviewModal = (props) => {
   const modalRef = useRef(null);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
 
   const ratingHandler = (event) => {
     setRating(event.target.value);

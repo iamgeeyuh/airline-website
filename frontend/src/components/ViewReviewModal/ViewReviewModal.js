@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import Ratings from "../Flight/Ratings/Ratings";
 import styles from "./ViewReviewModal.module.css";
 
 const ViewReviewModal = (props) => {
@@ -16,11 +17,12 @@ const ViewReviewModal = (props) => {
     };
   }, [modalRef]);
 
-  return <div className={styles.modal} ref={modalRef}>
-    <form>
-        <button>Submit</button>
-    </form>
-  </div>;
+  return (
+    <div className={styles.modal} ref={modalRef}>
+      <Ratings />
+      <button>Ok</button>
+    </div>
+  );
 };
 
 export default ViewReviewModal;

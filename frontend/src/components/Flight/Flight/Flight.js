@@ -42,6 +42,10 @@ const Flight = (props) => {
     setModalPurchase(false);
   };
 
+  const checkViewReviews = () => {
+    setModalViewReview(true);
+  };
+
   const checkCancel = (success) => {
     setModalCancel(true);
     setCancelMessage(success);
@@ -113,6 +117,11 @@ const Flight = (props) => {
             </button>
           )}
           {props.page == "review" && (
+            <button className={styles.buttons} onClick={checkViewReviews}>
+              View Review
+            </button>
+          )}
+          {props.page == "review" && (
             <button className={styles.buttons} onClick={checkReviews}>
               Review
             </button>
@@ -178,6 +187,9 @@ const Flight = (props) => {
           modalHandler={modalReviewHandler}
           flightNum={props.flightNum}
           airline={props.airline}
+          ticket_id={props.ticket_id}
+          depDate={props.depDate}
+          depTime={props.depTime}
         />
       )}
       {modalReview && <div className={styles.dimmedBackground}></div>}

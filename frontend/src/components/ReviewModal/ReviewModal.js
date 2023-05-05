@@ -37,8 +37,10 @@ const ReviewModal = (props) => {
     formData.append("customer_email", ctx.isLoggedIn.email);
     formData.append("flight_num", props.flightNum);
     formData.append("airline_name", props.airline);
+    formData.append("dep_datetime", props.depDate + " " + props.depTime);
     formData.append("rating", rating);
     formData.append("comment", comment);
+    formData.append("ticket_id", props.ticket_id);
 
     fetch("http://localhost:5000/rate_comment", {
       method: "POST",

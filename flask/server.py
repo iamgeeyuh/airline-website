@@ -1336,13 +1336,19 @@ def track_spend():
             end_date = datetime.strptime(end_date, "%Y-%m-%d")
         except ValueError:
             return jsonify(
-                {"error": False}
+                {"year_total": None,
+                "monthly_data": None,
+                "range_total": None,
+                "range_data": None}
             )
 
         if end_date < start_date:
             return jsonify(
                 {
-                    "error": False
+                    "year_total": None,
+                    "monthly_data": None,
+                    "range_total": None,
+                    "range_data": None
                 }
             )
 

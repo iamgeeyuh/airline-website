@@ -592,14 +592,16 @@ def frequent_customers():
         '''
         cursor.execute(query_frequent_customer, (customer_email, airline_name))
         customer_flights = cursor.fetchall()
+        if customer_flights is not None:
+            cursor.close()
+            return jsonify({'first name': customer_flights['fname'], 'last name': customer_flights['lname']})
+        else:
+            return jsonify({'error': 'No frequent customers found.'})
     else:
-        return jsonify({'error': 'POST method is required'})
+        return jsonify({'error': 'POST method is required.'})
+    
 
-    cursor.close()
-    return jsonify({"first name": customer_flights['fname'], "last name": customer_flights['lname']})
-    # cursor.close()
-    # return jsonify({"first name" : customer_flights['fname'], "last name" : customer_flights['lname']})
-
+    
 #Use case 8... sales report
 @app.route('/view_ticket_sales_report', methods=['GET', 'POST'])
 def view_ticket_sales_report():

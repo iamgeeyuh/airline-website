@@ -608,6 +608,62 @@ def frequent_customers():
     cursor.close()
     return {"first name" : customer_flights['fname'], "last name" : customer_flights['lname']}
 
+#Use case 8... sales report
+@app.route('/view_ticket_sales_report', methods=['GET', 'POST'])
+def view_ticket_sales_report():
+    airline_name = request.form["airline_name"]
+    start_date = request.form["start"]
+    end_date = request.form["end"]
+
+    # cursor used to send queries
+    cursor = conn.cursor()
+
+    # query to get total ticket sold
+    query1 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM purchase WHERE airline_name = %s'
+    
+    if start_date and end_date:
+        query1 += ' AND purchase_timestamp BETWEEN %s AND %s'
+        cursor.execute(query1, (airline_name, start_date, end_date))
+    else:
+        # last month
+        query1 += ' AND YEAR(purchase_timestamp) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 MONTH) AND MONTH(purchase_timestamp) = MONTH(CURRENT_TIMESTAMP - INTERVAL 1 MONTH)'
+        cursor.execute(query1, (airline_name,))
+        ticket_month = cursor.fetchone()
+        
+        # last year
+        query2 = 'SELECT COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS total_revenue FROM purchase WHERE airline_name = %s AND YEAR(purchase_timestamp) = YEAR(CURRENT_TIMESTAMP - INTERVAL 1 YEAR)'
+        cursor.execute(query2, (airline_name,))
+        ticket_year = cursor.fetchone()
+
+    # query to get month wise ticket sold
+    query3 = 'SELECT MONTHNAME(purchase_timestamp) AS month, YEAR(purchase_timestamp) AS year, COUNT(ticket_id) AS num_tickets, SUM(sold_price) AS revenue FROM purchase WHERE airline_name = %s'
+    
+    if start_date and end_date:
+        query3 += ' AND purchase_timestamp BETWEEN %s AND %s'
+        cursor.execute(query3 + ' GROUP BY month, year ORDER BY purchase_timestamp DESC', (airline_name, start_date, end_date))
+    else:
+        query3 += ' GROUP BY month, year ORDER BY purchase_timestamp DESC'
+        cursor.execute(query3, (airline_name,))
+        
+    monthwise_tickets = cursor.fetchall()
+    
+    cursor.close()
+    
+    # prepare response
+    response = {}
+    
+    if start_date and end_date:
+        response['start_date'] = start_date
+        response['end_date'] = end_date
+    else:
+        response['last_month_tickets'] = ticket_month['num_tickets']
+        response['last_month_revenue'] = ticket_month['total_revenue']
+        response['last_year_tickets'] = ticket_year['num_tickets']
+        response['last_year_revenue'] = ticket_year['total_revenue']
+        
+    response['monthwise_tickets'] = monthwise_tickets
+    
+    return jsonify(response)
 
 #10 logout
 @app.route("/logout")

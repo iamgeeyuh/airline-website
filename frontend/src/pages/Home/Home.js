@@ -37,7 +37,7 @@ const Home = () => {
       {showFlights && (
         <FoundFlight
           flights={flights}
-          page={isLoggedIn.isLoggedIn && isLoggedIn.isCustomer && "customer"}
+          page={isLoggedIn.isLoggedIn && isLoggedIn.isCustomer && "purchase"}
         />
       )}
     </div>

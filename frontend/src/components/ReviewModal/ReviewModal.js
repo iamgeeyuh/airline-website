@@ -74,7 +74,7 @@ const ReviewModal = (props) => {
             <input type="text" onChange={commentHandler} />
           </div>
         </div>
-        <button type="submit" onCLick={submitHandler}>
+        <button type="submit" onClick={submitHandler}>
           Submit
         </button>
       </form>

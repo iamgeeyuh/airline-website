@@ -889,6 +889,7 @@ def logout():
 #     query = (
 #         "SELECT flight_num, departure_datetime, airline_name,"
 
+@app.route("/prev_flights", methods=["POST"])
 def prev_flights():
     customer_email = request.form["customer_email"]
     cursor = conn.cursor()

@@ -5,9 +5,8 @@
   transform: translate(-50%, -50%);
   z-index: 2;
   background-color: white;
-  width: 50%;
+  width: 80%;
   padding-bottom: 20px;
-  max-width: 500px;
   padding: 40px;
   overflow-y: scroll;
   max-height: 90vh;
@@ -30,4 +29,21 @@
 .purchaseModal select {
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.purchaseModal p {
+  color: red;
+  text-align: center;
+}
+
+.dimmedBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0.5;
+  z-index: 1;
+  pointer-events: auto;
 }

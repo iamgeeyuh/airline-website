@@ -97,6 +97,7 @@ const PurchaseModal = (props) => {
         setModal(true);
         setComplete(false);
         setValid(data.valid);
+        console.log(data)
       })
       .catch((error) => {
         console.log(error);

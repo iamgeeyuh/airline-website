@@ -1285,7 +1285,7 @@ def rate_comment():
     data = cursor.fetchall()
     conn.close()
     cursor.close()
-    return jsonify({"rating": data["rating"], "comment": data["comment"]})
+    return jsonify({"rating": data['rating'], "comment": data['comment']})
 
 
 @app.route("/track_spend", methods=["GET", "POST"])

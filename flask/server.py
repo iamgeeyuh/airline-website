@@ -1203,7 +1203,7 @@ def purchase_tickets():
     conn.commit()
     cursor.close()
 
-    return jsonify({"msg": True})
+    return jsonify({"msg": "Ticket purchased successfully!"})
 
 
 @app.route("/display_cancel_trip", methods=["GET", "POST"])

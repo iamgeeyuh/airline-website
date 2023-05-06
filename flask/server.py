@@ -1135,7 +1135,23 @@ def purchase_tickets():
     data = cursor.fetchone()
 
     if data:
-        return jsonify({"error": False})
+        return jsonify({"valid": False})
+
+
+    # Calculate price of ticket
+    query = (
+        "SELECT seats, base_price FROM Airplane NATURAL JOIN Flight WHERE"
+        " flight_num = %s AND airline_name = %s AND departure_datetime = %s"
+    )
+    cursor.execute(query, (flight_num, airline_name, dep_timestamp))
+    data = cursor.fetchone()
+
+
+    if not data:
+        return jsonify({"valid": False})
+
+    total_seats = data["seats"]
+    base_price = float(data["base_price"])
 
     # Check if the tickets were sold out
     query = (
@@ -1143,43 +1159,29 @@ def purchase_tickets():
         " departure_datetime = %s AND airline_name = %s"
     )
     cursor.execute(query, (flight_num, dep_timestamp, airline_name))
+
     tix_purchased = cursor.fetchone()["total"]
 
     if tix_purchased >= total_seats:
         return jsonify(
-            {"error": False}
+            {"valid": False}
         )
-
-    # Calculate price of ticket
-    query = (
-        "SELECT seat, base_price FROM Airplane NATURAL JOIN Flight WHERE"
-        " flight_num = %s AND airline_name = %s AND departure_datetime = %s"
-    )
-    cursor.execute(query, (flight_num, airline_name, dep_timestamp))
-    data = cursor.fetchone()
-
-    if not data:
-        return jsonify({"error": False})
-
-    total_seats = data["seat"]
-    base_price = float(data["base_price"])
 
     if tix_purchased / total_seats >= 0.6:
         sold_price = base_price * 1.25
     else:
         sold_price = base_price
 
-    # Generate ticket id
-    random_num = random.randint(100000, 999999)
-    unique_id = str(uuid.uuid4().hex)
-    ticket_id = f"{random_num}-{unique_id}"
-    query = "SELECT ticket_id FROM Ticket WHERE flight_num = %s AND email = %s"
-    cursor.execute(query, (flight_num, customer_email))
+
+    query = "SELECT DISTINCT ticket_id FROM Ticket"
+    cursor.execute(query,())
     data = cursor.fetchall()
-    while ticket_id in data["ticket_id"]:
-        random_num = random.randint(100000, 999999)
-        unique_id = str(uuid.uuid4().hex)
-        ticket_id = f"{random_num}-{unique_id}"
+    if not data:
+        ticket_id = 0
+    else:
+        ticket_id = max([dct["ticket_id"] for dct in data])+1
+    
+
     # Insert purchase into database
     ins = (
         "INSERT INTO Ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, %s)"
@@ -1203,7 +1205,8 @@ def purchase_tickets():
     conn.commit()
     cursor.close()
 
-    return jsonify({"msg": "Ticket purchased successfully!"})
+    return jsonify({"valid": True})
+
 
 
 @app.route("/display_cancel_trip", methods=["GET", "POST"])

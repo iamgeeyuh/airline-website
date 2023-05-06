@@ -37,4 +37,4 @@ insert into Ticket values(1, 'Jet Blue', 587, '2023-05-10 08:00:00', 3000.00, 'c
 insert into Ticket values(2, 'Jet Blue', 777, '2023-05-11 08:00:00', 5000.00, 'debit', 'Isha Jagani', '0000000000000001', '2029-03-02', '2023-01-02 15:00:00', 'imj2430@nyu.edu');
 insert into Ticket values(3, 'Jet Blue', 587, '2023-05-10 08:00:00', 3000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
 insert into Ticket values(4, 'Jet Blue', 587, '2022-05-11 08:00:00', 3000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
-insert into Ticket values(5, 'Jet Blue', 777, '2022-05-10 08:00:00', 5000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');
+insert into Ticket values(10, 'Jet Blue', 123, '2023-03-29 22:42:00', 5000.00, 'credit', 'Jia Huang', '0000000000000002', '2028-03-02', '2023-01-03 15:00:00', 'jzh9076@nyu.edu');

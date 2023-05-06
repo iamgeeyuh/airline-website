@@ -1280,7 +1280,6 @@ def rate_comment():
     query = 'INSERT INTO Reviews VALUES (%s, %s, %s, %s)'
     cursor.execute(query, (customer_email, ticket_id, rating, comment))
     conn.commit()
-    conn.close()
     cursor.close()
     return jsonify({})
 

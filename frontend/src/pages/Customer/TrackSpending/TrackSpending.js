@@ -8,11 +8,8 @@ const TrackSpending = () => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [totalSpending, setTotalSpending] = useState(0);
-  const [showChart, setShowChart] = useState(true);
   const [complete, setComplete] = useState(true);
-  const [spendingLst, setSpendingLst] = useState([
-    {label: "1/2023", tickets: 3}
-  ]);
+  const [spendingLst, setSpendingLst] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
 
   const startHandler = (event) => {
@@ -29,7 +26,7 @@ const TrackSpending = () => {
 
     formData.append("start", start);
     formData.append("end", end);
-    formData.append("airline_name", ctx.isLoggedIn.airline);
+    formData.append("customer_email", ctx.isLoggedIn.email);
 
     const formValues = [start, end];
 
@@ -39,7 +36,7 @@ const TrackSpending = () => {
       return;
     }
 
-    fetch("http://localhost:5000/total_tickets", {
+    fetch("http://localhost:5000/track_spend", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
@@ -52,10 +49,10 @@ const TrackSpending = () => {
         }
       })
       .then((data) => {
+        console.log(data);
         setSpendingLst(data.months);
-        setTotalSpending(data.tickets);
+        setTotalSpending(data.spending);
         setComplete(true);
-        setShowChart(true);
       })
       .catch((error) => {
         console.log(error);
@@ -64,6 +61,35 @@ const TrackSpending = () => {
     setStart("");
     setEnd("");
   };
+
+  const loadSpending = () => {
+    const formData = new URLSearchParams();
+
+    formData.append("customer_email", ctx.isLoggedIn.email);
+
+    fetch("http://localhost:5000/default_spending", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Error loading chart");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+        setSpendingLst(data.months);
+        setTotalSpending(data.spending);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => loadSpending(), []);
 
   return (
     <div>
@@ -88,8 +114,8 @@ const TrackSpending = () => {
             </div>
             {!complete && <p>Missing fields.</p>}
           </form>
-          {showChart && <h3>Total Spending: ${totalSpending}</h3>}
-          {showChart && <Chart dataPoints={spendingLst} />}
+          <h3>Total Spending: ${totalSpending}</h3>
+          <Chart dataPoints={spendingLst} />
         </div>
       )}
     </div>

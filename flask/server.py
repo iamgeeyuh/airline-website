@@ -1292,90 +1292,35 @@ def rate_comment():
 def track_spend():
     cursor = conn.cursor()
     customer_email = request.form["customer_email"]
+    start = request.form["start"]
+    end = request.form["end"]
 
-    # Total amount spent in the past year
-    query_year_total = (
-        "SELECT SUM(sold_price) FROM Ticket WHERE email = %s AND"
-        " purchase_datetime > (CURRENT_TIMESTAMP - INTERVAL '1' YEAR)"
-    )
-    cursor.execute(query_year_total, (customer_email,))
-    year_total = cursor.fetchone()[0] or 0
+    query1="SELECT SUM(sold_price) AS total_spent FROM Ticket WHERE email = %s AND purchase_datetime BETWEEN %s AND %s;"
+    cursor.execute(query1, (customer_email, start, end))
+    spending = cursor.fetchone()
 
-    # Month-wise spending for the past 6 months
-    query_monthly_spending = (
-        "SELECT MONTH(purchase_datetime) AS month, SUM(sold_price) AS spending"
-        " FROM Ticket WHERE email = %s AND purchase_datetime >"
-        " (CURRENT_TIMESTAMP - INTERVAL '6' MONTH) GROUP BY"
-        " MONTH(purchase_datetime)"
-    )
-    cursor.execute(query_monthly_spending, (customer_email,))
-    monthly_spending = cursor.fetchall()
-    data = [0] * 12
-    for row in monthly_spending:
-        data[row["month"] - 1] = row["spending"]
+    query = "SELECT CONCAT(MONTH(purchase_datetime), '/', YEAR(purchase_datetime)) AS label, SUM(sold_price) AS tickets FROM Ticket WHERE email = %s AND purchase_datetime BETWEEN %s AND %s GROUP BY MONTH(purchase_datetime), YEAR(purchase_datetime) ORDER BY YEAR(purchase_datetime), MONTH(purchase_datetime)"
+    cursor.execute(query, (customer_email, start, end))
+    data = cursor.fetchall()
 
-    # Range-wise spending
-    start_date = request.form.get("start_date")
-    end_date = request.form.get("end_date")
-    if start_date and end_date:
-        try:
-            start_date = datetime.strptime(start_date, "%Y-%m-%d")
-            end_date = datetime.strptime(end_date, "%Y-%m-%d")
-        except ValueError:
-            return jsonify(
-                {"year_total": None,
-                "monthly_data": None,
-                "range_total": None,
-                "range_data": None}
-            )
+    print({"spending": spending["total_spent"], "months": data})
 
-        if end_date < start_date:
-            return jsonify(
-                {
-                    "year_total": None,
-                    "monthly_data": None,
-                    "range_total": None,
-                    "range_data": None
-                }
-            )
+    return {"spending": spending["total_spent"], "months": data}
 
-        query_range_total = (
-            "SELECT SUM(sold_price) FROM Ticket WHERE email = %s AND"
-            " purchase_datetime >= %s AND purchase_datetime <= %s"
-        )
-        cursor.execute(
-            query_range_total, (customer_email, start_date, end_date)
-        )
-        range_total = cursor.fetchone()[0] or 0
+@app.route("/default_spending", methods=["POST"])
+def default_spending():
+    cursor = conn.cursor()
+    customer_email = request.form["customer_email"]
 
-        # Month-wise spending within the range
-        query_range_spending = (
-            "SELECT MONTH(purchase_datetime) AS month, SUM(sold_price) AS"
-            " spending FROM Ticket WHERE email = %s AND purchase_datetime >= %s"
-            " AND purchase_datetime <= %s GROUP BY MONTH(purchase_datetime)"
-        )
-        cursor.execute(
-            query_range_spending, (customer_email, start_date, end_date)
-        )
-        range_spending = cursor.fetchall()
-        range_data = [0] * 12
-        for row in range_spending:
-            range_data[row["month"] - 1] = row["spending"]
-    else:
-        range_total = None
-        range_data = None
+    query1="SELECT SUM(sold_price) AS total_spent FROM Ticket WHERE email = %s AND purchase_datetime BETWEEN DATE_SUB(NOW(), INTERVAL 1 YEAR) AND NOW();"
+    cursor.execute(query1, (customer_email))
+    spending = cursor.fetchone()
 
-    cursor.close()
+    query = "SELECT CONCAT(MONTH(purchase_datetime), '/', YEAR(purchase_datetime)) AS label, SUM(sold_price) AS tickets FROM Ticket WHERE email = %s AND purchase_datetime BETWEEN DATE_SUB(NOW(), INTERVAL 6 MONTH) AND NOW() GROUP BY MONTH(purchase_datetime), YEAR(purchase_datetime) ORDER BY YEAR(purchase_datetime), MONTH(purchase_datetime)"
+    cursor.execute(query, (customer_email))
+    data = cursor.fetchall()
 
-    return jsonify(
-        {
-            "year_total": year_total,
-            "monthly_data": data,
-            "range_total": range_total,
-            "range_data": range_data,
-        }
-    )
-
+    return {"spending": spending["total_spent"], "months": data}
 
 if __name__ == "__main__":
     app.run(debug=True)

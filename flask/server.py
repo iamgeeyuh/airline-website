@@ -1272,7 +1272,7 @@ def rate_comment():
     data = cursor.fetchone()
     
     if data:
-        query = "DELETE FROM Reviews WHERE ticket_id = %s AND customer_email = %s"
+        query = "DELETE FROM Reviews WHERE ticket_id = %s AND email = %s"
         cursor.execute(query, (ticket_id, customer_email))
         conn.commit()
     
@@ -1285,7 +1285,7 @@ def rate_comment():
     data = cursor.fetchall()
     conn.close()
     cursor.close()
-    return jsonify({"rating":data['rating'], "comment": data['comment']})
+    return jsonify({"rating": data["rating"], "comment": data["comment"]})
 
 
 @app.route("/track_spend", methods=["GET", "POST"])

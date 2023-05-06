@@ -117,11 +117,6 @@ const Flight = (props) => {
             </button>
           )}
           {props.page == "review" && (
-            <button className={styles.buttons} onClick={checkViewReviews}>
-              View Review
-            </button>
-          )}
-          {props.page == "review" && (
             <button className={styles.buttons} onClick={checkReviews}>
               Review
             </button>

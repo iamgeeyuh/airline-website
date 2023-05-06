@@ -25,6 +25,9 @@ const RatingsModal = (props) => {
     formData.append("flight_num", props.flightNum);
     formData.append("dep_datetime", props.depDate + " " + props.depTime);
 
+    console.log(props.depDate)
+    console.log(props.depTime)
+
     fetch("http://localhost:5000//view_flight_ratings", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },

@@ -703,13 +703,7 @@ def view_flight_ratings():
     departure_datetime = request.form["dep_datetime"]
 
     query = (
-        "SELECT Customer.fname as fname,"
-        " Reviews.rating AS rating, Reviews.comment AS comment FROM Reviews"
-        " INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticket_id INNER JOIN"
-        " Customer ON Reviews.email = Customer.email WHERE flight_num = %s AND"
-        " airline_name = %s AND departure_datetime = %s AND Reviews.rating IS"
-        " NOT NULL OR Reviews.comment IS NOT NULL GROUP BY Customer.fname,"
-        " Reviews.rating, Reviews.comment"
+    "SELECT Customer.fname, Customer.lname, Reviews.rating, Reviews.comment FROM Customer INNER JOIN Ticket ON Customer.email = Ticket.email INNER JOIN Reviews ON Ticket.ticket_id = Reviews.ticket_id WHERE Ticket.flight_num = %s AND Ticket.airline_name = %s AND Ticket.departure_datetime = %s AND Reviews.rating IS NOT NULL OR Reviews.comment IS NOT NULL;"
     )
 
     cursor.execute(query, (flight_num, airline_name, departure_datetime))

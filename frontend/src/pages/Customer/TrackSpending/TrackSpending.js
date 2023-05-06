@@ -8,9 +8,11 @@ const TrackSpending = () => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [totalSpending, setTotalSpending] = useState(0);
-  const [showChart, setShowChart] = useState(false);
+  const [showChart, setShowChart] = useState(true);
   const [complete, setComplete] = useState(true);
-  const [spendingLst, setSpendingLst] = useState([]);
+  const [spendingLst, setSpendingLst] = useState([
+    {label: "1/2023", tickets: 3}
+  ]);
   const [isLoggedIn, setIsLoggedIn] = useState(ctx.isLoggedIn);
 
   const startHandler = (event) => {
@@ -61,37 +63,37 @@ const TrackSpending = () => {
 
     setStart("");
     setEnd("");
-
-    return (
-      <div>
-        {isLoggedIn.isLoggedIn && isLoggedIn.isCustomer && (
-          <div>
-            <form className={styles.totalTickets}>
-              <h4>View Sales in Range:</h4>
-              <div>
-                <div>
-                  <label>Start Date</label>
-                  <input type="date" value={start} onChange={startHandler} />
-                </div>
-                <div>
-                  <label>End Date</label>
-                  <input type="date" value={end} onChange={endHandler} />
-                </div>
-                <div>
-                  <button type="submit" onClick={submitHandler}>
-                    Submit
-                  </button>
-                </div>
-              </div>
-              {!complete && <p>Missing fields.</p>}
-            </form>
-            {showChart && <h3>Total Tickets: {totalSpending}</h3>}
-            {showChart && <Chart dataPoints={spendingLst} />}
-          </div>
-        )}
-      </div>
-    );
   };
+
+  return (
+    <div>
+      {isLoggedIn.isLoggedIn && isLoggedIn.isCustomer && (
+        <div>
+          <form className={styles.totalSpending}>
+            <h4>View Spending in Range:</h4>
+            <div>
+              <div>
+                <label>Start Date</label>
+                <input type="date" value={start} onChange={startHandler} />
+              </div>
+              <div>
+                <label>End Date</label>
+                <input type="date" value={end} onChange={endHandler} />
+              </div>
+              <div>
+                <button type="submit" onClick={submitHandler}>
+                  Submit
+                </button>
+              </div>
+            </div>
+            {!complete && <p>Missing fields.</p>}
+          </form>
+          {showChart && <h3>Total Spending: ${totalSpending}</h3>}
+          {showChart && <Chart dataPoints={spendingLst} />}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default TrackSpending;

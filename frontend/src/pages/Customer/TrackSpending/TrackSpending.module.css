@@ -1,0 +1,27 @@
+.totalSpending div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.totalSpending div div {
+  display: block;
+}
+
+.totalSpending button {
+  margin-left: 10px;
+}
+
+.totalSpending p {
+  color: red;
+  margin-left: 10px;
+  margin-top: 0;
+}
+
+.totalSpending {
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: var(--main-purple);
+  margin-bottom: 40px;
+  margin-left: 10px;
+}

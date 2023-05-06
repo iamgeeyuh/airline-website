@@ -1107,21 +1107,22 @@ def search_flight_customer():
     return jsonify(flights)
 
 
-@app.route("/purchase_ticket", methods=["GET", "POST"])
-def purchase_ticket():
+@app.route("/purchase_tickets", methods=["GET", "POST"])
+def purchase_tickets():
+    print(request.form)
     cursor = conn.cursor()
 
     # Get data from form
-    customer_email = request.form["customer_email"]
+    customer_email = request.form["email"]
     flight_num = request.form["flight_num"]
     airline_name = request.form["airline_name"]
     dep_timestamp = request.form["dep_timestamp"]
     card_type = request.form["card_type"]
     card_num = request.form["card_num"]
     card_name = request.form["card_name"]
-    sold_price = request.form["price"]
+    # sold_price = request.form["price"]
     # ticket_id = request.form['ticket_id']
-    exp_date = request.form["exp_date"]
+    exp_date = request.form["card_exp"]
 
     # Check if ticket has already been purchased
     query = (
@@ -1134,19 +1135,19 @@ def purchase_ticket():
     data = cursor.fetchone()
 
     if data:
-        return jsonify({"error": "Ticket has already been purchased"})
+        return jsonify({"error": False})
 
-    # Check if customer has already purchased a ticket for this flight
+    # Check if the tickets were sold out
     query = (
         "SELECT COUNT(ticket_id) as total FROM Ticket WHERE flight_num = %s AND"
-        " email = %s"
+        " departure_datetime = %s AND airline_name = %s"
     )
-    cursor.execute(query, (flight_num, customer_email))
+    cursor.execute(query, (flight_num, dep_timestamp, airline_name))
     tix_purchased = cursor.fetchone()["total"]
 
     if tix_purchased >= total_seats:
         return jsonify(
-            {"error": "All seats for this flight have been sold out"}
+            {"error": False}
         )
 
     # Calculate price of ticket
@@ -1158,15 +1159,15 @@ def purchase_ticket():
     data = cursor.fetchone()
 
     if not data:
-        return jsonify({"error": "Flight does not exist"})
+        return jsonify({"error": False})
 
     total_seats = data["seat"]
     base_price = float(data["base_price"])
 
     if tix_purchased / total_seats >= 0.6:
-        price = base_price * 1.25
+        sold_price = base_price * 1.25
     else:
-        price = base_price
+        sold_price = base_price
 
     # Generate ticket id
     random_num = random.randint(100000, 999999)
@@ -1181,7 +1182,7 @@ def purchase_ticket():
         ticket_id = f"{random_num}-{unique_id}"
     # Insert purchase into database
     ins = (
-        "INSERT INTO Ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        "INSERT INTO Ticket VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, %s)"
     )
     cursor.execute(
         ins,
@@ -1195,7 +1196,6 @@ def purchase_ticket():
             card_name,
             card_num,
             exp_date,
-            CURRENT_TIMESTAMP,
             customer_email,
         ),
     )
@@ -1203,7 +1203,8 @@ def purchase_ticket():
     conn.commit()
     cursor.close()
 
-    return jsonify({"msg": "Ticket purchased successfully!"})
+    return jsonify({"msg": True})
+
 
 
 @app.route("/display_cancel_trip", methods=["GET", "POST"])

@@ -185,15 +185,11 @@ const Flight = (props) => {
       {modalReview && (
         <ReviewModal
           modalHandler={modalReviewHandler}
-          flightNum={props.flightNum}
-          airline={props.airline}
           ticket_id={props.ticket_id}
-          depDate={props.depDate}
-          depTime={props.depTime}
         />
       )}
       {modalReview && <div className={styles.dimmedBackground}></div>}
-      {modalViewReview && <ViewReviewModal />}
+      {modalViewReview && <ViewReviewModal modalHandler={modalViewReviewHandler} />}
       {modalViewReview && <div className={styles.dimmedBackground}></div>}
       {modalCancel && (
         <SuccessModal

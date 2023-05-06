@@ -163,7 +163,7 @@ const PurchaseModal = (props) => {
           </div>
           <div>
             <label>Expiration Date</label>
-            <input type="month" value={cardExp} onChange={cardExpHandler} />
+            <input type="date" value={cardExp} onChange={cardExpHandler} />
           </div>
         </div>
         {!complete && <p>Missing fields.</p>}

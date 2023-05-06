@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import LogoutModal from "../LogoutModal/LogoutModal";
 import styles from "./Navbar.module.css";
 import AuthContext from "../../context/auth-context";
 
@@ -57,16 +56,28 @@ const Navbar = () => {
         )}
         {isLoggedIn.isLoggedIn &&
           (isLoggedIn.isCustomer ? (
-            <li>
-              <NavLink
-                to="Review"
-                className={({ isActive }) =>
-                  isActive ? styles.active : undefined
-                }
-              >
-                Review Flights
-              </NavLink>
-            </li>
+            <>
+              <li>
+                <NavLink
+                  to="/Review"
+                  className={({ isActive }) =>
+                    isActive ? styles.active : undefined
+                  }
+                >
+                  Review Flights
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/TrackSpending"
+                  className={({ isActive }) =>
+                    isActive ? styles.active : undefined
+                  }
+                >
+                  Track Spending
+                </NavLink>
+              </li>
+            </>
           ) : (
             <>
               <li>

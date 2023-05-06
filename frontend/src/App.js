@@ -12,6 +12,7 @@ import ChangeFlightStatus from "./pages/Staff/ChangeFlightStatus";
 import ViewCustomers from "./pages/Staff/ViewCustomers/ViewCustomers";
 import Revenue from "./pages/Staff/Revenue/Revenue";
 import PreviousFlights from "./pages/Customer/PreviousFlights/PreviousFlights";
+import TrackSpending from "./pages/Customer/TrackSpending/TrackSpending";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
       { path: "/ViewCustomers", element: <ViewCustomers /> },
       { path: "/Revenue", element: <Revenue /> },
       { path: "/Review", element: <PreviousFlights /> },
+      { path: "/TrackSpending", element: <TrackSpending /> },
     ],
   },
 ]);

@@ -35,9 +35,6 @@ const ReviewModal = (props) => {
     const formData = new URLSearchParams();
 
     formData.append("customer_email", ctx.isLoggedIn.email);
-    formData.append("flight_num", props.flightNum);
-    formData.append("airline_name", props.airline);
-    formData.append("dep_datetime", props.depDate + " " + props.depTime);
     formData.append("rating", rating);
     formData.append("comment", comment);
     formData.append("ticket_id", props.ticket_id);

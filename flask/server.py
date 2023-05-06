@@ -56,8 +56,9 @@ def login():
             " password = %s"
         )
 
-    cursor.execute(query, (username, password))
-
+    # cursor.execute(query, (username, password))
+    cursor.execute(query, (username, str(hashlib.md5(password.encode()).digest())))
+    
     data = cursor.fetchone()
     cursor.close()
     if data:
@@ -151,7 +152,7 @@ def registerAuth():
                     email,
                     fname,
                     lname,
-                    password,
+                    str(hashlib.md5(password.encode()).digest()),
                     bldg_num,
                     street,
                     apt,
@@ -171,7 +172,7 @@ def registerAuth():
             ins = "INSERT INTO Staff VALUES(%s, %s, %s, %s, %s, %s)"
             cursor.execute(
                 ins,
-                (username, password, airline_name, fname, lname, date_of_birth),
+                (username, str(hashlib.md5(password.encode()).digest()), airline_name, fname, lname, date_of_birth),
             )
 
             for e in email:

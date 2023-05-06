@@ -2,7 +2,7 @@ CREATE TABLE Customer(
     email varchar(50) primary key,
     fname varchar(20) not null,
     lname varchar(20) not null,
-    password varchar(20) not null,
+    password varchar(50) not null,
     bldg_num int not null,
     street varchar(20) not null,
     apt varchar(20) not null,
@@ -93,7 +93,7 @@ CREATE TABLE Reviews(
 
 CREATE TABLE Staff(
     username varchar(20) primary key,
-    password varchar(20),
+    password varchar(50),
     airline_name varchar(20),
     fname varchar(20),
     lname varchar(20),

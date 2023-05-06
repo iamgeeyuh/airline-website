@@ -368,7 +368,7 @@ def view_passengers():
     cursor = conn.cursor()
 
     query = (
-        "SELECT Customer.fname as fname, Customer.lname as lname,"
+        "SELECT Customer.fname as fname,"
         " Customer.email as email FROM Customer INNER JOIN Ticket ON"
         " Ticket.email = Customer.email INNER JOIN Flight ON"
         " Flight.airline_name = Ticket.airline_name AND Flight.flight_num ="
@@ -381,11 +381,13 @@ def view_passengers():
 
     cursor.execute(query, (flight_num, airline_name, departure_datetime))
     data = cursor.fetchall()
-    print(data)
+    names =[]
+    for elem in data:
+        names.append(elem)
 
     cursor.close()
 
-    return jsonify(data)
+    return jsonify(names)
 
 
 # 1 View flights done include key in output
@@ -701,13 +703,13 @@ def view_flight_ratings():
     departure_datetime = request.form["dep_datetime"]
 
     query = (
-        "SELECT Customer.fname as fname, Customer.lname as lname,"
+        "SELECT Customer.fname as fname,"
         " Reviews.rating AS rating, Reviews.comment AS comment FROM Reviews"
         " INNER JOIN Ticket ON Reviews.ticket_id  = Ticket.ticket_id INNER JOIN"
         " Customer ON Reviews.email = Customer.email WHERE flight_num = %s AND"
         " airline_name = %s AND departure_datetime = %s AND Reviews.rating IS"
         " NOT NULL OR Reviews.comment IS NOT NULL GROUP BY Customer.fname,"
-        " Customer.lname, Reviews.rating, Reviews.comment"
+        " Reviews.rating, Reviews.comment"
     )
 
     cursor.execute(query, (flight_num, airline_name, departure_datetime))
@@ -715,7 +717,7 @@ def view_flight_ratings():
     rates = []
     for data in datas:
         rate = {
-            "name": data["fname"] + data["lname"],
+            "name": data["fname"],
             "review": data["comment"],
             "rating": data["rating"],
         }
@@ -1283,7 +1285,6 @@ def rate_comment():
     query = 'INSERT INTO Reviews VALUES (%s, %s, %s, %s)'
     cursor.execute(query, (customer_email, ticket_id, rating, comment))
     conn.commit()
-    conn.close()
     cursor.close()
     return jsonify({})
 

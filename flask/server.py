@@ -1265,14 +1265,14 @@ def rate_comment():
     data = cursor.fetchone()
     
     if not data:
-        return jsonify({"rating":None, "comment": None})
+        return jsonify({})
     
     query = 'SELECT * FROM Ticket INNER JOIN Reviews ON Ticket.email = Reviews.email WHERE Ticket.email = %s and Ticket.ticket_id = %s'
     cursor.execute(query, (customer_email, ticket_id))
     data = cursor.fetchone()
     
     if data:
-        query = "DELETE FROM Reviews WHERE ticket_id = %s AND customer_email = %s"
+        query = "DELETE FROM Reviews WHERE ticket_id = %s AND email = %s"
         cursor.execute(query, (ticket_id, customer_email))
         conn.commit()
     
@@ -1280,12 +1280,9 @@ def rate_comment():
     query = 'INSERT INTO Reviews VALUES (%s, %s, %s, %s)'
     cursor.execute(query, (customer_email, ticket_id, rating, comment))
     conn.commit()
-    query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
-    cursor.execute(query, (ticket_id, customer_email))
-    data = cursor.fetchall()
     conn.close()
     cursor.close()
-    return jsonify({"rating":data['rating'], "comment": data['comment']})
+    return jsonify({})
 
 
 @app.route("/track_spend", methods=["GET", "POST"])

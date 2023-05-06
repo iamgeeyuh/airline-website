@@ -1227,7 +1227,20 @@ def display_cancel_trip():
     else:
         return jsonify({'success': False})
 
-
+@app.route("/view_rate_comment", methods=["POST"])
+def view_rate_comment():
+    customer_email = request.form['customer_email']
+    ticket_id = request.form['ticket_id']
+    # validate user and flight details
+    cursor = conn.cursor()
+    query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
+    cursor.execute(query, (ticket_id, customer_email))
+    data = cursor.fetchall()
+    if data:
+        return jsonify({"rating":data['rating'], "comment": data['comment']})
+    else: 
+        return jsonify({"rating": None, "comment": None})
+        
 @app.route("/rate_comment", methods=["POST"])
 def rate_comment():
     # get parameters from request body
@@ -1238,16 +1251,16 @@ def rate_comment():
     # validate user and flight details
     cursor = conn.cursor()
     
-    if rating == "" and comment == "":
-        query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
-        cursor.execute(query, (ticket_id, customer_email))
-        data = cursor.fetchall()
-        if data:
-            return jsonify({"rating":data['rating'], "comment": data['comment']})
-        else: 
-            return jsonify({"rating": None, "comment": None})
+    # if rating == "" and comment == "":
+    #     query = "SELECT rating, comment FROM Reviews WHERE ticket_id = %s AND email = %s"
+    #     cursor.execute(query, (ticket_id, customer_email))
+    #     data = cursor.fetchall()
+    #     if data:
+    #         return jsonify({"rating":data['rating'], "comment": data['comment']})
+    #     else: 
+    #         return jsonify({"rating": None, "comment": None})
         
-    query = 'SELECT * FROM Ticket WHERE email = %s and ticket_id = %s and arrival_datetime > NOW()'
+    query = 'SELECT * FROM Ticket WHERE email = %s and ticket_id = %s'
     cursor.execute(query, (customer_email, ticket_id))
     data = cursor.fetchone()
     
